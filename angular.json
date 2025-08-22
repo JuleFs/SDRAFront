@@ -69,10 +69,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "P_TomaDeciciones:build:production"
+              "buildTarget": "P_TomaDeciciones:build:production"
             },
             "development": {
-              "browserTarget": "P_TomaDeciciones:build:development"
+              "buildTarget": "P_TomaDeciciones:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -80,7 +80,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "P_TomaDeciciones:build"
+            "buildTarget": "P_TomaDeciciones:build"
           }
         },
         "test": {
