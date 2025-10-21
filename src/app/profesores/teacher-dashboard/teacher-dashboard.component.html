@@ -1,0 +1,33 @@
+<section>
+  <h2>Agregar Unidad</h2>
+  <input [(ngModel)]="unitName" placeholder="Nombre de la unidad" />
+  <textarea [(ngModel)]="unitDescription" placeholder="Descripción"></textarea>
+  <button (click)="addUnit()">Guardar Unidad</button>
+</section>
+
+<section>
+  <h2>Agregar Tema</h2>
+  <select [(ngModel)]="selectedUnitId">
+    <option [value]="null">Seleccione unidad</option>
+    <option *ngFor="let unit of course?.units" [value]="unit.id">
+      {{ unit.title }}
+    </option>
+  </select>
+  <input [(ngModel)]="topicName" placeholder="Nombre del tema" />
+  <textarea [(ngModel)]="topicDescription" placeholder="Descripción"></textarea>
+  <button (click)="addTopic()">Guardar Tema</button>
+</section>
+
+<section>
+  <h2>Agregar Objeto de Aprendizaje</h2>
+  <input [(ngModel)]="oaName" placeholder="Nombre del OA" />
+  <textarea [(ngModel)]="oaDescription" placeholder="Descripción"></textarea>
+  <input [(ngModel)]="oaUrl" placeholder="URL del recurso" />
+  <select [(ngModel)]="oaType">
+    <option value="video">Video</option>
+    <option value="image">Imagen</option>
+    <option value="document">Documento</option>
+    <option value="external">Fuente externa</option>
+  </select>
+  <button (click)="addOA()">Guardar OA</button>
+</section>

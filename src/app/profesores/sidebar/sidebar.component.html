@@ -1,1 +1,11 @@
-<p>sidebar works!</p>
+<h3>Unidades</h3>
+<ul *ngIf="(course$ | async) as course">
+  <li *ngFor="let unit of course[0].units">
+    <strong>{{ unit.title }}</strong>
+    <ul>
+      <li *ngFor="let topic of unit.topics">
+        {{ topic.name }}
+      </li>
+    </ul>
+  </li>
+</ul>

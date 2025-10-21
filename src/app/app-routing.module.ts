@@ -9,7 +9,7 @@ import { SubjectContentComponent } from './estudiantes/contenidos/contenidos.com
 import { CourseListComponent } from './estudiantes/lista-cursos/lista-cursos.component';
 import { CourseLayoutComponent } from './estudiantes/curso-layout/curso-layout.component';
 import { TeacherCourseListComponent } from './profesores/lista-cursos-profesor/lista-cursos-profesor.component';
-import { TeacherCourseLayoutComponent } from './profesores/curso-layout/curso-layout.component';
+import { TeacherLayoutComponent } from './profesores/teacher-layout/teacher-layout.component';
 import { UnitFormComponent } from './profesores/unit-form/unit-form.component';
 import { TopicFormComponent } from './profesores/tarea-form/tarea-form.component';
 import { ResourceFormComponent } from './profesores/recurso-form/recurso-form.component';
@@ -35,7 +35,7 @@ const appRoutes: Routes = [
   { path: 'teacher', component: TeacherCourseListComponent },
   {
     path: 'teacher/course/:courseId',
-    component: TeacherCourseLayoutComponent,
+    component: TeacherLayoutComponent,
     children: [
       { path: 'add-unit', component: UnitFormComponent },
       { path: 'topic/:id', component: TopicFormComponent },

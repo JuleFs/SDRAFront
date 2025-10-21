@@ -34,6 +34,6 @@ export interface Resource {
   type: 'video' | 'image' | 'document' | 'external';
   url: string;
   tags?: string[];
-  suitability: Partial<Record<LearningStyle, number>>; // 0-100
+  suitability?: Partial<Record<LearningStyle, number>>; // 0-100
   description?: string;
 }
