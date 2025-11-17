@@ -41,6 +41,7 @@
     "@types/jasmine": "~4.0.3",
     "@types/node": "^18.19.130",
     "autoprefixer": "^10.4.21",
+    "daisyui": "v4",
     "jasmine-core": "~4.3.0",
     "karma": "~6.4.4",
     "karma-chrome-launcher": "~3.1.1",
