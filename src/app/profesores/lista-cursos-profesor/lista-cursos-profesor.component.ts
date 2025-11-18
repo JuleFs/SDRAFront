@@ -77,6 +77,6 @@ export class TeacherCourseListComponent {
     if (info) {
       this.grupo = JSON.parse(info).grupo;
     }
-    this.courses = this.courseSrv.getCourses(this.grupo);
+    this.courses = this.courseSrv.getCourses(502);
   }
 }

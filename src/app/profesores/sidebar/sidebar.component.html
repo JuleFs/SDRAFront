@@ -1,6 +1,6 @@
 <h3>Unidades</h3>
-<!-- <ul *ngIf="(course$ | async) as course">
-  <li *ngFor="let unit of course[0].units">
+<ul *ngIf="units">
+  <li *ngFor="let unit of units | async">
     <strong>{{ unit.nombre }}</strong>
     <ul>
       <li *ngFor="let topic of unit.temas">
@@ -8,4 +8,4 @@
       </li>
     </ul>
   </li>
-</ul> -->
+</ul>

@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { RecommendationService } from '../../services/recomendacion.service';
 import { Topic, Unit } from '../recomendacion/tipos.model';
-import { TemaComponent } from "../tema/tema.component";
+import { TemaComponent } from '../tema/tema.component';
 import { Observable } from 'rxjs';
 
 @Component({
@@ -24,7 +24,9 @@ import { Observable } from 'rxjs';
       <div *ngIf="unit.temas && unit.temas.length > 0" class="topics">
         <h3>Temas</h3>
         <div *ngFor="let topic of unit.temas" class="topic-card">
-          <h4><a [routerLink]="['tema', topic.id]">{{ topic.nombre }}</a></h4>
+          <h4>
+            <a [routerLink]="['tema', topic.id]">{{ topic.nombre }}</a>
+          </h4>
         </div>
       </div>
     </section>
@@ -53,7 +55,6 @@ export class SubjectContentComponent implements OnInit {
       this.unitId = id ?? undefined;
       if (this.unitId) {
         this.unit$ = this.recSrv.getUnitById(this.unitId);
-        // this.topics = this.recSrv.getTopics(this.unitId);
       }
     });
   }

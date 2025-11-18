@@ -24,9 +24,4 @@ export class CursoService {
   getCourses(grupo: number): Observable<Course[]> {
     return this.http.get<Course[]>(this.urlAPI + 'materias/grupo/' + grupo);
   }
-  getCourseById(id: string): Observable<Course | undefined> {
-    return this.http
-      .get<Course[]>(this.urlAPI + 'cursos')
-      .pipe(map((cursos) => cursos.find((c) => c.id === id)));
-  }
 }
