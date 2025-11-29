@@ -13,6 +13,7 @@ export class InicioComponent implements OnInit, AfterViewInit {
   Listas: Lista[] = [];
   estadoEncuestas!: Array<any>;
   Description: string;
+  nroCuenta: number = 0;
 
   public chart: any;
 
@@ -76,6 +77,12 @@ export class InicioComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
     this.createChart();
+
+    const info_alumno = localStorage.getItem('info_alumno');
+    if (info_alumno) {
+      this.nroCuenta = JSON.parse(info_alumno).nro_cuenta;
+    }
+
     this.estadoEncuesta();
     this.obtenerEncuestas();
   }
@@ -85,15 +92,23 @@ export class InicioComponent implements OnInit, AfterViewInit {
   }
 
   obtenerEncuestas() {
-    const num_grupo = JSON.parse(localStorage.getItem('info_alumno') || "{}").grupo;
-    this.servicio.obtenerEncuestaAsignada(num_grupo).subscribe((data) => {
-      const listaModel = new Lista();
-      listaModel.nombreProfesor = data.cuestionario.id_profesor;
-      listaModel.titulo = data.cuestionario.nombre;
-      listaModel.descripcion = data.cuestionario.descripcion;
-      listaModel.id_cuestionario = data.cuestionario.id_cuestionario;
-      this.Listas.push(listaModel);
-    });
+    this.servicio.obtenerCuestionariosAlumno(this.nroCuenta).subscribe(
+      (data) => {
+        this.Listas = []; // Limpiar lista
+
+        data.forEach((asignacion) => {
+          const listaModel = new Lista();
+          listaModel.nombreProfesor = asignacion.cuestionario.id_profesor || 'Francisco Figueroa';
+          listaModel.titulo = asignacion.cuestionario.nombre;
+          listaModel.descripcion = asignacion.cuestionario.descripcion;
+          listaModel.id_cuestionario = asignacion.cuestionario.id_cuestionario;
+          this.Listas.push(listaModel);
+        });
+      },
+      (error) => {
+        console.error('Error al obtener cuestionarios:', error);
+      }
+    );
   }
 
   obtenerPerfilAlumno() {
@@ -184,20 +199,25 @@ export class InicioComponent implements OnInit, AfterViewInit {
     });
   }
 
-  estadoEncuesta() {
-    const nroCuenta = JSON.parse(localStorage.getItem('info_alumno') || "{}").nro_cuenta;
-    this.servicio.obtenerEstadoEncuesta(nroCuenta).subscribe(
+    estadoEncuesta() {
+    this.servicio.verificarCuestionarioCompletado(this.nroCuenta, 1).subscribe(
       (data) => {
-        this.estadoEncuestas = data;
+        // Crear array con el estado para mantener compatibilidad con checkStatus()
+        if (data.completado) {
+          this.estadoEncuestas = [{ nro_cuenta: this.nroCuenta }];
+        } else {
+          this.estadoEncuestas = [];
+        }
       },
-      (error) => { error }
+      (error) => {
+        console.error('Error al verificar estado:', error);
+        this.estadoEncuestas = [];
+      }
     );
   }
 
   checkStatus() {
-    return this.estadoEncuestas?.some(x =>
-      x.nro_cuenta === JSON.parse(localStorage.getItem('info_alumno') || "{}").nro_cuenta
-    );
+    return this.estadoEncuestas?.some(x => x.nro_cuenta === this.nroCuenta);
   }
 
   realizarEncuesta(id_cuestionario: number) {
@@ -231,4 +251,9 @@ export class InicioComponent implements OnInit, AfterViewInit {
   navigateCursos() {
     this.route.navigate(['/cursos']);
   }
+
+  verResultados() {
+  this.route.navigate(['/Resultado']);
+}
+
 }
