@@ -1,1 +1,44 @@
-<p>lista-cursos works!</p>
+<div class="min-h-screen bg-base-200 py-8 px-4 sm:px-6 lg:px-8">
+  <div class="max-w-6xl mx-auto">
+    <!-- Header -->
+    <div class="mb-8">
+      <h1 class="text-3xl font-bold text-base-content">Mis Cursos</h1>
+    </div>
+
+    <!-- Loading state -->
+    <div *ngIf="!(courses$ | async)" class="flex justify-center items-center py-20">
+      <span class="loading loading-spinner loading-lg text-primary"></span>
+    </div>
+
+    <!-- Empty state -->
+    <div *ngIf="(courses$ | async)?.length === 0" class="text-center py-20">
+      <p class="text-base-content/60">No hay cursos disponibles</p>
+    </div>
+
+    <!-- Course grid -->
+    <div *ngIf="(courses$ | async)?.length" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div
+        *ngFor="let course of courses$ | async"
+        class="card bg-base-100 shadow-md hover:shadow-lg transition-shadow">
+
+        <!-- Card gradient header -->
+        <div class="h-24 bg-gradient-to-br from-primary to-secondary rounded-t-2xl"></div>
+
+        <!-- Card body -->
+        <div class="card-body p-4">
+          <h2 class="card-title text-base font-semibold text-base-content">
+            {{ course.nombre }}
+          </h2>
+
+          <div class="card-actions justify-end mt-4">
+            <a
+              [routerLink]="['/curso', course.id, 'unidad', '1']"
+              class="btn btn-primary btn-sm">
+              Entrar
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

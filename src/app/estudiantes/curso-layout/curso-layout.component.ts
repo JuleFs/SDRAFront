@@ -10,38 +10,15 @@ import { RecommendationService } from 'src/app/services/recomendacion.service';
   standalone: true,
   imports: [CommonModule, RouterModule, SidebarComponent],
   template: `
-    <div class="layout">
-      <aside class="sidebar">
+    <div class="flex h-screen w-full bg-base-200">
+      <aside class="w-72 min-w-72 border-r border-base-300 bg-base-100 shadow-sm">
         <app-sidebar [units]="units$ | async"></app-sidebar>
       </aside>
-      <main class="content">
+      <main class="flex-1 overflow-y-auto">
         <router-outlet></router-outlet>
       </main>
     </div>
   `,
-  styles: [
-    `
-      .layout {
-        height: 100vh;
-        width: 100%;
-        display: flex;
-      }
-    `,
-    `
-      .sidebar {
-        width: 15%;
-        border-right: 1px solid #ddd;
-        background: #f9f9f9;
-      }
-    `,
-    `
-      .content {
-        flex-grow: 1;
-        padding: 20px;
-        overflow-y: auto;
-      }
-    `,
-  ],
 })
 export class CourseLayoutComponent implements OnInit {
   units$!: any;

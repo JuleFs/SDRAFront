@@ -1,80 +1,28 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { CursoService } from '../../services/curso.service';
 import { Course } from '../recomendacion/tipos.model';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-course-list',
   standalone: true,
   imports: [CommonModule, RouterModule],
-  template: `
-    <section class="course-list">
-      <h2>Mis cursos</h2>
-      <div class="grid">
-        <div *ngFor="let c of courses | async" class="card">
-          <div class="card-bg"></div>
-          <div class="card-body">
-            <a
-              [routerLink]="['/curso', c.id, 'unidad', '1']"
-              class="title"
-              >{{ c.nombre }}</a
-            >
-            <p>Grupo: {{ c.grupo }}</p>
-          </div>
-        </div>
-      </div>
-    </section>
-  `,
-  styles: [
-    `
-      .course-list {
-        padding: 20px;
-        font-family: Arial, Helvetica, sans-serif;
-      }
-      .grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-        gap: 16px;
-        margin-top: 16px;
-      }
-      .card {
-        border: 1px solid #ddd;
-        border-radius: 8px;
-        overflow: hidden;
-        cursor: pointer;
-        background: #fff;
-      }
-      .card-bg {
-        height: 100px;
-        background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-      }
-      .card-body {
-        padding: 12px;
-      }
-      .title {
-        font-weight: 600;
-        display: block;
-        margin-bottom: 4px;
-        color: #1a73e8;
-        text-decoration: none;
-      }
-      p {
-        margin: 4px 0;
-        color: #555;
-      }
-    `,
-  ],
+  templateUrl: './lista-cursos.component.html',
+  styleUrls: ['./lista-cursos.component.css']
 })
-export class CourseListComponent {
+export class CourseListComponent implements OnInit {
   grupo = 0;
-  courses: any;
+  courses$!: Observable<Course[]>;
 
-  constructor(private courseSrv: CursoService) {
+  constructor(private courseSrv: CursoService) {}
+
+  ngOnInit(): void {
     const info = localStorage.getItem('info_alumno');
     if (info) {
       this.grupo = JSON.parse(info).grupo;
     }
-    this.courses = this.courseSrv.getCourses(this.grupo);
+    this.courses$ = this.courseSrv.getCourses(this.grupo);
   }
 }

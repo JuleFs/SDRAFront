@@ -6,19 +6,18 @@
         <label class="respuestas">
           <input type="radio" name="{{ pregunta.num_pregunta }}" id="{{ pregunta.num_pregunta }}-A" class="radio_input" [(ngModel)]="pregunta.respuesta" value="A" [required]="true">
           <div class="radio_radio"></div>
-          {{pregunta.respuesta_1}} 
+          {{pregunta.respuesta_1}}
         </label>
-        <label class="respuestas"> 
+        <label class="respuestas">
           <input type="radio" name="{{ pregunta.num_pregunta }}" id="{{ pregunta.num_pregunta }}-B" class="radio_input" [(ngModel)]="pregunta.respuesta" value="B" [required]="true">
           <div class="radio_radio"></div>
-          {{pregunta.respuesta_2}} 
+          {{pregunta.respuesta_2}}
         </label>
       </div>
     </div>
-  
+
     <div class="container boton">
       <!-- Cambia el tipo de botón a "submit" y agrega el atributo form con el valor del identificador del formulario -->
       <button type="submit" class="btn btn-primary" [disabled]="!miFormulario.valid">Record responses</button>
     </div>
   </form>
-  

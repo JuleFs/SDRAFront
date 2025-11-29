@@ -1,158 +1,235 @@
-<div class="main">
-  <div class="encuestas">
-    <div class="title">
-      <p>Teacher Assigned Surveys</p>
-    </div>
+<div class="min-h-screen bg-base-200 py-8 px-4 sm:px-6 lg:px-8">
+  <div class="max-w-7xl mx-auto">
 
-    <div
-      class="encuesta"
-      *ngFor="let Lista of Listas"
-      (click)="OnClick(Lista.descripcion)"
-    >
-      <p class="sub_title">{{ Lista.titulo }}</p>
-      <div class="content">
-        <p class="text">Teacher:</p>
-        <p class="text">Francisco Figueroa</p>
+    <!-- Layout principal: Perfil grande a la izquierda, encuestas pequeñas a la derecha -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+      <!-- Columna principal: Perfil de aprendizaje (2/3 del espacio) -->
+      <div class="lg:col-span-2 space-y-6">
+
+        <!-- Card de estadísticas/gráfica -->
+        <div class="card bg-base-100 shadow-md">
+          <div class="card-body">
+            <h2 class="card-title text-xl font-bold text-base-content">
+              Tu Perfil de Aprendizaje
+            </h2>
+
+            <!-- Tabs para gráfica/tabla -->
+            <div class="tabs tabs-boxed bg-base-200 w-fit mt-2">
+              <button
+                id="Grafica"
+                class="tab tab-active"
+                (click)="cambiasGrafica($event)">
+                Gráfica
+              </button>
+              <button
+                id="Tabla"
+                class="tab"
+                (click)="cambiasTabla($event)">
+                Tabla
+              </button>
+            </div>
+
+            <!-- Gráfica de radar -->
+            <div class="info_grafic mt-4" style="height: 400px;">
+              <canvas id="MyChart">{{ chart }}</canvas>
+            </div>
+
+            <!-- Tabla de resultados -->
+            <div class="info_table hidden mt-4 overflow-x-auto">
+              <table class="table table-zebra w-full">
+                <thead>
+                  <tr class="bg-base-200">
+                    <th></th>
+                    <th>11</th>
+                    <th>9</th>
+                    <th>7</th>
+                    <th>5</th>
+                    <th>3</th>
+                    <th>1</th>
+                    <th>1</th>
+                    <th>3</th>
+                    <th>5</th>
+                    <th>7</th>
+                    <th>9</th>
+                    <th>11</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <th class="text-primary">Activo</th>
+                    <td id="a11"></td>
+                    <td id="a9"></td>
+                    <td id="a7"></td>
+                    <td id="a5"></td>
+                    <td id="a3"></td>
+                    <td id="a1"></td>
+                    <td id="r1"></td>
+                    <td id="r3"></td>
+                    <td id="r5"></td>
+                    <td id="r7"></td>
+                    <td id="r9"></td>
+                    <td id="r11"></td>
+                    <th class="text-secondary">Reflexivo</th>
+                  </tr>
+                  <tr>
+                    <th class="text-primary">Sensorial</th>
+                    <td id="s11"></td>
+                    <td id="s9"></td>
+                    <td id="s7"></td>
+                    <td id="s5"></td>
+                    <td id="s3"></td>
+                    <td id="s1"></td>
+                    <td id="i1"></td>
+                    <td id="i3"></td>
+                    <td id="i5"></td>
+                    <td id="i7"></td>
+                    <td id="i9"></td>
+                    <td id="i11"></td>
+                    <th class="text-secondary">Intuitivo</th>
+                  </tr>
+                  <tr>
+                    <th class="text-primary">Visual</th>
+                    <td id="v11"></td>
+                    <td id="v9"></td>
+                    <td id="v7"></td>
+                    <td id="v5"></td>
+                    <td id="v3"></td>
+                    <td id="v1"></td>
+                    <td id="ve1"></td>
+                    <td id="ve3"></td>
+                    <td id="ve5"></td>
+                    <td id="ve7"></td>
+                    <td id="ve9"></td>
+                    <td id="ve11"></td>
+                    <th class="text-secondary">Verbal</th>
+                  </tr>
+                  <tr>
+                    <th class="text-primary">Secuencial</th>
+                    <td id="se11"></td>
+                    <td id="se9"></td>
+                    <td id="se7"></td>
+                    <td id="se5"></td>
+                    <td id="se3"></td>
+                    <td id="se1"></td>
+                    <td id="g1"></td>
+                    <td id="g3"></td>
+                    <td id="g5"></td>
+                    <td id="g7"></td>
+                    <td id="g9"></td>
+                    <td id="g11"></td>
+                    <th class="text-secondary">Global</th>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card de descripción -->
+        <div class="card bg-base-100 shadow-md">
+          <div class="card-body">
+            <h3 class="card-title text-lg font-semibold text-base-content">
+              Descripción de la Encuesta
+            </h3>
+            <p class="text-base-content/70 mt-2">
+              {{ Description }}
+            </p>
+          </div>
+        </div>
       </div>
-      <div class="content">
-        <p class="text">State:</p>
-        <p class="text" style="color: #7bff81" *ngIf="checkStatus()">
-          Finished
-        </p>
-        <p class="text" style="color: #ff7373" *ngIf="!checkStatus()">
-          Not Finished
-        </p>
-      </div>
-      <div class="button" (click)="realizarEncuesta(Lista.id_cuestionario)">
-        <button class="b_encuesta" *ngIf="checkStatus()">
-          Start survey again
+
+      <!-- Columna lateral: Encuestas (1/3 del espacio) -->
+      <div class="lg:col-span-1 space-y-6">
+
+        <!-- Card de encuestas -->
+        <div class="card bg-base-100 shadow-md">
+          <div class="card-body">
+            <h3 class="card-title text-lg font-semibold text-base-content">
+              Encuestas Asignadas
+            </h3>
+
+            <!-- Lista de encuestas -->
+            <div class="space-y-3 mt-4">
+              <div
+                *ngFor="let Lista of Listas"
+                class="p-4 bg-base-200 rounded-lg cursor-pointer hover:bg-base-300 transition-colors"
+                (click)="OnClick(Lista.descripcion)">
+
+                <h4 class="font-semibold text-base-content">{{ Lista.titulo }}</h4>
+
+                <div class="mt-2 text-sm">
+                  <p class="text-base-content/60">
+                    Profesor: <span class="text-base-content">Francisco Figueroa</span>
+                  </p>
+                </div>
+
+                <div class="mt-2 flex items-center gap-2">
+                  <span class="text-sm text-base-content/60">Estado:</span>
+                  <span
+                    *ngIf="checkStatus()"
+                    class="badge badge-success badge-sm">
+                    Completada
+                  </span>
+                  <span
+                    *ngIf="!checkStatus()"
+                    class="badge badge-warning badge-sm">
+                    Pendiente
+                  </span>
+                </div>
+
+
+
+                <div class="mt-3">
+                  <button
+                    *ngIf="checkStatus()"
+                    class="btn btn-outline btn-primary btn-sm w-full"
+                    (click)="realizarEncuesta(Lista.id_cuestionario); $event.stopPropagation()">
+                    Realizar de nuevo
+                  </button>
+                  <button
+                    *ngIf="!checkStatus()"
+                    class="btn btn-primary btn-sm w-full"
+                    (click)="realizarEncuesta(Lista.id_cuestionario); $event.stopPropagation()">
+                    Iniciar encuesta
+                  </button>
+                    <button
+                      *ngIf="checkStatus()"
+                      class="btn btn-secondary btn-sm w-full"
+                      (click)="verResultados(); $event.stopPropagation()">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                      </svg>
+                      Ver mis resultados
+                    </button>
+                </div>
+              </div>
+
+              <!-- Empty state si no hay encuestas -->
+              <div *ngIf="Listas.length === 0" class="text-center py-4">
+                <p class="text-base-content/60 text-sm">No hay encuestas asignadas</p>
+              </div>
+            </div>
+
+            <!-- Nota informativa -->
+            <div class="mt-4 pt-4 border-t border-base-300">
+              <p class="text-xs text-base-content/50">
+                El número de encuestas puede variar según el profesor asignado al estudiante.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Botón de navegación a cursos -->
+        <button
+          class="btn btn-primary w-full gap-2"
+          (click)="navigateCursos()">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+          </svg>
+          Ir a mis cursos
         </button>
-        <button class="b_encuesta" *ngIf="!checkStatus()">Start survey</button>
-      </div>
-    </div>
-
-    <div class="footer">
-      <p class="text">
-        Number of surveys may vary depending on the teacher or teachers assigned
-        to the student.
-      </p>
-      <div class="button" (click)="navigateCursos()">
-        <button class="b_encuesta">Ir a mis cursos</button>
-      </div>
-    </div>
-  </div>
-
-  <div class="Res">
-    <div class="Description">
-      <div class="title">
-        <p>Survey Description</p>
-      </div>
-      <div class="des_info">
-        <p class="text">{{ Description }}</p>
-      </div>
-    </div>
-
-    <div class="statistics">
-      <div class="title">
-        <p>Survey Statistics</p>
-      </div>
-      <div class="tap">
-        <button (click)="cambiasGrafica($event)">
-          <p id="Grafica" class="active">Graph</p>
-        </button>
-        <button (click)="cambiasTabla($event)"><p id="Tabla">Table</p></button>
-      </div>
-      <!--   -->
-      <div class="info_grafic" style="height: 500px">
-        <canvas id="MyChart" class=""> {{ chart }} </canvas>
-      </div>
-      <div class="info_table activePreview">
-        <table class="table table-hover">
-          <thead class="table-dark">
-            <tr>
-              <th scope="col"></th>
-              <th scope="col">11</th>
-              <th scope="col">9</th>
-              <th scope="col">7</th>
-              <th scope="col">5</th>
-              <th scope="col">3</th>
-              <th scope="col">1</th>
-              <th scope="col">1</th>
-              <th scope="col">3</th>
-              <th scope="col">5</th>
-              <th scope="col">7</th>
-              <th scope="col">9</th>
-              <th scope="col">11</th>
-              <th scope="col"></th>
-            </tr>
-          </thead>
-          <tbody class="">
-            <tr>
-              <th scope="row">Active</th>
-              <td id="a11"></td>
-              <td id="a9"></td>
-              <td id="a7"></td>
-              <td id="a5"></td>
-              <td id="a3"></td>
-              <td id="a1"></td>
-              <td id="r1"></td>
-              <td id="r3"></td>
-              <td id="r5"></td>
-              <td id="r7"></td>
-              <td id="r9"></td>
-              <td id="r11"></td>
-              <th scope="row">Thoughtful</th>
-            </tr>
-            <tr>
-              <th scope="row">Sensory</th>
-              <td id="s11"></td>
-              <td id="s9"></td>
-              <td id="s7"></td>
-              <td id="s5"></td>
-              <td id="s3"></td>
-              <td id="s1"></td>
-              <td id="i1"></td>
-              <td id="i3"></td>
-              <td id="i5"></td>
-              <td id="i7"></td>
-              <td id="i9"></td>
-              <td id="i11"></td>
-              <th scope="row">Intuitive</th>
-            </tr>
-            <tr>
-              <th scope="row">Visual</th>
-              <td id="v11"></td>
-              <td id="v9"></td>
-              <td id="v7"></td>
-              <td id="v5"></td>
-              <td id="v3"></td>
-              <td id="v1"></td>
-              <td id="ve1"></td>
-              <td id="ve3"></td>
-              <td id="ve5"></td>
-              <td id="ve7"></td>
-              <td id="ve9"></td>
-              <td id="ve11"></td>
-              <th scope="row">Verbal</th>
-            </tr>
-            <tr>
-              <th scope="row">Sequential</th>
-              <td id="se11"></td>
-              <td id="se9"></td>
-              <td id="se7"></td>
-              <td id="se5"></td>
-              <td id="se3"></td>
-              <td id="se1"></td>
-              <td id="g1"></td>
-              <td id="g3"></td>
-              <td id="g5"></td>
-              <td id="g7"></td>
-              <td id="g9"></td>
-              <td id="g11"></td>
-              <th scope="row">Global</th>
-            </tr>
-          </tbody>
-        </table>
       </div>
     </div>
   </div>

@@ -11,7 +11,7 @@ export class AlumnoService {
   ///////////////////////////////////////////////////
   /////// RUTA PARA CONECTAR LA API CON EL FRONT ////
   //private urlAPI: string = 'https://apiv2.powerhashing.io/';
-  private urlAPI: string = 'http://localhost:3000/'; 
+  private urlAPI: string = 'http://localhost:3000/';
 
   /////////////////////////////////////////////////////////////////////
   /////// METODO PARA HACER UN REFRESH A LOS DATOS SI ES NECESARIO ////
@@ -26,8 +26,14 @@ export class AlumnoService {
     return this.http.post(this.urlAPI + "alumnos/login", data);
   }
 
-  obtenerEncuestaAsignada( data: string ): Observable <any> {
-    return this.http.get( this.urlAPI + "grupos/grupo/" + data );
+  obtenerCuestionariosAlumno(nroCuenta: number): Observable<any[]> {
+    return this.http.get<any[]>(`${this.urlAPI}alumnos-cuestionarios/alumno/${nroCuenta}`);
+  }
+
+  verificarCuestionarioCompletado(nroCuenta: number, idCuestionario: number): Observable<{ completado: boolean }> {
+    return this.http.get<{ completado: boolean }>(
+      `${this.urlAPI}alumnos-cuestionarios/verificar/${nroCuenta}/${idCuestionario}`
+    );
   }
 
   obtenerEstadoEncuesta(nroCuenta: number): Observable<any> {

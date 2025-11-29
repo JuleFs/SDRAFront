@@ -13,6 +13,7 @@ export class InicioComponent implements OnInit, AfterViewInit {
   Listas: Lista[] = [];
   estadoEncuestas!: Array<any>;
   Description: string;
+  nroCuenta: number = 0;
 
   public chart: any;
 
@@ -25,42 +26,50 @@ export class InicioComponent implements OnInit, AfterViewInit {
   secuencial: number = 0;
   global: number = 0;
 
-  constructor( private servicio: AlumnoService, private route: Router ) {
-    this.Description = 'Select a survey to see the description';
+  constructor(private servicio: AlumnoService, private route: Router) {
+    this.Description = 'Selecciona una encuesta para ver su descripción';
   }
 
-  OnClick(Des: any){
+  OnClick(Des: any) {
     this.Description = Des;
   }
-
 
   createChart() {
     this.chart = new Chart("MyChart", {
       type: 'radar',
       data: {
-        labels: ['Active', 'Sensory', 'Visual', 'Sequential', 'Thoughtful', 'Intuitive', 'Verbal', 'Global'],
+        labels: ['Activo', 'Sensorial', 'Visual', 'Secuencial', 'Reflexivo', 'Intuitivo', 'Verbal', 'Global'],
         datasets: [
           {
-            label: 'Your profile',
+            label: 'Tu perfil',
             data: [],
-            backgroundColor: 'rgba(46, 155, 236, 0.5)',
-            borderColor: 'rgba(30, 36, 64, 0.6)',
-            borderWidth: 1,
-            pointBackgroundColor: '#2E9BEC'
+            backgroundColor: 'rgba(99, 102, 241, 0.3)',
+            borderColor: 'rgba(99, 102, 241, 0.8)',
+            borderWidth: 2,
+            pointBackgroundColor: 'rgba(99, 102, 241, 1)'
           }
         ]
       },
       options: {
         responsive: true,
-        aspectRatio:1.6,
+        maintainAspectRatio: false,
         scales: {
-            r: {
-                angleLines: {
-                    display: false
-                },
-                suggestedMin: 0,
-                suggestedMax: 10
+          r: {
+            angleLines: {
+              display: true,
+              color: 'rgba(0, 0, 0, 0.1)'
+            },
+            suggestedMin: 0,
+            suggestedMax: 10,
+            ticks: {
+              stepSize: 2
             }
+          }
+        },
+        plugins: {
+          legend: {
+            position: 'bottom'
+          }
         }
       }
     });
@@ -68,6 +77,12 @@ export class InicioComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
     this.createChart();
+
+    const info_alumno = localStorage.getItem('info_alumno');
+    if (info_alumno) {
+      this.nroCuenta = JSON.parse(info_alumno).nro_cuenta;
+    }
+
     this.estadoEncuesta();
     this.obtenerEncuestas();
   }
@@ -77,89 +92,99 @@ export class InicioComponent implements OnInit, AfterViewInit {
   }
 
   obtenerEncuestas() {
-    const num_grupo = JSON.parse(localStorage.getItem('info_alumno') || "{}").grupo;
-    this.servicio.obtenerEncuestaAsignada(num_grupo).subscribe((data) => {
-      const listaModel = new Lista();
-      console.log(data)
-      listaModel.nombreProfesor = data.cuestionario.id_profesor;
-      listaModel.titulo = data.cuestionario.nombre;
-      listaModel.descripcion = data.cuestionario.descripcion;
-      listaModel.id_cuestionario = data.cuestionario.id_cuestionario;
-      this.Listas.push(listaModel);
-    });
+    this.servicio.obtenerCuestionariosAlumno(this.nroCuenta).subscribe(
+      (data) => {
+        this.Listas = []; // Limpiar lista
+
+        data.forEach((asignacion) => {
+          const listaModel = new Lista();
+          listaModel.nombreProfesor = asignacion.cuestionario.id_profesor || 'Francisco Figueroa';
+          listaModel.titulo = asignacion.cuestionario.nombre;
+          listaModel.descripcion = asignacion.cuestionario.descripcion;
+          listaModel.id_cuestionario = asignacion.cuestionario.id_cuestionario;
+          this.Listas.push(listaModel);
+        });
+      },
+      (error) => {
+        console.error('Error al obtener cuestionarios:', error);
+      }
+    );
   }
 
   obtenerPerfilAlumno() {
     const chartVal = new chartValues();
-    this.servicio.obtenerPerfil( 
-      JSON.parse(localStorage.getItem('info_alumno') || "{}").nro_cuenta).subscribe((data) => {
-      var element = document.getElementById('a1');
-      // Bloque 1
+    this.servicio.obtenerPerfil(
+      JSON.parse(localStorage.getItem('info_alumno') || "{}").nro_cuenta
+    ).subscribe((data) => {
+      // Bloque 1: Activo/Reflexivo
       const valorActivoReflexivo = data[0].activo_reflexivo.slice(0, -1);
       const letraActivoReflexivo = data[0].activo_reflexivo.slice(-1);
-      console.log(valorActivoReflexivo,letraActivoReflexivo)
       if (letraActivoReflexivo === 'A') {
         this.activo = valorActivoReflexivo;
-        document.getElementById('a' + this.activo)!.innerHTML = "x";
-        chartVal.activo = 5 + (this.activo / 22)*10;
-        chartVal.reflexivo = 5 - (this.activo / 22)*10;
-      } else if (letraActivoReflexivo === 'B')  {
+        const el = document.getElementById('a' + this.activo);
+        if (el) el.innerHTML = "✓";
+        chartVal.activo = 5 + (this.activo / 22) * 10;
+        chartVal.reflexivo = 5 - (this.activo / 22) * 10;
+      } else if (letraActivoReflexivo === 'B') {
         this.reflexivo = valorActivoReflexivo;
-        document.getElementById('r' + this.reflexivo)!.innerHTML = "x";
-        chartVal.activo = 5 - (this.reflexivo / 22)*10;
-        chartVal.reflexivo = 5 + (this.reflexivo / 22)*10;
-      }console.log("valores activo: ",this.activo,"val ref: ",this.reflexivo);
+        const el = document.getElementById('r' + this.reflexivo);
+        if (el) el.innerHTML = "✓";
+        chartVal.activo = 5 - (this.reflexivo / 22) * 10;
+        chartVal.reflexivo = 5 + (this.reflexivo / 22) * 10;
+      }
 
-
-      // Bloque 2
+      // Bloque 2: Sensorial/Intuitivo
       const valorSensorialIntuitivo = data[0].sensorial_intuitivo.slice(0, -1);
       const letraSensorialIntuitivo = data[0].sensorial_intuitivo.slice(-1);
-      console.log(valorSensorialIntuitivo,letraSensorialIntuitivo)
       if (letraSensorialIntuitivo === 'A') {
         this.sensorial = valorSensorialIntuitivo;
-        document.getElementById('s' + this.sensorial)!.innerHTML = "x";
-        chartVal.sensorial = 5 + (this.sensorial / 22)*10;
-        chartVal.intuitivo = 5 - (this.sensorial / 22)*10;
-      } else if (letraSensorialIntuitivo === 'B'){
+        const el = document.getElementById('s' + this.sensorial);
+        if (el) el.innerHTML = "✓";
+        chartVal.sensorial = 5 + (this.sensorial / 22) * 10;
+        chartVal.intuitivo = 5 - (this.sensorial / 22) * 10;
+      } else if (letraSensorialIntuitivo === 'B') {
         this.intuitivo = valorSensorialIntuitivo;
-        document.getElementById('i' + this.intuitivo)!.innerHTML = "x";
-        chartVal.sensorial = 5 - (this.intuitivo / 22)*10;
-        chartVal.intuitivo = 5 + (this.intuitivo / 22)*10;
-      }console.log("valores sens: ",this.sensorial,"val intuitivo: ",this.intuitivo)
+        const el = document.getElementById('i' + this.intuitivo);
+        if (el) el.innerHTML = "✓";
+        chartVal.sensorial = 5 - (this.intuitivo / 22) * 10;
+        chartVal.intuitivo = 5 + (this.intuitivo / 22) * 10;
+      }
 
-      // Bloque 3
+      // Bloque 3: Visual/Verbal
       const valorVisualVerbal = data[0].visual_verbal.slice(0, -1);
       const letraVisualVerbal = data[0].visual_verbal.slice(-1);
-      console.log(valorVisualVerbal,letraVisualVerbal)
       if (letraVisualVerbal === 'A') {
         this.visual = valorVisualVerbal;
-        document.getElementById('v' + this.visual)!.innerHTML = "x";
-        chartVal.visual = 5 + (this.visual / 22)*10;
-        chartVal.verbal = 5 - (this.visual / 22)*10;
-      } else if (letraVisualVerbal === 'B'){
+        const el = document.getElementById('v' + this.visual);
+        if (el) el.innerHTML = "✓";
+        chartVal.visual = 5 + (this.visual / 22) * 10;
+        chartVal.verbal = 5 - (this.visual / 22) * 10;
+      } else if (letraVisualVerbal === 'B') {
         this.verbal = valorVisualVerbal;
-        document.getElementById('ve' + this.verbal)!.innerHTML = "x";
-        chartVal.visual = 5 - (this.verbal / 22)*10;
-        chartVal.verbal = 5 + (this.verbal / 22)*10;
-      }console.log("valores visual: ",this.visual,"val verbal: ",this.verbal)
+        const el = document.getElementById('ve' + this.verbal);
+        if (el) el.innerHTML = "✓";
+        chartVal.visual = 5 - (this.verbal / 22) * 10;
+        chartVal.verbal = 5 + (this.verbal / 22) * 10;
+      }
 
-      // Bloque 4
+      // Bloque 4: Secuencial/Global
       const valorSecuencialGlobal = data[0].secuencial_global.slice(0, -1);
       const letraSecuencialGlobal = data[0].secuencial_global.slice(-1);
-      console.log(valorSecuencialGlobal,letraSecuencialGlobal)
       if (letraSecuencialGlobal === 'A') {
         this.secuencial = valorSecuencialGlobal;
-        document.getElementById('se' + this.secuencial)!.innerHTML = "x";
-        chartVal.secuencial = 5 + (this.secuencial / 22)*10;
-        chartVal.global = 5 - (this.secuencial / 22)*10;
-      } else if (letraSecuencialGlobal === 'B'){
+        const el = document.getElementById('se' + this.secuencial);
+        if (el) el.innerHTML = "✓";
+        chartVal.secuencial = 5 + (this.secuencial / 22) * 10;
+        chartVal.global = 5 - (this.secuencial / 22) * 10;
+      } else if (letraSecuencialGlobal === 'B') {
         this.global = valorSecuencialGlobal;
-        document.getElementById('g' + this.global)!.innerHTML = "x";
-        chartVal.secuencial = 5 - (this.global / 22)*10;
-        chartVal.global = 5 + (this.global / 22)*10;
-      }console.log("valores secuencial: ",this.secuencial,"val global: ",this.global)
+        const el = document.getElementById('g' + this.global);
+        if (el) el.innerHTML = "✓";
+        chartVal.secuencial = 5 - (this.global / 22) * 10;
+        chartVal.global = 5 + (this.global / 22) * 10;
+      }
 
-      this.chart.data.datasets.forEach((dataset:any) => {
+      this.chart.data.datasets.forEach((dataset: any) => {
         dataset.data.push(chartVal.activo);
         dataset.data.push(chartVal.sensorial);
         dataset.data.push(chartVal.visual);
@@ -170,60 +195,65 @@ export class InicioComponent implements OnInit, AfterViewInit {
         dataset.data.push(chartVal.global);
       });
 
-      console.log("chartData",this.chart.data);
-
       this.chart.update();
-
-    } )
-
+    });
   }
 
-  estadoEncuesta() {
-    const nroCuenta = JSON.parse(localStorage.getItem('info_alumno') || "{}").nro_cuenta;
-    this.servicio.obtenerEstadoEncuesta(nroCuenta).subscribe( 
+    estadoEncuesta() {
+    this.servicio.verificarCuestionarioCompletado(this.nroCuenta, 1).subscribe(
       (data) => {
-      //console.log(data);
-      this.estadoEncuestas = data; 
+        // Crear array con el estado para mantener compatibilidad con checkStatus()
+        if (data.completado) {
+          this.estadoEncuestas = [{ nro_cuenta: this.nroCuenta }];
+        } else {
+          this.estadoEncuestas = [];
+        }
       },
-      (error) => {error} 
-      )
+      (error) => {
+        console.error('Error al verificar estado:', error);
+        this.estadoEncuestas = [];
+      }
+    );
   }
 
-  checkStatus( ) {
-    return this.estadoEncuestas?.some( x => x.nro_cuenta === JSON.parse(localStorage.getItem('info_alumno') || "{}").nro_cuenta);
-
+  checkStatus() {
+    return this.estadoEncuestas?.some(x => x.nro_cuenta === this.nroCuenta);
   }
 
-
-  realizarEncuesta( id_cuestionario: number ) {
+  realizarEncuesta(id_cuestionario: number) {
     this.route.navigate(['/Cuestionario/' + id_cuestionario]);
   }
 
-  cambiasGrafica( event: any ) {
-    event.target.classList.add('active');
-    var element = document.getElementById('Tabla');
-    element?.classList.remove('active');
+  cambiasGrafica(event: any) {
+    // Activar tab de gráfica
+    document.getElementById('Grafica')?.classList.add('tab-active');
+    document.getElementById('Tabla')?.classList.remove('tab-active');
 
-    var grafic = document.getElementsByClassName('info_grafic')[0];
-    grafic?.classList.remove('activePreview');
-    var table = document.getElementsByClassName('info_table')[0];
-    table?.classList.add('activePreview');
+    // Mostrar gráfica, ocultar tabla
+    const grafic = document.querySelector('.info_grafic');
+    const table = document.querySelector('.info_table');
+    grafic?.classList.remove('hidden');
+    table?.classList.add('hidden');
   }
 
-  cambiasTabla( event:any) {
-    //console.log("entro");
-    event.target.classList.add("active");
-    var element = document.getElementById('Grafica');
-    element?.classList.remove('active');
+  cambiasTabla(event: any) {
+    // Activar tab de tabla
+    document.getElementById('Tabla')?.classList.add('tab-active');
+    document.getElementById('Grafica')?.classList.remove('tab-active');
 
-    var grafic = document.getElementsByClassName('info_grafic')[0];
-    grafic?.classList.add('activePreview');
-    var table = document.getElementsByClassName('info_table')[0];
-    table?.classList.remove('activePreview');
+    // Mostrar tabla, ocultar gráfica
+    const grafic = document.querySelector('.info_grafic');
+    const table = document.querySelector('.info_table');
+    grafic?.classList.add('hidden');
+    table?.classList.remove('hidden');
   }
 
   navigateCursos() {
     this.route.navigate(['/cursos']);
   }
+
+  verResultados() {
+  this.route.navigate(['/Resultado']);
+}
 
 }

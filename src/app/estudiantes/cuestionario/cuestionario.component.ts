@@ -12,58 +12,93 @@ export class CuestionarioComponent implements OnInit {
 
   Cuestionario!: Array<any>;
   num_pregunta: number = 1;
-  respuestas_compactadas : string = "";
+  respuestas_compactadas: string = "";
 
-  constructor(private servicio: AlumnoService, private route: ActivatedRoute, private routing: Router ) { 
-  }
+  constructor(
+    private servicio: AlumnoService,
+    private route: ActivatedRoute,
+    private routing: Router
+  ) {}
 
   ngOnInit(): void {
     this.obtenerPreguntas();
   }
 
   obtenerPreguntas() {
-
-    this.servicio.obtenerPreguntas( 
-      this.route.snapshot.params['id_cuestionario'] 
-    ).subscribe( (data) => {
+    this.servicio.obtenerPreguntas(
+      this.route.snapshot.params['id_cuestionario']
+    ).subscribe((data) => {
       this.Cuestionario = data;
-    } )
+    });
+  }
 
+  // Calcular progreso del cuestionario
+  getProgress(): number {
+    if (!this.Cuestionario) return 0;
+    const answered = this.Cuestionario.filter(p => p.respuesta).length;
+    return (answered / this.Cuestionario.length) * 100;
+  }
+
+  // Obtener cantidad de respuestas completadas
+  getAnsweredCount(): number {
+    if (!this.Cuestionario) return 0;
+    return this.Cuestionario.filter(p => p.respuesta).length;
   }
 
   registrarRespuestas() {
-
-    for (let index = 1; index <= 44; index++) {
-      
-      const aux = document.querySelector( "[id='"+ index +"-A']" ) as HTMLInputElement
-      if( aux.checked ){
-        this.respuestas_compactadas += "A";
+    // Mostrar loading
+    Swal.fire({
+      title: 'Procesando respuestas',
+      html: 'Por favor espera...',
+      allowOutsideClick: false,
+      didOpen: () => {
+        Swal.showLoading();
       }
-      else {
+    });
+
+    // Construir respuestas compactadas
+    this.respuestas_compactadas = "";
+    for (let index = 1; index <= 44; index++) {
+      const aux = document.querySelector("[id='" + index + "-A']") as HTMLInputElement;
+      if (aux?.checked) {
+        this.respuestas_compactadas += "A";
+      } else {
         this.respuestas_compactadas += "B";
       }
-
     }
 
-    this.servicio.resultadoEncuesta(
-      {
-        nro_cuenta: JSON.parse(localStorage.getItem('info_alumno') || "{}").nro_cuenta,
-        respuestas_compactadas: this.respuestas_compactadas,
-        grupo: JSON.parse(localStorage.getItem('info_alumno') || "{}").grupo
-      }
-    ).subscribe( data => {
-      
-      this.routing.navigate(['/Resultado']);
+    const infoAlumno = JSON.parse(localStorage.getItem('info_alumno') || "{}");
 
-    }, (error) => {
-      Swal.fire({
-        title: 'Error de registro',
-        html: 'Algo salio mal en el registro de las respuestas por favor intente mas tarde'+error,
-        icon: 'error',
-        customClass: {
-          container: 'my-swal',
-        },
-      });
-    } )
+    this.servicio.resultadoEncuesta({
+      nro_cuenta: infoAlumno.nro_cuenta,
+      respuestas_compactadas: this.respuestas_compactadas,
+      grupo: infoAlumno.grupo
+    }).subscribe(
+      (data) => {
+        Swal.fire({
+          title: '¡Completado!',
+          text: 'Tus respuestas han sido registradas exitosamente',
+          icon: 'success',
+          confirmButtonText: 'Ver resultados',
+          confirmButtonColor: '#6366f1',
+          customClass: {
+            container: 'my-swal',
+          },
+        }).then(() => {
+          this.routing.navigate(['/Resultado']);
+        });
+      },
+      (error) => {
+        Swal.fire({
+          title: 'Error de registro',
+          html: 'Algo salió mal en el registro de las respuestas. Por favor intenta más tarde.',
+          icon: 'error',
+          confirmButtonColor: '#ef4444',
+          customClass: {
+            container: 'my-swal',
+          },
+        });
+      }
+    );
   }
 }

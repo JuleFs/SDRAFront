@@ -1,14 +1,15 @@
-import { Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnInit } from '@angular/core';
 import { Chart } from 'chart.js';
 import { AlumnoService } from 'src/app/services/alumno.service';
 import { chartValues } from '../inicio/lista.model';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-resultados',
   templateUrl: './resultados.component.html',
   styleUrls: ['./resultados.component.css']
 })
-export class ResultadosComponent implements OnInit {
+export class ResultadosComponent implements OnInit, AfterViewInit {
 
   public chart: any
 
@@ -21,22 +22,30 @@ export class ResultadosComponent implements OnInit {
   secuencial: number = 0;
   global: number = 0;
 
-  constructor( private servicio: AlumnoService ) { }
+  constructor(
+    private servicio: AlumnoService,
+    private router: Router
+  ) { }
 
   ngOnInit(): void {
-
-    this.createChart();
-
 
   }
 
   ngAfterViewInit() {
-    this.obtenerPerfilAlumno();
+        setTimeout(() => {
+      this.createChart();
+      this.obtenerPerfilAlumno();
+    }, 100);
   }
 
   createChart() {
+    const canvas = document.getElementById('MyChart') as HTMLCanvasElement;
 
-    this.chart = new Chart("MyChart", {
+    if (!canvas) {
+      console.error('❌ No se encontró el canvas MyChart');
+      return;
+    }
+    this.chart = new Chart(canvas, {
       type: 'radar',
       data: {
         labels: [ 'Activo', 'Sensorial', 'Visual', 'Secuencial', 'Reflexivo', 'Intuitivo', 'Verbal', 'Global' ],
@@ -61,15 +70,20 @@ export class ResultadosComponent implements OnInit {
                 suggestedMax: 5
             }
         }
-      } 
+      }
     });
   }
 
   obtenerPerfilAlumno() {
     const chartVal = new chartValues();
-    this.servicio.obtenerPerfil( 
+    this.servicio.obtenerPerfil(
       JSON.parse(localStorage.getItem('info_alumno') || "{}").nro_cuenta,
     ).subscribe ( (data) => {
+
+      if (!data || data.length === 0) {
+        console.error('Datos de perfil no válidos o vacíos');
+        return;
+      }
       const valorActivoReflexivo = data[0].activo_reflexivo.slice(0, -1);
       const letraActivoReflexivo = data[0].activo_reflexivo.slice(-1);
       if (letraActivoReflexivo === 'A') {
@@ -187,5 +201,7 @@ export class ResultadosComponent implements OnInit {
     table?.classList.remove('activePreview');
   }
 
-
+  navigateCursos() {
+    this.router.navigate(['/cursos']);
+  }
 }
