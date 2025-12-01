@@ -3,6 +3,7 @@ import { Chart } from 'chart.js';
 import { AlumnoService } from 'src/app/services/alumno.service';
 import { chartValues } from '../inicio/lista.model';
 import { Router } from '@angular/router';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-resultados',
@@ -24,7 +25,8 @@ export class ResultadosComponent implements OnInit, AfterViewInit {
 
   constructor(
     private servicio: AlumnoService,
-    private router: Router
+    private router: Router,
+    public translate: TranslateService
   ) { }
 
   ngOnInit(): void {
@@ -42,16 +44,26 @@ export class ResultadosComponent implements OnInit, AfterViewInit {
     const canvas = document.getElementById('MyChart') as HTMLCanvasElement;
 
     if (!canvas) {
-      console.error('❌ No se encontró el canvas MyChart');
+      console.error('No se encontró el canvas MyChart');
       return;
     }
+
     this.chart = new Chart(canvas, {
       type: 'radar',
       data: {
-        labels: [ 'Activo', 'Sensorial', 'Visual', 'Secuencial', 'Reflexivo', 'Intuitivo', 'Verbal', 'Global' ],
+        labels: [
+          this.translate.instant('results.active'),
+          this.translate.instant('results.sensory'),
+          this.translate.instant('results.visual'),
+          this.translate.instant('results.sequential'),
+          this.translate.instant('results.reflective'),
+          this.translate.instant('results.intuitive'),
+          this.translate.instant('results.verbal'),
+          this.translate.instant('results.global')
+        ],
         datasets: [
           {
-            label: 'Tu Perfil',
+            label: this.translate.instant('results.yourProfile'),
             data: [],
             backgroundColor: 'rgba(46, 155, 236, 0.5)',
             borderColor: 'rgba(30, 36, 64, 0.6)',
@@ -61,14 +73,17 @@ export class ResultadosComponent implements OnInit, AfterViewInit {
         ]
       },
       options: {
+        responsive: true,
+        maintainAspectRatio: false,
         scales: {
-            r: {
-                angleLines: {
-                    display: false
-                },
-                suggestedMin: 0,
-                suggestedMax: 5
-            }
+          r: {
+            angleLines: {
+              display: true,
+              color: 'rgba(0, 0, 0, 0.1)'
+            },
+            suggestedMin: 0,
+            suggestedMax: 10
+          }
         }
       }
     });
@@ -91,15 +106,15 @@ export class ResultadosComponent implements OnInit, AfterViewInit {
         chartVal.activo = 5 + (this.activo / 22)*10;
         chartVal.reflexivo = 5 - (this.activo / 22)*10;
         document.getElementById('a' + this.activo)!.innerHTML = "x";
-        document.getElementById('Estilo1')!.innerHTML = "Activo";
-        document.getElementById('Info1')!.innerHTML = "Es el estilo propio de las personas que tienden a participar o a involucrarse en las experiencias.";
+        document.getElementById('Estilo1')!.innerHTML = this.translate.instant('results.active');
+        document.getElementById('Info1')!.innerHTML = this.translate.instant('results.activeDesc');
       } else if (letraActivoReflexivo === 'B')  {
         this.reflexivo = valorActivoReflexivo;
         chartVal.activo = 5 - (this.reflexivo / 22)*10;
         chartVal.reflexivo = 5 + (this.reflexivo / 22)*10;
         document.getElementById('r' + this.reflexivo)!.innerHTML = "x";
-        document.getElementById('Estilo1')!.innerHTML = "Reflexivo";
-        document.getElementById('Info1')!.innerHTML = "Es la forma de aprendizaje propia de las personas con tendencia a la introspección y a la observación.";
+        document.getElementById('Estilo1')!.innerHTML = this.translate.instant('results.reflective');
+        document.getElementById('Info1')!.innerHTML = this.translate.instant('results.reflectiveDesc');
       }
 
       // Bloque 2
@@ -110,15 +125,15 @@ export class ResultadosComponent implements OnInit, AfterViewInit {
         chartVal.sensorial = 5 + (this.sensorial / 22)*10;
         chartVal.intuitivo = 5 - (this.sensorial / 22)*10;
         document.getElementById('s' + this.sensorial)!.innerHTML = "x";
-        document.getElementById('Estilo2')!.innerHTML = "Sensorial";
-        document.getElementById('Info2')!.innerHTML = "Es la forma de aprender característica de aquellos que prefieren las actividades prácticas.";
+        document.getElementById('Estilo2')!.innerHTML = this.translate.instant('results.sensory');
+        document.getElementById('Info2')!.innerHTML = this.translate.instant('results.sensoryDesc');
       } else if (letraSensorialIntuitivo === 'B') {
         this.intuitivo = valorSensorialIntuitivo;
         chartVal.sensorial = 5 - (this.intuitivo / 22)*10;
         chartVal.intuitivo = 5 + (this.intuitivo / 22)*10;
         document.getElementById('i' + this.intuitivo)!.innerHTML = "x";
-        document.getElementById('Estilo2')!.innerHTML = "Intuitivo";
-        document.getElementById('Info2')!.innerHTML = "Implica el descubrimiento de nueva información por medios propios.";
+        document.getElementById('Estilo2')!.innerHTML = this.translate.instant('results.intuitive');
+        document.getElementById('Info2')!.innerHTML = this.translate.instant('results.intuitiveDesc');
       }
 
       // Bloque 3
@@ -129,15 +144,15 @@ export class ResultadosComponent implements OnInit, AfterViewInit {
         chartVal.visual = 5 + (this.visual / 22)*10;
         chartVal.verbal = 5 - (this.visual / 22)*10;
         document.getElementById('v' + this.visual)!.innerHTML = "x";
-        document.getElementById('Estilo3')!.innerHTML = "Visual";
-        document.getElementById('Info3')!.innerHTML = "La información se obtiene a partir de imágenes (fotos, videos, diagramas, etc).";
+        document.getElementById('Estilo3')!.innerHTML = this.translate.instant('results.visual');
+        document.getElementById('Info3')!.innerHTML = this.translate.instant('results.visualDesc');
       } else if (letraVisualVerbal === 'B') {
         this.verbal = valorVisualVerbal;
         chartVal.visual = 5 - (this.verbal / 22)*10;
         chartVal.verbal = 5 + (this.verbal / 22)*10;
         document.getElementById('ve' + this.verbal)!.innerHTML = "x";
-        document.getElementById('Estilo3')!.innerHTML = "Verbal";
-        document.getElementById('Info3')!.innerHTML = "En este caso, la información es asimilada de forma oral o escrita.";
+        document.getElementById('Estilo3')!.innerHTML = this.translate.instant('results.verbal');
+        document.getElementById('Info3')!.innerHTML = this.translate.instant('results.verbalDesc');
       }
 
       // Bloque 4
@@ -148,15 +163,15 @@ export class ResultadosComponent implements OnInit, AfterViewInit {
         chartVal.secuencial = 5 + (this.secuencial / 22)*10;
         chartVal.global = 5 - (this.secuencial / 22)*10;
         document.getElementById('se' + this.secuencial)!.innerHTML = "x";
-        document.getElementById('Estilo4')!.innerHTML = "Secuencial";
-        document.getElementById('Info4')!.innerHTML = "Es una forma de aprender propia de quienes necesitan concatenar datos relacionados entre sí.";
+        document.getElementById('Estilo4')!.innerHTML = this.translate.instant('results.sequential');
+        document.getElementById('Info4')!.innerHTML = this.translate.instant('results.sequentialDesc');
       } else if (letraSecuencialGlobal === 'B') {
         this.global = valorSecuencialGlobal;
         chartVal.secuencial = 5 - (this.global / 22)*10;
         chartVal.global = 5 + (this.global / 22)*10;
         document.getElementById('g' + this.global)!.innerHTML = "x";
-        document.getElementById('Estilo4')!.innerHTML = "Global";
-        document.getElementById('Info4')!.innerHTML = "Pueden ver la información de manera holística, por lo que les resulta más sencillo integrar datos para sacar conclusiones.";
+        document.getElementById('Estilo4')!.innerHTML = this.translate.instant('results.global');
+        document.getElementById('Info4')!.innerHTML = this.translate.instant('results.globalDesc');
       }
 
 

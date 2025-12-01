@@ -1,40 +1,42 @@
-<!-- src/app/estudiantes/resultados/resultados.component.html -->
-
 <div class="min-h-screen bg-base-200 py-8 px-4 sm:px-6 lg:px-8">
   <div class="max-w-7xl mx-auto">
 
     <!-- Header -->
     <div class="mb-8">
-      <h1 class="text-3xl font-bold text-base-content mb-2">Resultados de tu Encuesta</h1>
-      <p class="text-base-content/60">Conoce tu perfil de aprendizaje según el modelo de Felder-Silverman</p>
+      <h1 class="text-3xl font-bold text-base-content mb-2">
+        {{ 'results.pageTitle' | translate }}
+      </h1>
+      <p class="text-base-content/60">
+        {{ 'results.pageSubtitle' | translate }}
+      </p>
     </div>
 
-    <!-- Layout principal: Gráfica grande a la izquierda, perfil a la derecha -->
+    <!-- Layout principal -->
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
-      <!-- Columna principal: Gráfica (2/3 del espacio) -->
+      <!-- Columna principal: Gráfica (2/3) -->
       <div class="lg:col-span-2 space-y-6">
 
         <!-- Card de gráfica/tabla -->
         <div class="card bg-base-100 shadow-md">
           <div class="card-body">
             <h2 class="card-title text-xl font-bold text-base-content">
-              Tu Perfil de Aprendizaje
+              {{ 'results.yourProfile' | translate }}
             </h2>
 
-            <!-- Tabs para gráfica/tabla -->
+            <!-- Tabs -->
             <div class="tabs tabs-boxed bg-base-200 w-fit mt-2">
               <button
                 id="Grafica"
                 class="tab tab-active"
                 (click)="cambiasGrafica($event)">
-                Gráfica
+                {{ 'results.graph' | translate }}
               </button>
               <button
                 id="Tabla"
                 class="tab"
                 (click)="cambiasTabla($event)">
-                Tabla
+                {{ 'results.table' | translate }}
               </button>
             </div>
 
@@ -66,7 +68,7 @@
                 </thead>
                 <tbody>
                   <tr>
-                    <th class="text-primary">Activo</th>
+                    <th class="text-primary">{{ 'results.active' | translate }}</th>
                     <td id="a11"></td>
                     <td id="a9"></td>
                     <td id="a7"></td>
@@ -79,10 +81,10 @@
                     <td id="r7"></td>
                     <td id="r9"></td>
                     <td id="r11"></td>
-                    <th class="text-secondary">Reflexivo</th>
+                    <th class="text-secondary">{{ 'results.reflective' | translate }}</th>
                   </tr>
                   <tr>
-                    <th class="text-primary">Sensorial</th>
+                    <th class="text-primary">{{ 'results.sensory' | translate }}</th>
                     <td id="s11"></td>
                     <td id="s9"></td>
                     <td id="s7"></td>
@@ -95,10 +97,10 @@
                     <td id="i7"></td>
                     <td id="i9"></td>
                     <td id="i11"></td>
-                    <th class="text-secondary">Intuitivo</th>
+                    <th class="text-secondary">{{ 'results.intuitive' | translate }}</th>
                   </tr>
                   <tr>
-                    <th class="text-primary">Visual</th>
+                    <th class="text-primary">{{ 'results.visual' | translate }}</th>
                     <td id="v11"></td>
                     <td id="v9"></td>
                     <td id="v7"></td>
@@ -111,10 +113,10 @@
                     <td id="ve7"></td>
                     <td id="ve9"></td>
                     <td id="ve11"></td>
-                    <th class="text-secondary">Verbal</th>
+                    <th class="text-secondary">{{ 'results.verbal' | translate }}</th>
                   </tr>
                   <tr>
-                    <th class="text-primary">Secuencial</th>
+                    <th class="text-primary">{{ 'results.sequential' | translate }}</th>
                     <td id="se11"></td>
                     <td id="se9"></td>
                     <td id="se7"></td>
@@ -127,7 +129,7 @@
                     <td id="g7"></td>
                     <td id="g9"></td>
                     <td id="g11"></td>
-                    <th class="text-secondary">Global</th>
+                    <th class="text-secondary">{{ 'results.global' | translate }}</th>
                   </tr>
                 </tbody>
               </table>
@@ -136,7 +138,7 @@
         </div>
       </div>
 
-      <!-- Columna lateral: Perfil (1/3 del espacio) -->
+      <!-- Columna lateral: Perfil (1/3) -->
       <div class="lg:col-span-1 space-y-4">
 
         <!-- Card 1: Activo/Reflexivo -->
@@ -144,7 +146,9 @@
           <div class="card-body p-4">
             <div class="flex items-center gap-2 mb-2">
               <div class="badge badge-primary badge-sm">1</div>
-              <h3 class="font-semibold text-sm text-base-content/70">¿Cómo adquieres la información?</h3>
+              <h3 class="font-semibold text-sm text-base-content/70">
+                {{ 'results.dimension1' | translate }}
+              </h3>
             </div>
             <h4 class="text-lg font-bold text-primary" id="Estilo1">-</h4>
             <p class="text-sm text-base-content/70 mt-2" id="Info1">-</p>
@@ -156,7 +160,9 @@
           <div class="card-body p-4">
             <div class="flex items-center gap-2 mb-2">
               <div class="badge badge-secondary badge-sm">2</div>
-              <h3 class="font-semibold text-sm text-base-content/70">¿Cómo percibes la información?</h3>
+              <h3 class="font-semibold text-sm text-base-content/70">
+                {{ 'results.dimension2' | translate }}
+              </h3>
             </div>
             <h4 class="text-lg font-bold text-secondary" id="Estilo2">-</h4>
             <p class="text-sm text-base-content/70 mt-2" id="Info2">-</p>
@@ -168,7 +174,9 @@
           <div class="card-body p-4">
             <div class="flex items-center gap-2 mb-2">
               <div class="badge badge-accent badge-sm">3</div>
-              <h3 class="font-semibold text-sm text-base-content/70">¿Por qué medio prefieres recibir información?</h3>
+              <h3 class="font-semibold text-sm text-base-content/70">
+                {{ 'results.dimension3' | translate }}
+              </h3>
             </div>
             <h4 class="text-lg font-bold text-accent" id="Estilo3">-</h4>
             <p class="text-sm text-base-content/70 mt-2" id="Info3">-</p>
@@ -180,7 +188,9 @@
           <div class="card-body p-4">
             <div class="flex items-center gap-2 mb-2">
               <div class="badge badge-info badge-sm">4</div>
-              <h3 class="font-semibold text-sm text-base-content/70">¿Cómo se te proporciona el contenido?</h3>
+              <h3 class="font-semibold text-sm text-base-content/70">
+                {{ 'results.dimension4' | translate }}
+              </h3>
             </div>
             <h4 class="text-lg font-bold text-info" id="Estilo4">-</h4>
             <p class="text-sm text-base-content/70 mt-2" id="Info4">-</p>
@@ -194,8 +204,8 @@
           <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
           </svg>
-          Ir a mis cursos
-        </button>
+          {{ 'results.goToCourses' | translate }}
+        </button>s
 
       </div>
     </div>
