@@ -13,81 +13,8 @@ import { Observable } from 'rxjs';
   selector: 'app-tema',
   standalone: true,
   imports: [CommonModule, RouterModule, MatDialogModule],
-  template: `
-    <div class="min-h-screen bg-base-200" *ngIf="topic$ | async as topic">
-      <!-- Header -->
-      <header class="bg-gradient-to-r from-primary to-secondary px-8 py-10 relative overflow-hidden">
-        <div class="relative z-10">
-          <div class="breadcrumbs text-sm text-primary-content/70 mb-2">
-            <ul>
-              <li><span>Unidad</span></li>
-              <li><span class="text-primary-content font-medium">Tema</span></li>
-            </ul>
-          </div>
-          <h1 class="text-3xl md:text-4xl font-bold text-primary-content">{{ topic.nombre }}</h1>
-        </div>
-        <div class="absolute -top-1/2 -right-10 w-72 h-72 bg-white/10 rounded-full"></div>
-      </header>
-
-      <!-- Description Card -->
-      <div class="px-8 -mt-6 relative z-20" *ngIf="topic.descripcion">
-        <div class="card bg-base-100 shadow-xl">
-          <div class="card-body">
-            <div class="flex gap-4">
-              <div class="w-12 h-12 flex items-center justify-center bg-primary/10 rounded-xl text-primary shrink-0">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                </svg>
-              </div>
-              <div>
-                <h3 class="font-semibold text-base-content mb-1">Descripción del tema</h3>
-                <p class="text-base-content/70 leading-relaxed">{{ topic.descripcion }}</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Resources Section -->
-      <section class="p-8">
-        <div class="flex items-center gap-4 mb-6">
-          <div class="w-12 h-12 flex items-center justify-center bg-warning text-warning-content rounded-xl">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
-            </svg>
-          </div>
-          <div>
-            <h2 class="text-xl font-bold text-base-content">Objetos de aprendizaje</h2>
-          </div>
-        </div>
-
-        <div *ngIf="recomendacion$ | async as recomendacion" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-          <div *ngFor="let oa of recomendacion.objetos" class="card bg-base-100 shadow-md hover:shadow-xl transition-all duration-200 hover:-translate-y-1">
-            <div class="card-body">
-              <div class="badge badge-primary badge-sm mb-2">{{ getResourceType(oa.objeto.contenido) }}</div>
-              <h4 class="card-title text-base">{{ oa.objeto.nombre }}</h4>
-              <p class="text-sm text-base-content/60 line-clamp-2">{{ oa.objeto.descripcion }}</p>
-              <div class="card-actions justify-end mt-4 pt-4 border-t border-base-200">
-                <button class="btn btn-primary btn-sm gap-2" (click)="openResource(oa)">
-                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                  </svg>
-                  Ver recurso
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Loading State -->
-        <div *ngIf="!(recomendacion$ | async)" class="flex flex-col items-center justify-center py-16 bg-base-100 rounded-xl border-2 border-dashed border-base-300">
-          <span class="loading loading-spinner loading-lg text-primary mb-4"></span>
-          <p class="text-base-content/60">Cargando recursos...</p>
-        </div>
-      </section>
-    </div>
-  `,
+  templateUrl: './tema.component.html', // ← Ahora usa archivo externo
+  styleUrls: ['./tema.component.css']
 })
 export class TemaComponent implements OnInit {
   constructor(
@@ -107,6 +34,23 @@ export class TemaComponent implements OnInit {
     return 'Recurso';
   }
 
+  getEstiloTipo(oa: any): string {
+    console.log('Objeto completo recibido:', oa);
+    console.log('oa.objeto:', oa.objeto);
+    console.log('oa.estiloObjeto:', oa.estiloObjeto);
+    console.log('oa.objeto?.estiloObjeto:', oa.objeto?.estiloObjeto);
+
+    // Intentar múltiples rutas posibles
+    const tipo = oa.estiloObjeto?.tipo ||
+                 oa.objeto?.estiloObjeto?.tipo ||
+                 oa.objeto?.tipo ||
+                 oa.tipo ||
+                 'Recurso General';
+
+    console.log('✅ Tipo final:', tipo);
+    return tipo;
+  }
+
   openResource(oa: any): void {
     this.dialog.open(OaViewerComponent, {
       data: oa,
@@ -120,14 +64,24 @@ export class TemaComponent implements OnInit {
       const unitId = params.get('id') || '';
       const topicId = params.get('temaId') || '';
       const info_alumno = localStorage.getItem('info_alumno');
+
       if (info_alumno) {
         const nro_cuenta = JSON.parse(info_alumno).nro_cuenta;
         console.log('Unit ID:', unitId, 'Topic ID:', topicId);
+
         this.topic$ = this.recSrv.getTopicById(unitId, topicId);
         this.recomendacion$ = this.recSrv.getRecomendacion(
           Number(topicId),
           Number(nro_cuenta)
         );
+
+        // Debug: Ver qué datos llegan
+        this.recomendacion$.subscribe(data => {
+          console.log('Datos de recomendación completos:', data);
+          if (data.objetos && data.objetos.length > 0) {
+            console.log('Primer objeto de ejemplo:', data.objetos[0]);
+          }
+        });
       }
     });
   }
