@@ -21,9 +21,14 @@
         *ngFor="let course of courses$ | async"
         class="card bg-base-100 shadow-md hover:shadow-lg transition-shadow">
 
-        <!-- Card gradient header -->
-        <div class="h-24 bg-gradient-to-br from-primary to-secondary rounded-t-2xl"></div>
-
+                <!-- Card header con imagen -->
+        <figure class="h-32 overflow-hidden">
+          <img
+            src="../../../assets/materia-logo.jpeg"
+            alt="Course logo"
+            class="w-full h-full object-cover"
+          />
+        </figure>
         <!-- Card body -->
         <div class="card-body p-4">
           <h2 class="card-title text-base font-semibold text-base-content">
