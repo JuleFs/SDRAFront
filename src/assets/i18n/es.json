@@ -21,14 +21,16 @@
     "completedSuccessfully": "Encuesta completada exitosamente",
     "viewResults": "Ver resultados",
     "pending": "Encuesta pendiente",
+    "mustComplete": "Debes completar el cuestionario de estilo de aprendizaje antes de acceder a los cursos.",
+    "goToSurvey": "Ir a la encuesta",
     "completed": "Completada",
     "retake": "Realizar de nuevo",
     "start": "Iniciar encuesta",
     "viewMyResults": "Ver mis resultados"
   },
   "results": {
-    "title": "Resultados de tu Encuesta",
-    "subtitle": "Conoce tu perfil de aprendizaje según el modelo de Felder-Silverman",
+    "pageTitle": "Resultados de tu Encuesta",
+    "pageSubtitle": "Conoce tu perfil de aprendizaje según el modelo de Felder-Silverman",
     "yourProfile": "Tu Perfil de Aprendizaje",
     "graph": "Gráfica",
     "table": "Tabla",
@@ -36,7 +38,23 @@
     "dimension1": "¿Cómo adquieres la información?",
     "dimension2": "¿Cómo percibes la información?",
     "dimension3": "¿Por qué medio prefieres recibir información?",
-    "dimension4": "¿Cómo se te proporciona el contenido?"
+    "dimension4": "¿Cómo se te proporciona el contenido?",
+    "active": "Activo",
+    "reflective": "Reflexivo",
+    "sensory": "Sensorial",
+    "intuitive": "Intuitivo",
+    "visual": "Visual",
+    "verbal": "Verbal",
+    "sequential": "Secuencial",
+    "global": "Global",
+    "activeDesc": "Es el estilo propio de las personas que tienden a participar o a involucrarse en las experiencias.",
+    "reflectiveDesc": "Es la forma de aprendizaje propia de las personas con tendencia a la introspección y a la observación.",
+    "sensoryDesc": "Es la forma de aprender característica de aquellos que prefieren las actividades prácticas.",
+    "intuitiveDesc": "Implica el descubrimiento de nueva información por medios propios.",
+    "visualDesc": "La información se obtiene a partir de imágenes (fotos, videos, diagramas, etc).",
+    "verbalDesc": "En este caso, la información es asimilada de forma oral o escrita.",
+    "sequentialDesc": "Es una forma de aprender propia de quienes necesitan concatenar datos relacionados entre sí.",
+    "globalDesc": "Pueden ver la información de manera holística, por lo que les resulta más sencillo integrar datos para sacar conclusiones."
   },
   "courses": {
     "title": "Mis Cursos",
@@ -45,9 +63,22 @@
     "noCoursesAvailable": "No hay cursos disponibles"
   },
   "topic": {
+    "unit": "Unidad",
+    "topic": "Tema",
     "description": "Descripción del tema",
     "learningObjects": "Objetos de aprendizaje",
     "viewResource": "Ver recurso",
-    "loadingResources": "Cargando recursos..."
+    "loadingResources": "Cargando recursos...",
+    "openNewTab": "Abrir en nueva pestaña",
+    "download": "Descargar",
+    "close": "Cerrar"
+  },
+  "inicio": {
+    "yourLearningProfile": "Tu Perfil de Aprendizaje",
+    "surveyDescription": "Descripción de la Encuesta",
+    "selectSurvey": "Selecciona una encuesta para ver su descripción",
+    "assignedSurveys": "Encuestas Asignadas",
+    "professor": "Profesor",
+    "status": "Estado"
   }
 }

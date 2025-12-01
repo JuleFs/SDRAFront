@@ -5,17 +5,19 @@ import { NgChartsModule } from 'ng2-charts';
 import { CuestionarioComponent } from './cuestionario/cuestionario.component';
 import { ResultadosComponent } from './resultados/resultados.component';
 import { FormsModule } from '@angular/forms';
+import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
   declarations: [
     InicioComponent,
     CuestionarioComponent,
-    ResultadosComponent, 
+    ResultadosComponent,
   ],
   imports: [
     CommonModule,
     NgChartsModule,
-    FormsModule
+    FormsModule,
+    TranslateModule
   ]
 })
 export class EstudiantesModule { }

@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AlumnoService } from 'src/app/services/alumno.service';
 import Swal from 'sweetalert2';
+import { TranslateService } from '@ngx-translate/core';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-cuestionario',
@@ -17,10 +19,11 @@ export class CuestionarioComponent implements OnInit {
   constructor(
     private servicio: AlumnoService,
     private route: ActivatedRoute,
-    private routing: Router
+    private routing: Router,
+    private translate: TranslateService
   ) {}
 
-  ngOnInit(): void {
+    ngOnInit(): void {
     this.obtenerPreguntas();
   }
 

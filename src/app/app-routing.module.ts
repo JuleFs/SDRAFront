@@ -16,6 +16,7 @@ import { ResourceFormComponent } from './profesores/recurso-form/recurso-form.co
 import { TemaComponent } from './estudiantes/tema/tema.component';
 import { EncuestaGuard } from './guards/encuesta.guard';
 
+
 const appRoutes: Routes = [
   { path: '', component: LoginComponent },
   { path: 'Inicio', component: InicioComponent },
