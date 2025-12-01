@@ -1,0 +1,53 @@
+{
+  "header": {
+    "courses": "Mis cursos",
+    "surveys": "Encuestas",
+    "logout": "Cerrar sesión"
+  },
+  "login": {
+    "title": "Iniciar sesión",
+    "accountNumber": "Número de cuenta",
+    "password": "Contraseña",
+    "loginButton": "Iniciar sesión",
+    "student": "Estudiante",
+    "teacher": "Profesor"
+  },
+  "survey": {
+    "title": "Inventario de Felder-Silverman",
+    "subtitle": "Descubre tu estilo de aprendizaje",
+    "progress": "Progreso",
+    "cancel": "Cancelar",
+    "save": "Guardar respuestas",
+    "completedSuccessfully": "Encuesta completada exitosamente",
+    "viewResults": "Ver resultados",
+    "pending": "Encuesta pendiente",
+    "completed": "Completada",
+    "retake": "Realizar de nuevo",
+    "start": "Iniciar encuesta",
+    "viewMyResults": "Ver mis resultados"
+  },
+  "results": {
+    "title": "Resultados de tu Encuesta",
+    "subtitle": "Conoce tu perfil de aprendizaje según el modelo de Felder-Silverman",
+    "yourProfile": "Tu Perfil de Aprendizaje",
+    "graph": "Gráfica",
+    "table": "Tabla",
+    "goToCourses": "Ir a mis cursos",
+    "dimension1": "¿Cómo adquieres la información?",
+    "dimension2": "¿Cómo percibes la información?",
+    "dimension3": "¿Por qué medio prefieres recibir información?",
+    "dimension4": "¿Cómo se te proporciona el contenido?"
+  },
+  "courses": {
+    "title": "Mis Cursos",
+    "enter": "Entrar",
+    "loading": "Cargando cursos...",
+    "noCoursesAvailable": "No hay cursos disponibles"
+  },
+  "topic": {
+    "description": "Descripción del tema",
+    "learningObjects": "Objetos de aprendizaje",
+    "viewResource": "Ver recurso",
+    "loadingResources": "Cargando recursos..."
+  }
+}

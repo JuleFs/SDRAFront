@@ -1,0 +1,84 @@
+{
+  "header": {
+    "courses": "My Courses",
+    "surveys": "Surveys",
+    "logout": "Log Out"
+  },
+  "login": {
+    "title": "Sign in",
+    "accountNumber": "Account Number",
+    "password": "Password",
+    "loginButton": "Log in",
+    "student": "Student",
+    "teacher": "Teacher"
+  },
+  "survey": {
+    "title": "Felder-Silverman Inventory",
+    "subtitle": "Discover your learning style",
+    "progress": "Progress",
+    "cancel": "Cancel",
+    "save": "Save Answers",
+    "completedSuccessfully": "Survey completed successfully",
+    "viewResults": "View Results",
+    "pending": "Pending Survey",
+    "mustComplete": "You must complete the learning style questionnaire before accessing the courses.",
+    "goToSurvey": "Go to Survey",
+    "completed": "Completed",
+    "retake": "Retake",
+    "start": "Start Survey",
+    "viewMyResults": "View My Results"
+  },
+  "results": {
+    "pageTitle": "Your Survey Results",
+    "pageSubtitle": "Know your learning profile according to the Felder-Silverman model",
+    "yourProfile": "Your Learning Profile",
+    "graph": "Graph",
+    "table": "Table",
+    "goToCourses": "Go to My Courses",
+    "dimension1": "How do you acquire information?",
+    "dimension2": "How do you perceive information?",
+    "dimension3": "What medium do you prefer to receive information?",
+    "dimension4": "How is content provided to you?",
+    "active": "Active",
+    "reflective": "Reflective",
+    "sensory": "Sensory",
+    "intuitive": "Intuitive",
+    "visual": "Visual",
+    "verbal": "Verbal",
+    "sequential": "Sequential",
+    "global": "Global",
+    "activeDesc": "It is the learning style of people who tend to participate or get involved in experiences.",
+    "reflectiveDesc": "It is the learning style of people with a tendency towards introspection and observation.",
+    "sensoryDesc": "It is the learning style characteristic of those who prefer practical activities.",
+    "intuitiveDesc": "It implies the discovery of new information by one's own means.",
+    "visualDesc": "Information is obtained from images (photos, videos, diagrams, etc.).",
+    "verbalDesc": "In this case, information is assimilated orally or in writing.",
+    "sequentialDesc": "It is a learning style of those who need to link related data.",
+    "globalDesc": "They can see information holistically, making it easier for them to integrate data to draw conclusions."
+  },
+  "courses": {
+    "title": "My Courses",
+    "enter": "Enter",
+    "loading": "Loading courses...",
+    "noCoursesAvailable": "No courses available"
+  },
+  "topic": {
+    "unit": "Unit",
+    "topic": "Topic",
+    "description": "Topic Description",
+    "learningObjects": "Learning Objects",
+    "viewResource": "View Resource",
+    "loadingResources": "Loading resources...",
+    "openNewTab": "Open in New Tab",
+    "download": "Download",
+    "close": "Close"
+  },
+  "inicio": {
+    "yourLearningProfile": "Your Learning Profile",
+    "surveyDescription": "Survey Description",
+    "selectSurvey": "Select a survey to see its description",
+    "assignedSurveys": "Assigned Surveys",
+    "professor": "Professor",
+    "status": "Status"
+  }
+}
