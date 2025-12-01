@@ -48,13 +48,6 @@ import { Unit } from '../recomendacion/tipos.model';
         </ul>
       </div>
 
-      <!-- Footer with Progress -->
-      <div class="p-4 border-t border-base-300 bg-base-200/50">
-        <div class="text-xs font-medium text-base-content/60 mb-2">Tu progreso</div>
-        <progress class="progress progress-primary w-full h-2" value="45" max="100"></progress>
-        <div class="text-xs text-base-content/50 mt-1">45% completado</div>
-      </div>
-    </nav>
   `,
   styles: [
     `
