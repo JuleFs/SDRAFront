@@ -1,1 +1,56 @@
-<p>lista-cursos-profesor works!</p>
+<div class="min-h-screen bg-base-200 py-8 px-4 sm:px-6 lg:px-8">
+  <div class="max-w-6xl mx-auto">
+    <!-- Header -->
+    <div class="mb-8">
+      <h1 class="text-3xl font-bold text-base-content">Mis Cursos</h1>
+    </div>
+
+    <!-- Loading state -->
+    <div
+      *ngIf="!(courses$ | async)"
+      class="flex justify-center items-center py-20"
+    >
+      <span class="loading loading-spinner loading-lg text-primary"></span>
+    </div>
+
+    <!-- Empty state -->
+    <div *ngIf="(courses$ | async)?.length === 0" class="text-center py-20">
+      <p class="text-base-content/60">No hay cursos disponibles</p>
+    </div>
+
+    <!-- Course grid -->
+    <div
+      *ngIf="(courses$ | async)?.length"
+      class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+    >
+      <div
+        *ngFor="let course of courses$ | async"
+        class="card bg-base-100 shadow-md hover:shadow-lg transition-shadow"
+      >
+        <!-- Card header con imagen -->
+        <figure class="h-32 overflow-hidden">
+          <img
+            src="../../../assets/materia-logo.jpeg"
+            alt="Course logo"
+            class="w-full h-full object-cover"
+          />
+        </figure>
+        <!-- Card body -->
+        <div class="card-body p-4">
+          <h2 class="card-title text-base font-semibold text-base-content">
+            {{ course.nombre }}
+          </h2>
+
+          <div class="card-actions justify-end mt-4">
+            <a
+              [routerLink]="['curso', course.id]"
+              class="btn btn-primary btn-sm"
+            >
+              Entrar
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

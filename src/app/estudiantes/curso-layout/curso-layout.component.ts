@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterModule } from '@angular/router';
-import { CursoService } from '../../services/curso.service';
 import { SidebarComponent } from '../sidebar/sidebar.component';
 import { RecommendationService } from 'src/app/services/recomendacion.service';
 

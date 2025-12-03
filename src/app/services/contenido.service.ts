@@ -2,21 +2,35 @@
 
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { map, Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
-import { Unit, Topic, Resource } from '../estudiantes/recomendacion/tipos.model';
+import {
+  Unit,
+  Topic,
+  Resource,
+} from '../estudiantes/recomendacion/tipos.model';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ContentService {
   private apiUrl: string = 'http://localhost:3000';
 
   constructor(private http: HttpClient) {}
 
+  loginProfesor(data: any): Observable<any> {
+    return this.http.post(this.apiUrl + '/profesores/login', data);
+  }
+
   // UNIDADES
   getUnits(materiaId: string): Observable<Unit[]> {
-    return this.http.get<Unit[]>(`${this.apiUrl}/unidades/materia/` + materiaId);
+    return this.http.get<Unit[]>(
+      `${this.apiUrl}/unidades/materia/` + materiaId
+    );
+  }
+
+  getUnitById(id: string): Observable<Unit> {
+    return this.http.get<Unit>(this.apiUrl + '/unidades/' + id + '/with-temas');
   }
 
   createUnit(unit: Partial<Unit>): Observable<Unit> {
@@ -32,6 +46,15 @@ export class ContentService {
   }
 
   // TEMAS
+  getTopics(unitId: string): Observable<Topic[]> {
+    return this.http.get<Topic[]>(`${this.apiUrl}/temas/${unitId}`);
+  }
+
+  getTopicById(unitId: string, topicId: string): Observable<Topic | undefined> {
+      const unit = this.getUnitById(unitId);
+      return unit.pipe(map((u) => u.temas.find((t) => t.id === Number(topicId))));
+    }
+
   createTopic(topic: Partial<Topic>): Observable<Topic> {
     return this.http.post<Topic>(`${this.apiUrl}/temas`, topic);
   }
@@ -45,21 +68,32 @@ export class ContentService {
   }
 
   // OBJETOS DE APRENDIZAJE
-  getObjetosAprendizaje(): Observable<Resource[]> {
-    return this.http.get<Resource[]>(`${this.apiUrl}/objetos-aprendizaje`);
+  getObjetosAprendizaje(idTema: string): Observable<Resource[]> {
+    return this.http.get<Resource[]>(`${this.apiUrl}/objetos-aprendizaje/tema/${idTema}`);
   }
 
   createLearningObject(formData: FormData): Observable<Resource> {
-    return this.http.post<Resource>(`${this.apiUrl}/objetos-aprendizaje`, formData);
+    return this.http.post<Resource>(
+      `${this.apiUrl}/objetos-aprendizaje`,
+      formData
+    );
   }
 
-  createLearningObjectWithFile(formData: FormData, file: File): Observable<Resource> {
-    formData.append('contenido', file, file.name);
-    return this.http.post<Resource>(`${this.apiUrl}/objetos-aprendizaje/upload`, formData);
+  createLearningObjectWithFile(
+    formData: FormData,
+    file: File
+  ): Observable<Resource> {
+    return this.http.post<Resource>(
+      `${this.apiUrl}/objetos-aprendizaje/upload`,
+      formData
+    );
   }
 
   updateLearningObject(id: string, formData: FormData): Observable<Resource> {
-    return this.http.patch<Resource>(`${this.apiUrl}/objetos-aprendizaje/${id}`, formData);
+    return this.http.patch<Resource>(
+      `${this.apiUrl}/objetos-aprendizaje/${id}`,
+      formData
+    );
   }
 
   deleteLearningObject(id: string): Observable<void> {

@@ -15,7 +15,7 @@ import { TopicFormComponent } from './profesores/tarea-form/tarea-form.component
 import { ResourceFormComponent } from './profesores/recurso-form/recurso-form.component';
 import { TemaComponent } from './estudiantes/tema/tema.component';
 import { EncuestaGuard } from './guards/encuesta.guard';
-
+import { TeacherDashboardComponent } from './profesores/teacher-dashboard/teacher-dashboard.component';
 
 const appRoutes: Routes = [
   { path: '', component: LoginComponent },
@@ -30,7 +30,7 @@ const appRoutes: Routes = [
       {
         path: 'unidad/:id',
         component: SubjectContentComponent,
-        canActivate: [EncuestaGuard]
+        canActivate: [EncuestaGuard],
       },
       { path: 'unidad/:id/tema/:temaId', component: TemaComponent },
     ],
@@ -39,11 +39,14 @@ const appRoutes: Routes = [
   {
     path: 'profesor/curso/:cursoId',
     component: TeacherLayoutComponent,
-    canActivate: [EncuestaGuard],
     children: [
-      { path: 'agregar-unidad', component: UnitFormComponent },
-      { path: 'tema/:id', component: TopicFormComponent },
-      { path: 'recurso/:id', component: ResourceFormComponent },
+      { path: '', component: TeacherDashboardComponent },
+      { path: 'unidad/:id', component: UnitFormComponent },
+      { path: 'unidad/:id/tema/:temaId', component: TopicFormComponent },
+      {
+        path: 'unidad/:id/tema/:temaId/objeto-aprendizaje/:id',
+        component: ResourceFormComponent,
+      },
     ],
   },
 ];

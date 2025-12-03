@@ -1,1 +1,167 @@
-<p>unit-form works!</p>
+<section class="p-8 max-w-4xl mx-auto" *ngIf="unit$ | async as unit">
+  <!-- Header -->
+  <header class="flex items-center gap-4 mb-8 pb-6 border-b border-base-300">
+    <div
+      class="text-5xl bg-gradient-to-br from-primary to-secondary p-4 rounded-2xl"
+    >
+      📚
+    </div>
+    <div>
+      <h2 class="text-3xl font-bold text-base-content">{{ unit.nombre }}</h2>
+      <span class="text-sm text-base-content/60 uppercase tracking-wide"
+        >Unidad de aprendizaje</span
+      >
+    </div>
+    <button class="btn btn-primary" (click)="openCreateUnit()">
+      + Editar Unidad
+    </button>
+    <button class="btn btn-primary" (click)="openCreateTopic()">
+      + Nueva Tema
+    </button>
+  </header>
+
+  <div
+    *ngIf="showUnitModal && (unit$ | async) as editingUnit"
+    class="modal modal-open"
+  >
+    <div class="modal-box">
+      <h3 class="font-bold text-lg mb-4">Editar Unidad</h3>
+      <form #unitForm="ngForm" (ngSubmit)="saveUnit(unitForm.value)">
+        <div class="form-control">
+          <label class="label"><span class="label-text">Título</span></label>
+          <input
+            type="text"
+            name="nombre"
+            [(ngModel)]="editingUnit!.nombre"
+            class="input input-bordered"
+            required
+          />
+        </div>
+        <div class="form-control mt-3">
+          <label class="label"
+            ><span class="label-text">Descripción</span></label
+          >
+          <textarea
+            name="descripcion"
+            [(ngModel)]="editingUnit!.descripcion"
+            class="textarea textarea-bordered"
+            required
+          ></textarea>
+        </div>
+        <div class="form-control mt-3">
+          <label class="label"><span class="label-text">Orden</span></label>
+          <input
+            type="number"
+            name="numero_unidad"
+            [(ngModel)]="editingUnit!.numero_unidad"
+            class="input input-bordered"
+            min="1"
+            required
+          />
+        </div>
+        <div class="modal-action">
+          <button type="button" class="btn" (click)="showUnitModal = false">
+            Cancelar
+          </button>
+          <button
+            type="submit"
+            class="btn btn-primary"
+            [disabled]="!unitForm.valid"
+          >
+            Guardar
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div *ngIf="showTopicModal" class="modal modal-open">
+    <div class="modal-box">
+      <h3 class="font-bold text-lg mb-4">Nuevo Tema</h3>
+      <form #topicForm="ngForm" (ngSubmit)="saveTopic(topicForm.value)">
+        <div class="form-control">
+          <label class="label"><span class="label-text">Título</span></label>
+          <input
+            type="text"
+            name="nombre"
+            [ngModel]="nombreNuevoTema"
+            class="input input-bordered"
+            required
+          />
+        </div>
+        <div class="form-control mt-3">
+          <label class="label"
+            ><span class="label-text">Descripción</span></label
+          >
+          <textarea
+            name="descripcion"
+            [ngModel]="descripcionNuevoTema"
+            class="textarea textarea-bordered"
+            required
+          ></textarea>
+        </div>
+        <div class="form-control mt-3">
+          <label class="label"><span class="label-text">Orden</span></label>
+          <input
+            type="number"
+            name="numero_tema"
+            [ngModel]="numeroNuevoTema"
+            class="input input-bordered"
+            min="1"
+            required
+          />
+        </div>
+        <div class="modal-action">
+          <button type="button" class="btn" (click)="showTopicModal = false">
+            Cancelar
+          </button>
+          <button type="submit" class="btn btn-primary">Guardar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Description Card -->
+  <div class="card bg-base-100 shadow-md mb-8">
+    <div class="card-body">
+      <div class="flex items-center gap-3 mb-2">
+        <span class="text-xl">📋</span>
+        <h3 class="card-title text-lg">Descripción</h3>
+      </div>
+      <p class="text-base-content/70 leading-relaxed">{{ unit.descripcion }}</p>
+    </div>
+  </div>
+
+  <!-- Topics Section -->
+  <div *ngIf="unit.temas && unit.temas.length > 0">
+    <div class="flex items-center gap-3 mb-5">
+      <span class="text-xl">📖</span>
+      <h3 class="text-xl font-semibold flex-grow">Temas de la unidad</h3>
+      <div class="badge badge-primary badge-outline">
+        {{ unit.temas.length }} temas
+      </div>
+    </div>
+
+    <div class="flex flex-col gap-3">
+      <a
+        *ngFor="let topic of unit.temas; let i = index"
+        [routerLink]="['tema', topic.id]"
+        class="card bg-base-100 border border-base-300 hover:border-primary hover:shadow-lg transition-all duration-200 hover:-translate-y-1"
+      >
+        <div class="card-body flex-row items-center gap-4 p-4">
+          <div
+            class="w-10 h-10 flex items-center justify-center bg-gradient-to-br from-primary to-secondary text-white font-bold rounded-xl text-sm"
+          >
+            {{ i + 1 }}
+          </div>
+          <div class="flex-grow">
+            <h4 class="font-semibold text-base-content">{{ topic.nombre }}</h4>
+            <span class="text-sm text-primary font-medium"
+              >Ver contenido →</span
+            >
+          </div>
+        </div>
+      </a>
+    </div>
+  </div>
+</section>

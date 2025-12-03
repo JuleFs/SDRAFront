@@ -42,6 +42,7 @@ export class TeacherDashboardComponent {
   descripcionNuevaUnidad: string = '';
   numeroNuevaUnidad: number | null = null;
   fileInput: HTMLInputElement | null = null;
+  file: File | null = null;
 
   constructor(
     private route: ActivatedRoute,
@@ -76,16 +77,16 @@ export class TeacherDashboardComponent {
         console.log('Unidades cargadas:', data);
       });
     });
-    this.contentService.getObjetosAprendizaje().subscribe({
-      next: (oas) => {
-        this.learningObjects = oas;
-        this.isLoading = false;
-      },
-      error: (err) => {
-        console.error('Error al cargar objetos de aprendizaje:', err);
-        this.isLoading = false;
-      },
-    });
+    // this.contentService.getObjetosAprendizaje().subscribe({
+    //   next: (oas) => {
+    //     this.learningObjects = oas;
+    //     this.isLoading = false;
+    //   },
+    //   error: (err) => {
+    //     console.error('Error al cargar objetos de aprendizaje:', err);
+    //     this.isLoading = false;
+    //   },
+    // });
   }
 
   // UNIDADES
@@ -171,27 +172,40 @@ export class TeacherDashboardComponent {
     this.showObjectModal = true;
   }
 
+  onFileSelected(event: Event) {
+    const input = event.target as HTMLInputElement;
+    if (input.files?.length) {
+      this.file = input.files[0];
+    }
+  }
+
   saveObject(form: NgForm, fileInput: HTMLInputElement | null): void {
     const values = form.value || {};
 
     const formData = new FormData();
     // id_tema (viene del hidden o de selectedTopicId)
     const idTema = 1;
-    formData.append('id_tema', idTema.toString());
 
+    formData.append('id_tema', idTema.toString());
+    formData.append('id_type', values.id_type ?? '');
     formData.append('nombre', values.nombre ?? '');
     formData.append('descripcion', values.descripcion ?? '');
-    formData.append('id_type', values.id_type ?? '');
-    formData.append('contenido', fileInput?.value ?? '');
+    // formData.append('contenido', fileInput?.value ?? '');
+    formData.append('file', this.file!);
 
     // adjuntar archivo si existe
     if (fileInput && fileInput.files && fileInput.files.length > 0) {
       const file = fileInput.files[0];
-      formData.append('contenido', file, file.name);
+      formData.append('file', file, file.name);
+      // formData.append('contenido', file, file.name);
     }
 
     formData.forEach((valor, clave) => {
-      console.log(`${clave}: ${valor}`);
+      if (clave === 'file') {
+        console.log('File name:', (valor as File).name);
+      } else {
+        console.log(`${clave}: ${valor}`);
+      }
     });
     // decidir create / update según editingObject
     const request$ = this.editingObject?.id
@@ -199,7 +213,7 @@ export class TeacherDashboardComponent {
           String(this.editingObject.id),
           formData
         )
-      : this.contentService.createLearningObjectWithFile(formData, fileInput!.files![0]);
+      : this.contentService.createLearningObjectWithFile(formData, this.file!);
 
     this.isLoading = true;
     request$.subscribe({

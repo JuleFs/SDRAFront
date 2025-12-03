@@ -1,9 +1,8 @@
-<div class="layout">
-  <aside class="sidebar">
+<div class="flex h-screen w-full bg-base-200">
+  <aside class="w-72 min-w-72 border-r border-base-300 bg-base-100 shadow-sm">
     <app-teacher-sidebar></app-teacher-sidebar>
   </aside>
-
-  <main class="content">
-    <app-teacher-dashboard></app-teacher-dashboard>
+  <main class="flex-1 overflow-y-auto">
+    <router-outlet></router-outlet>
   </main>
 </div>
