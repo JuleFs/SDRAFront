@@ -71,10 +71,8 @@ export class TopicFormComponent {
     const values = form.value || {};
 
     const formData = new FormData();
-    // id_tema (viene del hidden o de selectedTopicId)
-    const idTema = 1;
 
-    formData.append('id_tema', idTema.toString());
+    formData.append('id_tema', this.topicId ?? '');
     formData.append('id_type', values.id_type ?? '');
     formData.append('nombre', values.nombre ?? '');
     formData.append('descripcion', values.descripcion ?? '');
