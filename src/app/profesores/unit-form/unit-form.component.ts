@@ -54,7 +54,7 @@ export class UnitFormComponent {
       next: () => {
         this.showTopicModal = false;
       },
-      error: (err) => console.error('Error al guardar tema:', err),
+      error: (err) => console.error('Error al guardar la unidad:', err),
     });
   }
 

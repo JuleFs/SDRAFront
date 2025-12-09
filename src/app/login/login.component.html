@@ -1,41 +1,10 @@
 <div
-  class="flex min-h-screen items-center justify-center bg-[url('https://cdn.flyonui.com/fy-assets/blocks/marketing-ui/auth/auth-background-2.png')] bg-cover bg-center bg-no-repeat px-4 py-10 overflow-x-hidden"
+  class="flex min-h-screen items-center justify-center bg-[url('https://img.freepik.com/free-vector/gradient-blue-background_23-2149338379.jpg')] bg-cover bg-center bg-no-repeat overflow-x-hidden"
 >
   <div class="relative flex items-center justify-center">
-    <!-- SVG decorativo -->
-    <div class="absolute inset-0 flex justify-center items-center opacity-40">
-      <svg
-        width="600"
-        height="680"
-        viewBox="0 0 612 697"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-        class="max-w-[600px]"
-      >
-        <path
-          d="M360.405 111.996C393.955 67.9448 456.863 59.4318 500.914 92.9818V92.9818C544.965 126.532 553.478 189.44 519.928 233.491L250.545 587.191C216.995 631.243 154.087 639.756 110.036 606.206V606.206C65.9845 572.656 57.4716 509.747 91.0216 465.696L360.405 111.996Z"
-          fill="url(#grad)"
-          fill-opacity="0.1"
-        />
-        <defs>
-          <linearGradient
-            id="grad"
-            x1="500"
-            y1="100"
-            x2="110"
-            y2="600"
-            gradientUnits="userSpaceOnUse"
-          >
-            <stop stop-color="#3B82F6" />
-            <stop offset="1" stop-color="#3B82F6" stop-opacity="0.2" />
-          </linearGradient>
-        </defs>
-      </svg>
-    </div>
-
     <!-- Tarjeta de login -->
     <div
-      class="relative z-10 w-full max-w-md space-y-6 rounded-xl bg-white/90 p-8 shadow-xl backdrop-blur"
+      class="relative z-10 max-w-md space-y-6 rounded-xl bg-white/90 p-4 shadow-xl backdrop-blur"
     >
       <!-- Título -->
       <div>
@@ -44,11 +13,11 @@
 
       <form [formGroup]="login_form" (keydown)="onKeydown($event)">
         <div class="login">
-          <div class="">
+          <div class="gap-2">
             <button
               class="btn btn-outline btn-primary grow"
               [ngClass]="{ selected: activeClass }"
-              (click)="userType='estudiante';"
+              (click)="userType = 'estudiante'"
             >
               <i class="fa-solid fa-user fa-lg"></i>
               <p>Student</p>
@@ -56,7 +25,7 @@
             <button
               class="btn btn-outline btn-primary grow"
               [ngClass]="{ selected: !activeClass }"
-              (click)="userType='profesor';"
+              (click)="userType = 'profesor'"
             >
               <i class="fa-solid fa-chalkboard-user fa-lg"></i>
               <p>Teacher</p>

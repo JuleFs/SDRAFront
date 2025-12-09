@@ -31,6 +31,7 @@ export class TopicFormComponent {
   isLoading = false;
   topicId?: string;
   unitId: string = '';
+  oas: any;
 
   getResourceType(url: string): string {
     if (url.match(/youtube\.com|youtu\.be/)) return 'Video';
@@ -150,7 +151,6 @@ export class TopicFormComponent {
       const info_profesor = localStorage.getItem('info_profesor');
 
       if (info_profesor) {
-        const id_profesor = JSON.parse(info_profesor).id_profesor;
         console.log('Unit ID:', this.unitId, 'Topic ID:', this.topicId);
 
         this.topic$ = this.servicioContenido.getTopicById(
@@ -160,6 +160,11 @@ export class TopicFormComponent {
         this.objetos$ = this.servicioContenido.getObjetosAprendizaje(
           this.topicId
         );
+
+        this.objetos$.subscribe(data => {
+          console.log('Datos de recomendación completos:', data);
+          this.oas = data.map((item: any) => ({objeto: item}))
+        });
       }
     });
   }

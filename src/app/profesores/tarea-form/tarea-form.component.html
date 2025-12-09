@@ -269,11 +269,11 @@
 
     <!-- Resources Grid -->
     <div
-      *ngIf="objetos$ | async as objetos"
+      *ngIf="oas"
       class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5"
     >
       <div
-        *ngFor="let oa of objetos"
+        *ngFor="let oa of oas"
         class="card bg-base-100 shadow-md hover:shadow-xl transition-all duration-200 hover:-translate-y-1 border border-base-300"
       >
         <div class="card-body p-4">
@@ -285,7 +285,7 @@
           </div>
 
           <!-- Título -->
-          <h4 class="card-title text-base mb-2">{{ oa.nombre }}</h4>
+          <h4 class="card-title text-base mb-2">{{ oa.objeto.nombre }}</h4>
 
           <!-- Botón -->
           <div

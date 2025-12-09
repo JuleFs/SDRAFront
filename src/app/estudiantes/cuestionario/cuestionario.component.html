@@ -38,12 +38,12 @@
         <div class="mt-4">
           <div class="flex justify-between text-xs text-base-content/60 mb-1">
             <span>Progreso</span>
-            <span class="font-semibold">{{ contarRespondidas() }} / {{ Cuestionario?.length || 0 }}</span>
+            <span class="font-semibold">{{ contarRespondidas() }} / {{ Cuestionario.length || 0 }}</span>
           </div>
           <progress
             class="progress progress-primary w-full h-2"
             [value]="contarRespondidas()"
-            [max]="Cuestionario?.length || 1">
+            [max]="Cuestionario.length || 1">
           </progress>
         </div>
       </div>

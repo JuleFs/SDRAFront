@@ -10,7 +10,6 @@ import { Course } from 'src/app/estudiantes/recomendacion/tipos.model';
   standalone: true,
   imports: [CommonModule, RouterModule],
   templateUrl: './lista-cursos-profesor.component.html',
-  styleUrls: ['./lista-cursos-profesor.component.css'],
 })
 export class TeacherCourseListComponent {
   grupo = 203;
