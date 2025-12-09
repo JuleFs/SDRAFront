@@ -11,7 +11,6 @@ import {
 import { ContentService } from 'src/app/services/contenido.service';
 import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs/internal/Observable';
-import { finalize } from 'rxjs';
 
 @Component({
   selector: 'app-teacher-dashboard',
@@ -24,9 +23,9 @@ export class TeacherDashboardComponent {
   selectedUnitId: string | null = null;
   oaType: 'video' | 'image' | 'document' | 'external' = 'external';
   curso!: Course | undefined;
-  learningObjects$: Observable<Resource[]> | null = null;
+  learningObjects: Resource[] = [];
   materiaId?: string;
-  units$: Observable<Unit[]> | null = null;
+  units$: Observable<Unit[]> | undefined;
   isLoading = false;
 
   // Control de modales
@@ -47,8 +46,15 @@ export class TeacherDashboardComponent {
 
   constructor(
     private route: ActivatedRoute,
+    private cursoService: CursoService,
     private contentService: ContentService
-  ) {
+  ) {}
+
+  ngOnInit(): void {
+    this.loadUnits();
+  }
+
+  loadUnits(): void {
     this.isLoading = true;
     this.route.paramMap.subscribe((params) => {
       const materiaId = params.get('cursoId');
@@ -201,7 +207,6 @@ export class TeacherDashboardComponent {
         console.log(`${clave}: ${valor}`);
       }
     });
-
     // decidir create / update según editingObject
     const request$ = this.editingObject?.id
       ? this.contentService.updateLearningObject(
