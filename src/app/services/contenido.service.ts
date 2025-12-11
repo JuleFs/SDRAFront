@@ -30,7 +30,7 @@ export class ContentService {
   }
 
   getUnitById(id: string): Observable<Unit> {
-    return this.http.get<Unit>(this.apiUrl + '/unidades/' + id + '/with-temas');
+    return this.http.get<Unit>(this.apiUrl + 'unidades/' + id + '/with-temas');
   }
 
   createUnit(unit: Partial<Unit>): Observable<Unit> {
