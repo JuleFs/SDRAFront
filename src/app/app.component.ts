@@ -1,7 +1,5 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { SidebarComponent } from './estudiantes/sidebar/sidebar.component';
-import { RecommendationService } from './services/recomendacion.service';
 import { TranslateService } from '@ngx-translate/core';
 import { AppUser, UserService } from './services/user.service';
 
@@ -19,7 +17,6 @@ export class AppComponent {
 
   constructor(
     private route: Router,
-    private recSrv: RecommendationService,
     public translate: TranslateService,
     private userSrv: UserService
   ) {
@@ -27,12 +24,11 @@ export class AppComponent {
     translate.addLangs(['es', 'en']);
 
     // Idioma por defecto
-    translate.setDefaultLang('es');
+    translate.setFallbackLang('es');
 
     // Usar idioma guardado o español
     const savedLang = localStorage.getItem('lang') || 'es';
     translate.use(savedLang);
-
   }
 
   ngOnInit() {

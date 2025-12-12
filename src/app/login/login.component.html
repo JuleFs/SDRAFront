@@ -23,7 +23,7 @@
               (click)="userType = 'estudiante'"
             >
               <i class="fa-solid fa-user fa-lg"></i>
-              <p>Student</p>
+              <p>{{'Student' | translate}}</p>
             </button>
             <button
               class="btn btn-outline btn-primary grow transition-colors duration-200"
@@ -34,7 +34,7 @@
               (click)="userType = 'profesor'"
             >
               <i class="fa-solid fa-chalkboard-user fa-lg"></i>
-              <p>Teacher</p>
+              <p>{{'Teacher' | translate}}</p>
             </button>
           </div>
 
@@ -42,7 +42,7 @@
             <label
               for="user"
               class="mb-1 block text-sm font-medium text-gray-700"
-              >Account Number*</label
+              >{{'Account Number' | translate}}</label
             >
             <input
               placeholder="12345678"
@@ -58,7 +58,7 @@
             <label
               for="pass"
               class="mb-1 block text-sm font-medium text-gray-700"
-              >Password*</label
+              >{{'Password' | translate}}</label
             >
             <input
               placeholder="••••••••••"
@@ -79,7 +79,7 @@
             class="w-full rounded-lg bg-blue-600 px-4 py-2 text-white font-medium hover:bg-blue-700 transition"
             (click)="sendLogin()"
           >
-            Log in
+            {{'Log in' | translate}}
           </button>
         </div>
       </form>

@@ -7,8 +7,8 @@
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <!-- Título -->
           <div>
-            <h1 class="text-2xl font-bold text-base-content">Inventario de Felder-Silverman</h1>
-            <p class="text-sm text-base-content/60 mt-1">Descubre tu estilo de aprendizaje</p>
+            <h1 class="text-2xl font-bold text-base-content">{{'survey.title' | translate}}</h1>
+            <p class="text-sm text-base-content/60 mt-1">{{'survey.subtitle' | translate}}</p>
           </div>
 
           <!-- Botones -->
@@ -20,7 +20,7 @@
               <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
               </svg>
-              Cancelar
+              {{'survey.cancel' | translate}}
             </button>
             <button
               type="submit"
@@ -29,7 +29,7 @@
               <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
               </svg>
-              Guardar
+              {{'survey.save' | translate}}
             </button>
           </div>
         </div>
@@ -37,7 +37,7 @@
         <!-- Barra de progreso -->
         <div class="mt-4">
           <div class="flex justify-between text-xs text-base-content/60 mb-1">
-            <span>Progreso</span>
+            <span>{{'survey.progress' | translate}}</span>
             <span class="font-semibold">{{ contarRespondidas() }} / {{ Cuestionario.length || 0 }}</span>
           </div>
           <progress
@@ -125,7 +125,7 @@
           <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
           </svg>
-          Guardar respuestas
+          {{'survey.saveAnswers' | translate}}
         </button>
       </div>
     </div>
