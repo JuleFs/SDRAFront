@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, NgForm } from '@angular/forms';
-import { RecommendationService } from 'src/app/services/recomendacion.service';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { Topic, Unit } from 'src/app/estudiantes/recomendacion/tipos.model';
 import { Observable } from 'rxjs';
@@ -22,6 +21,7 @@ export class UnitFormComponent {
   nombreNuevoTema: string = '';
   numeroNuevoTema: number = 0;
   descripcionNuevoTema: string = '';
+  subtemasNuevoTema: string = '';
 
   constructor(
     private route: ActivatedRoute,
@@ -49,7 +49,7 @@ export class UnitFormComponent {
       ? this.contentService.updateUnit(this.unitId, unit)
       : this.contentService.createUnit(unit);
     console.log('Guardando unidad:', unit);
-    
+
     request.subscribe({
       next: () => {
         this.showTopicModal = false;
@@ -59,6 +59,16 @@ export class UnitFormComponent {
   }
 
   saveTopic(topic: Partial<Topic>): void {
+    // convertir subtemas (string) a array de strings si viene como texto
+    if (topic.subtemas && typeof topic.subtemas === 'string') {
+      const raw = topic.subtemas as unknown as string;
+      const arr = raw
+        .split(/\r?\n|,/) // separar por saltos de línea o comas
+        .map((s) => s.trim()) // quitar espacios
+        .filter(Boolean); // eliminar entradas vacías
+      (topic as any).subtemas = arr;
+    }
+
     topic.id_unidad = Number(this.unitId);
     const request = this.contentService.createTopic({ ...topic });
 

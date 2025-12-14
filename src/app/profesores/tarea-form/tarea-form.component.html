@@ -59,6 +59,17 @@
           ></textarea>
         </div>
         <div class="form-control mt-3">
+          <label class="label"><span class="label-text">Subtemas</span></label>
+          <textarea
+            name="subtemas"
+            [ngModel]="
+              editingTopic?.subtemas ? editingTopic.subtemas?.join('\n') : ''
+            "
+            class="textarea textarea-bordered"
+            required
+          ></textarea>
+        </div>
+        <div class="form-control mt-3">
           <label class="label"><span class="label-text">Orden</span></label>
           <input
             type="number"
@@ -118,11 +129,36 @@
             #typeSelect
             ngModel
           >
-            <option value="1">Texto Plano</option>
-            <option value="2">PDF</option>
-            <option value="3">Video</option>
-            <option value="4">Imagen</option>
-            <option value="5">Audio</option>
+            <option value="1">Actividad de arrastrar y soltar</option>
+            <option value="2">Animación de concepto abstracto</option>
+            <option value="3">Archivo casos reales</option>
+            <option value="4">Audiolibro explicativo</option>
+            <option value="5">Casos de estudio</option>
+            <option value="6">Demostración de video</option>
+            <option value="7">Diario de aprendizaje</option>
+            <option value="8">Ejemplo resuelto</option>
+            <option value="9">Ejercicios auto-corregibles</option>
+            <option value="10">Foro de debate</option>
+            <option value="11">Guía de problemas</option>
+            <option value="12">Inforgrafía</option>
+            <option value="13">Juego de clasificación conceptual</option>
+            <option value="14">Laboratorio gamificado</option>
+            <option value="15">Lectura con hipervínculos</option>
+            <option value="16">Lectura guiada</option>
+            <option value="17">Lectura Teórica Avanzada</option>
+            <option value="18">Mapa conceptual interactivo</option>
+            <option value="19">Micro-lecciones secuenciales</option>
+            <option value="20">Panel de discusión en video</option>
+            <option value="21">Podcast entrevista</option>
+            <option value="22">Proyecto integrador</option>
+            <option value="23">Quiz diagnóstico</option>
+            <option value="24">Resumen ejecutivo</option>
+            <option value="25">Simulación abierta exploratoria</option>
+            <option value="26">Simulación de laboratorio</option>
+            <option value="27">Simulación predictiva</option>
+            <option value="28">Tutorial paso a paso</option>
+            <option value="29">Video animado en proceso</option>
+            <option value="30">Video comparativo</option>
           </select>
         </div>
 

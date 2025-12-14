@@ -8,6 +8,10 @@ import { OaViewerComponent } from 'src/app/estudiantes/oa-viewer/oa-viewer.compo
 import { ContentService } from 'src/app/services/contenido.service';
 import { FormsModule, NgForm } from '@angular/forms';
 
+interface Subtema {
+  titulo: string;
+}
+
 @Component({
   selector: 'app-topic-form',
   standalone: true,
@@ -113,6 +117,16 @@ export class TopicFormComponent {
   }
 
   saveTopic(topic: Partial<Topic>): void {
+    // convertir subtemas (string) a array de strings si viene como texto
+    if (topic.subtemas && typeof topic.subtemas === 'string') {
+      const raw = topic.subtemas as unknown as string;
+      const arr = raw
+        .split(/\r?\n|,/) // separar por saltos de línea o comas
+        .map((s) => s.trim()) // quitar espacios
+        .filter(Boolean); // eliminar entradas vacías
+      (topic as any).subtemas = arr;
+    }
+
     topic.id_unidad = Number(this.unitId);
     console.log('Guardando tema:', topic);
     const request = this.topicId
@@ -159,9 +173,9 @@ export class TopicFormComponent {
           this.topicId
         );
 
-        this.objetos$.subscribe(data => {
+        this.objetos$.subscribe((data) => {
           console.log('Datos de recomendación completos:', data);
-          this.oas = data.map((item: any) => ({objeto: item}))
+          this.oas = data.map((item: any) => ({ objeto: item }));
         });
       }
     });
