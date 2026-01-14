@@ -18,6 +18,8 @@ export class UnitFormComponent {
   topics: any[] = [];
   showUnitModal = false;
   showTopicModal = false;
+  showSuccessModal = false;
+  successMessage = '';
   nombreNuevoTema: string = '';
   numeroNuevoTema: number = 0;
   descripcionNuevoTema: string = '';
@@ -45,14 +47,28 @@ export class UnitFormComponent {
   }
 
   saveUnit(unit: Partial<Unit>): void {
-    const request = this.unitId
-      ? this.contentService.updateUnit(this.unitId, unit)
+    const isEditing = !!this.unitId;
+    const request = isEditing
+      ? this.contentService.updateUnit(this.unitId!, unit)
       : this.contentService.createUnit(unit);
+
     console.log('Guardando unidad:', unit);
 
     request.subscribe({
       next: () => {
-        this.showTopicModal = false;
+        this.showUnitModal = false;
+        this.successMessage = isEditing
+          ? 'Unidad actualizada exitosamente'
+          : 'Unidad creada exitosamente';
+        this.showSuccessModal = true;
+
+        // Recargar los datos de la unidad si estamos editando
+        if (isEditing && this.unitId) {
+          this.unit$ = this.contentService.getUnitById(this.unitId);
+        }
+
+        // Emitir evento para recargar el sidebar
+        this.contentService.notifyUnitsChanged();
       },
       error: (err) => console.error('Error al guardar la unidad:', err),
     });
@@ -77,8 +93,23 @@ export class UnitFormComponent {
     request.subscribe({
       next: () => {
         this.showTopicModal = false;
+        this.successMessage = 'Tema creado exitosamente';
+        this.showSuccessModal = true;
+
+        // Recargar los datos de la unidad
+        if (this.unitId) {
+          this.unit$ = this.contentService.getUnitById(this.unitId);
+        }
+
+        // Emitir evento para recargar el sidebar
+        this.contentService.notifyUnitsChanged();
       },
       error: (err) => console.error('Error al guardar tema:', err),
     });
+  }
+
+  closeSuccessModal(): void {
+    console.log('Cerrando modal de éxito');
+    this.showSuccessModal = false;
   }
 }

@@ -174,3 +174,20 @@
     </div>
   </div>
 </section>
+
+<!-- Modal de éxito - FUERA del *ngIf para que siempre esté disponible -->
+<div *ngIf="showSuccessModal" class="modal modal-open">
+  <div class="modal-box max-w-md">
+    <div class="flex flex-col items-center gap-4 py-6">
+      <div class="text-6xl">✅</div>
+      <h3 class="font-bold text-2xl text-center">{{ successMessage }}</h3>
+      <p class="text-base-content/70 text-center">
+        Los cambios se han guardado correctamente
+      </p>
+      <button class="btn btn-primary mt-4 w-full" (click)="closeSuccessModal()">
+        Aceptar
+      </button>
+    </div>
+  </div>
+  <div class="modal-backdrop bg-black/50"></div>
+</div>

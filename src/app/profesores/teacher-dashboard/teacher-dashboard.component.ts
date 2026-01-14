@@ -32,6 +32,10 @@ export class TeacherDashboardComponent {
   showUnitModal = false;
   showTopicModal = false;
   showObjectModal = false;
+  showSuccessModal = false;
+  showErrorModal = false;
+  successMessage = '';
+  errorMessage = '';
 
   // Datos para edición
   editingUnit: Unit | null = null;
@@ -62,31 +66,11 @@ export class TeacherDashboardComponent {
       console.log('Materia ID:', this.materiaId);
       if (this.materiaId) {
         this.units$ = this.contentService.getUnits(this.materiaId);
-        // this.contentService.getUnits('3').subscribe({
-        //   next: (units) => {
-        //     this.units = units;
-        //     this.isLoading = false;
-        //   },
-        //   error: (err) => {
-        //     console.error('Error al cargar curso:', err);
-        //     this.isLoading = false;
-        //   },
-        // });
       }
       this.units$?.subscribe((data: Unit[]) => {
         console.log('Unidades cargadas:', data);
       });
     });
-    // this.contentService.getObjetosAprendizaje().subscribe({
-    //   next: (oas) => {
-    //     this.learningObjects = oas;
-    //     this.isLoading = false;
-    //   },
-    //   error: (err) => {
-    //     console.error('Error al cargar objetos de aprendizaje:', err);
-    //     this.isLoading = false;
-    //   },
-    // });
   }
 
   // UNIDADES
@@ -101,26 +85,53 @@ export class TeacherDashboardComponent {
   }
 
   saveUnit(unit: Partial<Unit>): void {
+    const isEditing = !!this.editingUnit?.id;
     unit.id_materia = this.materiaId;
-    const request = this.editingUnit?.id
-      ? this.contentService.updateUnit(this.editingUnit.id, unit)
+    const request = isEditing
+      ? this.contentService.updateUnit(this.editingUnit!.id, unit)
       : this.contentService.createUnit(unit);
+
     console.log('Guardando unidad:', unit);
 
     request.subscribe({
       next: () => {
+        console.log('Unidad guardada exitosamente');
         this.showUnitModal = false;
+        this.successMessage = isEditing
+          ? 'Unidad actualizada exitosamente'
+          : 'Unidad creada exitosamente';
+        this.showSuccessModal = true;
+        console.log('showSuccessModal:', this.showSuccessModal);
+        console.log('successMessage:', this.successMessage);
+
         this.loadUnits();
+        this.contentService.notifyUnitsChanged();
       },
-      error: (err) => console.error('Error al guardar unidad:', err),
+      error: (err) => {
+        console.error('Error al guardar unidad:', err);
+        this.showUnitModal = false;
+        this.errorMessage = isEditing
+          ? 'Error al actualizar la unidad. Por favor, intenta de nuevo.'
+          : 'Error al crear la unidad. Por favor, intenta de nuevo.';
+        this.showErrorModal = true;
+      },
     });
   }
 
   deleteUnit(id: string): void {
     if (confirm('¿Eliminar esta unidad y todo su contenido?')) {
       this.contentService.deleteUnit(id).subscribe({
-        next: () => this.loadUnits(),
-        error: (err) => console.error('Error al eliminar:', err),
+        next: () => {
+          this.successMessage = 'Unidad eliminada exitosamente';
+          this.showSuccessModal = true;
+          this.loadUnits();
+          this.contentService.notifyUnitsChanged();
+        },
+        error: (err) => {
+          console.error('Error al eliminar:', err);
+          this.errorMessage = 'Error al eliminar la unidad. Por favor, intenta de nuevo.';
+          this.showErrorModal = true;
+        },
       });
     }
   }
@@ -138,24 +149,47 @@ export class TeacherDashboardComponent {
   }
 
   saveTopic(topic: Partial<Topic>): void {
-    const request = this.editingTopic?.id
-      ? this.contentService.updateTopic(String(this.editingTopic.id), topic)
+    const isEditing = !!this.editingTopic?.id;
+    const request = isEditing
+      ? this.contentService.updateTopic(String(this.editingTopic!.id), topic)
       : this.contentService.createTopic({ ...topic });
 
     request.subscribe({
       next: () => {
         this.showTopicModal = false;
+        this.successMessage = isEditing
+          ? 'Tema actualizado exitosamente'
+          : 'Tema creado exitosamente';
+        this.showSuccessModal = true;
+
         this.loadUnits();
+        this.contentService.notifyUnitsChanged();
       },
-      error: (err) => console.error('Error al guardar tema:', err),
+      error: (err) => {
+        console.error('Error al guardar tema:', err);
+        this.showTopicModal = false;
+        this.errorMessage = isEditing
+          ? 'Error al actualizar el tema. Por favor, intenta de nuevo.'
+          : 'Error al crear el tema. Por favor, intenta de nuevo.';
+        this.showErrorModal = true;
+      },
     });
   }
 
   deleteTopic(id: string): void {
     if (confirm('¿Eliminar este tema?')) {
       this.contentService.deleteTopic(id).subscribe({
-        next: () => this.loadUnits(),
-        error: (err) => console.error('Error:', err),
+        next: () => {
+          this.successMessage = 'Tema eliminado exitosamente';
+          this.showSuccessModal = true;
+          this.loadUnits();
+          this.contentService.notifyUnitsChanged();
+        },
+        error: (err) => {
+          console.error('Error:', err);
+          this.errorMessage = 'Error al eliminar el tema. Por favor, intenta de nuevo.';
+          this.showErrorModal = true;
+        },
       });
     }
   }
@@ -183,21 +217,17 @@ export class TeacherDashboardComponent {
     const values = form.value || {};
 
     const formData = new FormData();
-    // id_tema (viene del hidden o de selectedTopicId)
     const idTema = 1;
 
     formData.append('id_tema', idTema.toString());
     formData.append('id_type', values.id_type ?? '');
     formData.append('nombre', values.nombre ?? '');
     formData.append('descripcion', values.descripcion ?? '');
-    // formData.append('contenido', fileInput?.value ?? '');
     formData.append('file', this.file!);
 
-    // adjuntar archivo si existe
     if (fileInput && fileInput.files && fileInput.files.length > 0) {
       const file = fileInput.files[0];
       formData.append('file', file, file.name);
-      // formData.append('contenido', file, file.name);
     }
 
     formData.forEach((valor, clave) => {
@@ -207,10 +237,11 @@ export class TeacherDashboardComponent {
         console.log(`${clave}: ${valor}`);
       }
     });
-    // decidir create / update según editingObject
-    const request$ = this.editingObject?.id
+
+    const isEditing = !!this.editingObject?.id;
+    const request$ = isEditing
       ? this.contentService.updateLearningObject(
-          String(this.editingObject.id),
+          String(this.editingObject!.id),
           formData
         )
       : this.contentService.createLearningObjectWithFile(formData, this.file!);
@@ -220,12 +251,21 @@ export class TeacherDashboardComponent {
       next: (res) => {
         this.isLoading = false;
         this.showObjectModal = false;
-        // refrescar lista de unidades/temas
+        this.successMessage = isEditing
+          ? 'Objeto actualizado exitosamente'
+          : 'Objeto creado exitosamente';
+        this.showSuccessModal = true;
+
         this.loadUnits();
       },
       error: (err) => {
         this.isLoading = false;
+        this.showObjectModal = false;
         console.error('Error al guardar objeto:', err);
+        this.errorMessage = isEditing
+          ? 'Error al actualizar el objeto. Por favor, intenta de nuevo.'
+          : 'Error al crear el objeto. Por favor, intenta de nuevo.';
+        this.showErrorModal = true;
       },
     });
   }
@@ -233,9 +273,27 @@ export class TeacherDashboardComponent {
   deleteObject(id: string): void {
     if (confirm('¿Eliminar este objeto?')) {
       this.contentService.deleteLearningObject(id).subscribe({
-        next: () => this.loadUnits(),
-        error: (err) => console.error('Error:', err),
+        next: () => {
+          this.successMessage = 'Objeto eliminado exitosamente';
+          this.showSuccessModal = true;
+          this.loadUnits();
+        },
+        error: (err) => {
+          console.error('Error:', err);
+          this.errorMessage = 'Error al eliminar el objeto. Por favor, intenta de nuevo.';
+          this.showErrorModal = true;
+        },
       });
     }
+  }
+
+  closeSuccessModal(): void {
+    console.log('Cerrando modal de éxito');
+    this.showSuccessModal = false;
+  }
+
+  closeErrorModal(): void {
+    console.log('Cerrando modal de error');
+    this.showErrorModal = false;
   }
 }
