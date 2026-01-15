@@ -88,53 +88,67 @@ export class TopicFormComponent {
   }
 
   saveObject(form: NgForm, fileInput: HTMLInputElement | null): void {
-    const values = form.value || {};
+  const values = form.value || {};
 
-    const formData = new FormData();
-
-    formData.append('id_tema', this.topicId ?? '');
-    formData.append('id_type', values.id_type ?? '');
-    formData.append('nombre', values.nombre ?? '');
-    formData.append('descripcion', values.descripcion ?? '');
-    // formData.append('contenido', fileInput?.value ?? '');
-    formData.append('file', this.file!);
-
-    // adjuntar archivo si existe
-    if (fileInput && fileInput.files && fileInput.files.length > 0) {
-      const file = fileInput.files[0];
-      formData.append('file', file, file.name);
-      // formData.append('contenido', file, file.name);
-    }
-
-    formData.forEach((valor, clave) => {
-      if (clave === 'file') {
-        console.log('File name:', (valor as File).name);
-      } else {
-        console.log(`${clave}: ${valor}`);
-      }
+  //Validar que tenemos todos los datos necesarios
+  if (!this.topicId || !values.id_type || !values.nombre || !this.file) {
+    console.error('Faltan datos requeridos:', {
+      topicId: this.topicId,
+      id_type: values.id_type,
+      nombre: values.nombre,
+      file: this.file
     });
-    // decidir create / update según editingObject
-    const request$ = this.contentService.createLearningObjectWithFile(
-      formData,
-      this.file!
-    );
-
-    this.isLoading = true;
-    request$.subscribe({
-      next: () => {
-        this.isLoading = false;
-        this.showObjectModal = false;
-        this.successMessage = 'Recurso creado exitosamente';
-        this.showSuccessModal = true;
-        this.contentService.notifyUnitsChanged();
-        this.router.navigate(['../../'], { relativeTo: this.route });
-      },
-      error: (err) => {
-        this.isLoading = false;
-        console.error('Error al guardar objeto:', err);
-      },
-    });
+    alert('Por favor completa todos los campos requeridos');
+    return;
   }
+
+  const formData = new FormData();
+
+  //Convertir a números explícitamente
+  formData.append('id_tema', String(this.topicId));
+  formData.append('id_type', String(values.id_type));
+  formData.append('nombre', values.nombre);
+  formData.append('descripcion', values.descripcion || '');
+
+  //Agregar el archivo UNA SOLA VEZ
+  formData.append('file', this.file, this.file.name);
+
+  // Debug: Ver qué se está enviando
+  console.log('Datos a enviar:');
+  formData.forEach((valor, clave) => {
+    if (clave === 'file') {
+      console.log(`${clave}:`, (valor as File).name, (valor as File).type, (valor as File).size);
+    } else {
+      console.log(`${clave}: ${valor}`);
+    }
+  });
+
+  // decidir create / update según editingObject
+  const request$ = this.contentService.createLearningObjectWithFile(
+    formData,
+    this.file
+  );
+
+  this.isLoading = true;
+  request$.subscribe({
+    next: () => {
+      this.isLoading = false;
+      this.showObjectModal = false;
+      this.successMessage = 'Recurso creado exitosamente';
+      this.showSuccessModal = true;
+      this.contentService.notifyUnitsChanged();
+      this.router.navigate(['../../'], { relativeTo: this.route });
+    },
+    error: (err) => {
+      this.isLoading = false;
+      this.showObjectModal = false;
+      console.error('Error completo:', err);
+      console.error('Error status:', err.status);
+      console.error('Error body:', err.error);
+      alert(`Error al guardar: ${err.error?.message || err.message}`);
+    },
+  });
+}
 
   saveTopic(topic: Partial<Topic>): void {
     // convertir subtemas (string) a array de strings si viene como texto

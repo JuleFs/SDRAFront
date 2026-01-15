@@ -214,61 +214,77 @@ export class TeacherDashboardComponent {
   }
 
   saveObject(form: NgForm, fileInput: HTMLInputElement | null): void {
-    const values = form.value || {};
+  const values = form.value || {};
 
-    const formData = new FormData();
-    const idTema = 1;
-
-    formData.append('id_tema', idTema.toString());
-    formData.append('id_type', values.id_type ?? '');
-    formData.append('nombre', values.nombre ?? '');
-    formData.append('descripcion', values.descripcion ?? '');
-    formData.append('file', this.file!);
-
-    if (fileInput && fileInput.files && fileInput.files.length > 0) {
-      const file = fileInput.files[0];
-      formData.append('file', file, file.name);
-    }
-
-    formData.forEach((valor, clave) => {
-      if (clave === 'file') {
-        console.log('File name:', (valor as File).name);
-      } else {
-        console.log(`${clave}: ${valor}`);
-      }
+  //Validar que tenemos todos los datos necesarios
+  if (!values.id_tema || !values.id_type || !values.nombre || !this.file) {
+    console.error('Faltan datos requeridos:', {
+      id_tema: values.id_tema,
+      id_type: values.id_type,
+      nombre: values.nombre,
+      file: this.file
     });
-
-    const isEditing = !!this.editingObject?.id;
-    const request$ = isEditing
-      ? this.contentService.updateLearningObject(
-          String(this.editingObject!.id),
-          formData
-        )
-      : this.contentService.createLearningObjectWithFile(formData, this.file!);
-
-    this.isLoading = true;
-    request$.subscribe({
-      next: (res) => {
-        this.isLoading = false;
-        this.showObjectModal = false;
-        this.successMessage = isEditing
-          ? 'Objeto actualizado exitosamente'
-          : 'Objeto creado exitosamente';
-        this.showSuccessModal = true;
-
-        this.loadUnits();
-      },
-      error: (err) => {
-        this.isLoading = false;
-        this.showObjectModal = false;
-        console.error('Error al guardar objeto:', err);
-        this.errorMessage = isEditing
-          ? 'Error al actualizar el objeto. Por favor, intenta de nuevo.'
-          : 'Error al crear el objeto. Por favor, intenta de nuevo.';
-        this.showErrorModal = true;
-      },
-    });
+    this.errorMessage = 'Por favor completa todos los campos requeridos';
+    this.showErrorModal = true;
+    return;
   }
+
+  const formData = new FormData();
+
+  //Convertir a números/strings explícitamente
+  formData.append('id_tema', String(values.id_tema));
+  formData.append('id_type', String(values.id_type));
+  formData.append('nombre', values.nombre);
+  formData.append('descripcion', values.descripcion || '');
+
+  //Agregar el archivo UNA SOLA VEZ
+  formData.append('file', this.file, this.file.name);
+
+  // Debug: Ver qué se está enviando
+  console.log('Datos a enviar:');
+  formData.forEach((valor, clave) => {
+    if (clave === 'file') {
+      console.log(`${clave}:`, (valor as File).name, (valor as File).type, (valor as File).size);
+    } else {
+      console.log(`${clave}: ${valor}`);
+    }
+  });
+
+  const isEditing = !!this.editingObject?.id;
+  const request$ = isEditing
+    ? this.contentService.updateLearningObject(
+        String(this.editingObject!.id),
+        formData
+      )
+    : this.contentService.createLearningObjectWithFile(formData, this.file);
+
+  this.isLoading = true;
+  request$.subscribe({
+    next: (res) => {
+      this.isLoading = false;
+      this.showObjectModal = false;
+      this.successMessage = isEditing
+        ? 'Objeto actualizado exitosamente'
+        : 'Objeto creado exitosamente';
+      this.showSuccessModal = true;
+
+      this.loadUnits();
+    },
+    error: (err) => {
+      this.isLoading = false;
+      this.showObjectModal = false;
+      console.error('Error completo:', err);
+      console.error('Error status:', err.status);
+      console.error('Error body:', err.error);
+
+      //Mostrar error específico
+      this.errorMessage = isEditing
+        ? `Error al actualizar el objeto: ${err.error?.message || err.message}`
+        : `Error al crear el objeto: ${err.error?.message || err.message}`;
+      this.showErrorModal = true;
+    },
+  });
+}
 
   deleteObject(id: string): void {
     if (confirm('¿Eliminar este objeto?')) {
