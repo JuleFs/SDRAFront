@@ -25,6 +25,9 @@
       <button class="btn bg-gray-400 btn-primary" (click)="openCreateOa()">
         + Nuevo objeto de aprendizaje
       </button>
+      <button class="btn btn-error" (click)="openDeleteTopic()">
+        - Eliminar Tema
+      </button>
     </div>
   </header>
 
@@ -103,7 +106,7 @@
             name="nombre"
             ngModel
             class="input input-bordered"
-            required
+            required="true"
           />
         </div>
 
@@ -115,7 +118,7 @@
             name="descripcion"
             ngModel
             class="textarea textarea-bordered"
-            required
+            required="true"
           ></textarea>
         </div>
 
@@ -128,6 +131,7 @@
             required
             #typeSelect
             ngModel
+            required="true"
           >
             <option value="1">Actividad de arrastrar y soltar</option>
             <option value="2">Animación de concepto abstracto</option>
@@ -163,7 +167,7 @@
         </div>
 
         <!-- input de archivo con referencia template -->
-        <div *ngIf="typeSelect.value !== '1'" class="form-control mt-3">
+        <div class="form-control mt-3">
           <label class="label"><span class="label-text">Archivo</span></label>
           <input
             type="file"
@@ -171,6 +175,7 @@
             name="file"
             class="file-input file-input-bordered"
             #fileInput
+            required="true"
           />
         </div>
         <div class="modal-action">
@@ -180,6 +185,56 @@
           <button type="submit" class="btn btn-primary">Guardar</button>
         </div>
       </form>
+    </div>
+  </div>
+
+  <div
+    *ngIf="showDeleteTopicModal && (topic$ | async) as editingTopic"
+    class="modal modal-open"
+  >
+    <div class="modal-box">
+      <h3 class="font-bold text-lg mb-4">Eliminar Tema</h3>
+      <p class="mb-4">
+        ¿Estás seguro de que deseas eliminar el tema "{{
+          editingTopic.nombre
+        }}"? Esta acción no se puede deshacer.
+      </p>
+      <div class="modal-action">
+        <button
+          type="button"
+          class="btn"
+          (click)="showDeleteTopicModal = false"
+        >
+          Cancelar
+        </button>
+        <button type="submit" class="btn btn-error" (click)="deleteTopic()">
+          Eliminar
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div
+    *ngIf="showDeleteResourceModal"
+    class="modal modal-open"
+  >
+    <div class="modal-box">
+      <h3 class="font-bold text-lg mb-4">Eliminar Recurso</h3>
+      <p class="mb-4">
+        ¿Estás seguro de que deseas eliminar este recurso? Esta acción no se puede deshacer.
+      </p>
+      <div class="modal-action">
+        <button
+          type="button"
+          class="btn"
+          (click)="showDeleteResourceModal = false"
+        >
+          Cancelar
+        </button>
+        <button type="submit" class="btn btn-error" (click)="deleteResource(oaToDeleteId)">
+          Eliminar
+        </button>
+      </div>
     </div>
   </div>
 
@@ -318,6 +373,62 @@
             <div class="badge badge-primary badge-sm">
               {{ getEstiloTipo(oa) }}
             </div>
+            <button
+              class="btn btn-error btn-sm gap-2 absolute top-4 right-4 z-10"
+              (click)="openDeleteResource(oa.objeto.id)"
+              title="Eliminar recurso"
+            >
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+                class="w-6 h-6"
+              >
+                <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                <g
+                  id="SVGRepo_tracerCarrier"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                ></g>
+                <g id="SVGRepo_iconCarrier">
+                  <path
+                    d="M10 12V17"
+                    stroke="#000000"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  ></path>
+                  <path
+                    d="M14 12V17"
+                    stroke="#000000"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  ></path>
+                  <path
+                    d="M4 7H20"
+                    stroke="#000000"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  ></path>
+                  <path
+                    d="M6 10V18C6 19.6569 7.34315 21 9 21H15C16.6569 21 18 19.6569 18 18V10"
+                    stroke="#000000"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  ></path>
+                  <path
+                    d="M9 5C9 3.89543 9.89543 3 11 3H13C14.1046 3 15 3.89543 15 5V7H9V5Z"
+                    stroke="#000000"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  ></path>
+                </g>
+              </svg>
+            </button>
           </div>
 
           <!-- Título -->
@@ -358,4 +469,21 @@
       </div>
     </div>
   </section>
+</div>
+
+<!-- Modal de éxito - FUERA del *ngIf para que siempre esté disponible -->
+<div *ngIf="showSuccessModal" class="modal modal-open">
+  <div class="modal-box max-w-md">
+    <div class="flex flex-col items-center gap-4 py-6">
+      <div class="text-6xl">✅</div>
+      <h3 class="font-bold text-2xl text-center">{{ successMessage }}</h3>
+      <p class="text-base-content/70 text-center">
+        Los cambios se han guardado correctamente
+      </p>
+      <button class="btn btn-primary mt-4 w-full" (click)="closeSuccessModal()">
+        Aceptar
+      </button>
+    </div>
+  </div>
+  <div class="modal-backdrop bg-black/50"></div>
 </div>

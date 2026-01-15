@@ -5,6 +5,7 @@ import { ActivatedRoute, RouterModule } from '@angular/router';
 import { Topic, Unit } from 'src/app/estudiantes/recomendacion/tipos.model';
 import { Observable } from 'rxjs';
 import { ContentService } from 'src/app/services/contenido.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-unit-form',
@@ -19,6 +20,7 @@ export class UnitFormComponent {
   showUnitModal = false;
   showTopicModal = false;
   showSuccessModal = false;
+  showDeleteUnitModal = false;
   successMessage = '';
   nombreNuevoTema: string = '';
   numeroNuevoTema: number = 0;
@@ -27,6 +29,7 @@ export class UnitFormComponent {
 
   constructor(
     private route: ActivatedRoute,
+    private router: Router,
     private contentService: ContentService
   ) {
     this.route.paramMap.subscribe((params) => {
@@ -44,6 +47,10 @@ export class UnitFormComponent {
 
   openCreateTopic(): void {
     this.showTopicModal = true;
+  }
+
+  openDeleteUnit(): void {
+    this.showDeleteUnitModal = true;
   }
 
   saveUnit(unit: Partial<Unit>): void {
@@ -71,6 +78,21 @@ export class UnitFormComponent {
         this.contentService.notifyUnitsChanged();
       },
       error: (err) => console.error('Error al guardar la unidad:', err),
+    });
+  }
+
+  deleteUnit(): void {
+    const request = this.contentService.deleteUnit(this.unitId!);
+
+    request.subscribe({
+      next: () => {
+        this.showDeleteUnitModal = false;
+        this.successMessage = 'Unidad eliminada exitosamente';
+        this.showSuccessModal = true;
+        this.contentService.notifyUnitsChanged();
+        this.router.navigate(['../../'], { relativeTo: this.route });
+      },
+      error: (err) => console.error('Error al eliminar la unidad:', err),
     });
   }
 

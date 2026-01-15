@@ -7,6 +7,7 @@ import { Observable } from 'rxjs';
 import { OaViewerComponent } from 'src/app/estudiantes/oa-viewer/oa-viewer.component';
 import { ContentService } from 'src/app/services/contenido.service';
 import { FormsModule, NgForm } from '@angular/forms';
+import { Router } from '@angular/router';
 
 interface Subtema {
   titulo: string;
@@ -21,6 +22,7 @@ interface Subtema {
 export class TopicFormComponent {
   constructor(
     private route: ActivatedRoute,
+    private router: Router,
     private servicioContenido: ContentService,
     private dialog: MatDialog,
     private contentService: ContentService
@@ -28,8 +30,13 @@ export class TopicFormComponent {
 
   topic$!: Observable<Topic | undefined>;
   objetos$!: Observable<any>;
+  showSuccessModal = false;
+  successMessage = '';
   showTopicModal = false;
   showObjectModal = false;
+  showDeleteTopicModal = false;
+  showDeleteResourceModal = false;
+  oaToDeleteId: string = '';
   fileInput: HTMLInputElement | null = null;
   file: File | null = null;
   isLoading = false;
@@ -71,6 +78,15 @@ export class TopicFormComponent {
     this.showObjectModal = true;
   }
 
+  openDeleteTopic(): void {
+    this.showDeleteTopicModal = true;
+  }
+
+  openDeleteResource(id: string): void {
+    this.oaToDeleteId = id;
+    this.showDeleteResourceModal = true;
+  }
+
   saveObject(form: NgForm, fileInput: HTMLInputElement | null): void {
     const values = form.value || {};
 
@@ -105,9 +121,13 @@ export class TopicFormComponent {
 
     this.isLoading = true;
     request$.subscribe({
-      next: (res) => {
+      next: () => {
         this.isLoading = false;
         this.showObjectModal = false;
+        this.successMessage = 'Recurso creado exitosamente';
+        this.showSuccessModal = true;
+        this.contentService.notifyUnitsChanged();
+        this.router.navigate(['../../'], { relativeTo: this.route });
       },
       error: (err) => {
         this.isLoading = false;
@@ -136,8 +156,43 @@ export class TopicFormComponent {
     request.subscribe({
       next: () => {
         this.showTopicModal = false;
+        this.successMessage = this.topicId
+          ? 'Tema actualizado exitosamente'
+          : 'Tema creado exitosamente';
+        this.showSuccessModal = true;
+        this.contentService.notifyUnitsChanged();
       },
       error: (err) => console.error('Error al guardar tema:', err),
+    });
+  }
+
+  deleteTopic(): void {
+    const request = this.contentService.deleteTopic(this.topicId!);
+
+    request.subscribe({
+      next: () => {
+        this.showDeleteTopicModal = false;
+        this.successMessage = 'Tema eliminado exitosamente';
+        this.showSuccessModal = true;
+        this.contentService.notifyUnitsChanged();
+        this.router.navigate(['../../'], { relativeTo: this.route });
+      },
+      error: (err) => console.error('Error al eliminar el tema:', err),
+    });
+  }
+
+  deleteResource(id: string): void {
+    const request = this.contentService.deleteLearningObject(id);
+
+    request.subscribe({
+      next: () => {
+        this.showDeleteResourceModal = false;
+        this.successMessage = 'Recurso eliminado exitosamente';
+        this.showSuccessModal = true;
+        this.contentService.notifyUnitsChanged();
+        this.router.navigate(['../../'], { relativeTo: this.route });
+      },
+      error: (err) => console.error('Error al eliminar el recurso:', err),
     });
   }
 
@@ -179,5 +234,10 @@ export class TopicFormComponent {
         });
       }
     });
+  }
+
+  closeSuccessModal(): void {
+    console.log('Cerrando modal de éxito');
+    this.showSuccessModal = false;
   }
 }

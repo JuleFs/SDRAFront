@@ -18,6 +18,9 @@
     <button class="btn btn-primary" (click)="openCreateTopic()">
       + Nueva Tema
     </button>
+    <button class="btn btn-error" (click)="openDeleteUnit()">
+      - Eliminar Unidad
+    </button>
   </header>
 
   <div
@@ -127,6 +130,26 @@
           <button type="submit" class="btn btn-primary">Guardar</button>
         </div>
       </form>
+    </div>
+  </div>
+
+  <div
+    *ngIf="showDeleteUnitModal && (unit$ | async) as editingUnit"
+    class="modal modal-open"
+  >
+    <div class="modal-box">
+      <h3 class="font-bold text-lg mb-4">Eliminar Unidad</h3>
+      <p class="mb-4">
+        ¿Estás seguro de que deseas eliminar la unidad "{{
+          editingUnit.nombre
+        }}"? Esta acción no se puede deshacer.
+      </p>
+      <div class="modal-action">
+      <button type="button" class="btn" (click)="showDeleteUnitModal = false">
+        Cancelar
+      </button>
+      <button type="submit" class="btn btn-error" (click)="deleteUnit()">Eliminar</button>
+      </div>
     </div>
   </div>
 
