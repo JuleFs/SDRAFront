@@ -90,95 +90,63 @@ export class TopicFormComponent {
   }
 
   saveObject(form: NgForm, fileInput: HTMLInputElement | null): void {
-    const values = form.value || {};
+  const values = form.value || {};
 
-    //Validar que tenemos todos los datos necesarios
-    if (!this.topicId || !values.id_type || !values.nombre) {
-      console.error('Faltan datos requeridos:', {
-        topicId: this.topicId,
-        id_type: values.id_type,
-        nombre: values.nombre,
-        file: this.file,
-      });
-      alert('Por favor completa todos los campos requeridos');
-      return;
-    }
+  // Validar datos requeridos
+  if (!this.topicId || !values.id_type || !values.nombre) {
+    console.error('Faltan datos requeridos');
+    alert('Por favor completa todos los campos requeridos');
+    return;
+  }
 
+  // CASO 1: Con archivo - usar FormData y endpoint /upload
+  if (this.file && this.selectedInputType === 'file') {
     const formData = new FormData();
-
-    //Convertir a números explícitamente
     formData.append('id_tema', String(this.topicId));
     formData.append('id_type', String(values.id_type));
     formData.append('nombre', values.nombre);
     formData.append('descripcion', values.descripcion || '');
+    formData.append('file', this.file, this.file.name);
 
-    //Agregar el archivo UNA SOLA VEZ
-    if (this.file) {
-      formData.append('file', this.file, this.file.name);
-    } else if (this.selectedInputType === 'url' && values.url) {
-      formData.append('contenido', values.url);
-    }
+    this.request$ = this.contentService.createLearningObjectWithFile(
+      formData,
+      this.file
+    );
+  }
+  // CASO 2: Con URL (sin archivo) - usar JSON y endpoint principal
+  else if (this.selectedInputType === 'url' && values.url) {
+    const objetoData = {
+      id_tema: Number(this.topicId),
+      id_type: Number(values.id_type),
+      nombre: values.nombre,
+      descripcion: values.descripcion || '',
+      contenido: values.url
+    };
 
-    // Debug: Ver qué se está enviando
-    console.log('Datos a enviar:');    
-// Convertir FormData a objeto de forma segura (no usar entries() por compatibilidad TS)
-    const formObj: Record<string, any> = {};
-    formData.forEach((value, key) => {
-      if (formObj[key]) {
-        if (Array.isArray(formObj[key])) {
-          formObj[key].push(value);
-        } else {
-          formObj[key] = [formObj[key], value];
-        }
-      } else {
-        formObj[key] = value;
-      }
-    });
-    console.log('FormData como objeto:', formObj);
-    formData.forEach((valor, clave) => {
-      if (clave === 'file') {
-        console.log(
-          `${clave}:`,
-          (valor as File).name,
-          (valor as File).type,
-          (valor as File).size,
-        );
-      } else {
-        console.log(`${clave}: ${valor}`);
-      }
-    });
-
-    // decidir create / update según editingObject
-    if (this.file && this.selectedInputType === 'file') {
-      this.request$ = this.contentService.createLearningObjectWithFile(
-        formData,
-        this.file,
-      );
-    } else {
-      this.request$ = this.contentService.createLearningObject(formData);
-    }
-
-    this.isLoading = true;
-    this.request$.subscribe({
-      next: () => {
-        this.isLoading = false;
-        this.showObjectModal = false;
-        this.successMessage = 'Recurso creado exitosamente';
-        this.showSuccessModal = true;
-        this.contentService.notifyUnitsChanged();
-        this.router.navigate(['../../'], { relativeTo: this.route });
-      },
-      error: (err) => {
-        this.isLoading = false;
-        this.showObjectModal = false;
-        console.error('Error completo:', err);
-        console.error('Error status:', err.status);
-        console.error('Error body:', err.error);
-        alert(`Error al guardar: ${err.error?.message || err.message}`);
-      },
-    });
+    this.request$ = this.contentService.createLearningObject(objetoData);
+  } else {
+    alert('Debes proporcionar un archivo o una URL');
+    return;
   }
 
+  this.isLoading = true;
+  this.request$.subscribe({
+    next: () => {
+      this.isLoading = false;
+      this.showObjectModal = false;
+      this.successMessage = 'Recurso creado exitosamente';
+      this.showSuccessModal = true;
+      this.contentService.notifyUnitsChanged();
+      this.router.navigate(['../../'], { relativeTo: this.route });
+    },
+    error: (err) => {
+      this.isLoading = false;
+      this.showObjectModal = false;
+      console.error('Error completo:', err);
+      alert(`Error al guardar: ${err.error?.message || err.message}`);
+    },
+  });
+}
   saveTopic(topic: Partial<Topic>, topicForm: NgForm): void {
     if (topicForm.invalid) {
       Object.values(topicForm.controls).forEach((c: any) => c.markAsTouched());

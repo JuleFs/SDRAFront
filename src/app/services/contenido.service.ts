@@ -78,10 +78,10 @@ export class ContentService {
     return this.http.get<Resource[]>(`${this.apiUrl}objetos-aprendizaje/tema/${idTema}`);
   }
 
-  createLearningObject(formData: FormData): Observable<Resource> {
+  createLearningObject(data: any): Observable<Resource> {
     return this.http.post<Resource>(
       `${this.apiUrl}objetos-aprendizaje`,
-      formData
+      data
     );
   }
 
