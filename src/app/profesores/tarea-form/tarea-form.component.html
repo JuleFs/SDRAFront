@@ -39,7 +39,7 @@
       <h3 class="font-bold text-lg mb-4">
         {{ editingTopic ? "Editar" : "Nuevo" }} Tema
       </h3>
-      <form #topicForm="ngForm" (ngSubmit)="saveTopic(topicForm.value)">
+      <form #topicForm="ngForm" (ngSubmit)="saveTopic(topicForm.value, topicForm)">
         <div class="form-control">
           <label class="label"><span class="label-text">Título</span></label>
           <input
@@ -87,7 +87,7 @@
           <button type="button" class="btn" (click)="showTopicModal = false">
             Cancelar
           </button>
-          <button type="submit" class="btn btn-primary">Guardar</button>
+          <button type="submit" class="btn btn-primary" [disabled]="topicForm.invalid || isLoading">Guardar</button>
         </div>
       </form>
     </div>
@@ -106,7 +106,7 @@
             name="nombre"
             ngModel
             class="input input-bordered"
-            required="true"
+            required
           />
         </div>
 
@@ -118,7 +118,7 @@
             name="descripcion"
             ngModel
             class="textarea textarea-bordered"
-            required="true"
+            required
           ></textarea>
         </div>
 
@@ -131,7 +131,6 @@
             required
             #typeSelect
             ngModel
-            required="true"
           >
             <option value="1">Actividad de arrastrar y soltar</option>
             <option value="2">Animación de concepto abstracto</option>
@@ -166,8 +165,31 @@
           </select>
         </div>
 
-        <!-- input de archivo con referencia template -->
+        <!-- Selección entre Archivo o Enlace -->
         <div class="form-control mt-3">
+          <label class="label"><span class="label-text">Fuente</span></label>
+          <div class="flex gap-4 items-center">
+            <label class="cursor-pointer">
+              <input
+                type="radio"
+                name="inputType"
+                value="file"
+                [(ngModel)]="selectedInputType"
+              /> Archivo
+            </label>
+            <label class="cursor-pointer">
+              <input
+                type="radio"
+                name="inputType"
+                value="url"
+                [(ngModel)]="selectedInputType"
+              /> Enlace (URL)
+            </label>
+          </div>
+        </div>
+
+        <!-- input de archivo con referencia template -->
+        <div class="form-control mt-3" *ngIf="selectedInputType === 'file'">
           <label class="label"><span class="label-text">Archivo</span></label>
           <input
             type="file"
@@ -175,14 +197,26 @@
             name="file"
             class="file-input file-input-bordered"
             #fileInput
-            required="true"
+          />
+        </div>
+
+        <!-- Campo URL mostrado sólo si el usuario elige enlace -->
+        <div class="form-control mt-3" *ngIf="selectedInputType === 'url'">
+          <label class="label"><span class="label-text">URL</span></label>
+          <input
+            type="url"
+            name="url"
+            ngModel
+            class="input input-bordered"
+            placeholder="https://..."
+            [required]="selectedInputType === 'url'"
           />
         </div>
         <div class="modal-action">
           <button type="button" class="btn" (click)="showObjectModal = false">
             Cancelar
           </button>
-          <button type="submit" class="btn btn-primary">Guardar</button>
+          <button type="submit" class="btn btn-primary" [disabled]="objForm.invalid || isLoading" >Guardar</button>
         </div>
       </form>
     </div>

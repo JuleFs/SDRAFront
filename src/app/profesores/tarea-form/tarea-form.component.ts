@@ -25,17 +25,19 @@ export class TopicFormComponent {
     private router: Router,
     private servicioContenido: ContentService,
     private dialog: MatDialog,
-    private contentService: ContentService
+    private contentService: ContentService,
   ) {}
 
   topic$!: Observable<Topic | undefined>;
   objetos$!: Observable<any>;
+  request$!: Observable<any>;
   showSuccessModal = false;
   successMessage = '';
   showTopicModal = false;
   showObjectModal = false;
   showDeleteTopicModal = false;
   showDeleteResourceModal = false;
+  selectedInputType: string = 'file';
   oaToDeleteId: string = '';
   fileInput: HTMLInputElement | null = null;
   file: File | null = null;
@@ -53,10 +55,10 @@ export class TopicFormComponent {
   }
 
   getEstiloTipo(oa: any): string {
-    console.log('Objeto completo recibido:', oa);
-    console.log('oa.objeto:', oa.objeto);
-    console.log('oa.estiloObjeto:', oa.estiloObjeto);
-    console.log('oa.objeto?.estiloObjeto:', oa.objeto?.estiloObjeto);
+    // console.log('Objeto completo recibido:', oa);
+    // console.log('oa.objeto:', oa.objeto);
+    // console.log('oa.estiloObjeto:', oa.estiloObjeto);
+    // console.log('oa.objeto?.estiloObjeto:', oa.objeto?.estiloObjeto);
 
     // Intentar múltiples rutas posibles
     const tipo =
@@ -66,7 +68,7 @@ export class TopicFormComponent {
       oa.tipo ||
       'Recurso General';
 
-    console.log('✅ Tipo final:', tipo);
+    // console.log('✅ Tipo final:', tipo);
     return tipo;
   }
 
@@ -88,69 +90,100 @@ export class TopicFormComponent {
   }
 
   saveObject(form: NgForm, fileInput: HTMLInputElement | null): void {
-  const values = form.value || {};
+    const values = form.value || {};
 
-  //Validar que tenemos todos los datos necesarios
-  if (!this.topicId || !values.id_type || !values.nombre || !this.file) {
-    console.error('Faltan datos requeridos:', {
-      topicId: this.topicId,
-      id_type: values.id_type,
-      nombre: values.nombre,
-      file: this.file
+    //Validar que tenemos todos los datos necesarios
+    if (!this.topicId || !values.id_type || !values.nombre) {
+      console.error('Faltan datos requeridos:', {
+        topicId: this.topicId,
+        id_type: values.id_type,
+        nombre: values.nombre,
+        file: this.file,
+      });
+      alert('Por favor completa todos los campos requeridos');
+      return;
+    }
+
+    const formData = new FormData();
+
+    //Convertir a números explícitamente
+    formData.append('id_tema', String(this.topicId));
+    formData.append('id_type', String(values.id_type));
+    formData.append('nombre', values.nombre);
+    formData.append('descripcion', values.descripcion || '');
+
+    //Agregar el archivo UNA SOLA VEZ
+    if (this.file) {
+      formData.append('file', this.file, this.file.name);
+    } else if (this.selectedInputType === 'url' && values.url) {
+      formData.append('contenido', values.url);
+    }
+
+    // Debug: Ver qué se está enviando
+    console.log('Datos a enviar:');    
+// Convertir FormData a objeto de forma segura (no usar entries() por compatibilidad TS)
+    const formObj: Record<string, any> = {};
+    formData.forEach((value, key) => {
+      if (formObj[key]) {
+        if (Array.isArray(formObj[key])) {
+          formObj[key].push(value);
+        } else {
+          formObj[key] = [formObj[key], value];
+        }
+      } else {
+        formObj[key] = value;
+      }
     });
-    alert('Por favor completa todos los campos requeridos');
-    return;
+    console.log('FormData como objeto:', formObj);
+    formData.forEach((valor, clave) => {
+      if (clave === 'file') {
+        console.log(
+          `${clave}:`,
+          (valor as File).name,
+          (valor as File).type,
+          (valor as File).size,
+        );
+      } else {
+        console.log(`${clave}: ${valor}`);
+      }
+    });
+
+    // decidir create / update según editingObject
+    if (this.file && this.selectedInputType === 'file') {
+      this.request$ = this.contentService.createLearningObjectWithFile(
+        formData,
+        this.file,
+      );
+    } else {
+      this.request$ = this.contentService.createLearningObject(formData);
+    }
+
+    this.isLoading = true;
+    this.request$.subscribe({
+      next: () => {
+        this.isLoading = false;
+        this.showObjectModal = false;
+        this.successMessage = 'Recurso creado exitosamente';
+        this.showSuccessModal = true;
+        this.contentService.notifyUnitsChanged();
+        this.router.navigate(['../../'], { relativeTo: this.route });
+      },
+      error: (err) => {
+        this.isLoading = false;
+        this.showObjectModal = false;
+        console.error('Error completo:', err);
+        console.error('Error status:', err.status);
+        console.error('Error body:', err.error);
+        alert(`Error al guardar: ${err.error?.message || err.message}`);
+      },
+    });
   }
 
-  const formData = new FormData();
-
-  //Convertir a números explícitamente
-  formData.append('id_tema', String(this.topicId));
-  formData.append('id_type', String(values.id_type));
-  formData.append('nombre', values.nombre);
-  formData.append('descripcion', values.descripcion || '');
-
-  //Agregar el archivo UNA SOLA VEZ
-  formData.append('file', this.file, this.file.name);
-
-  // Debug: Ver qué se está enviando
-  console.log('Datos a enviar:');
-  formData.forEach((valor, clave) => {
-    if (clave === 'file') {
-      console.log(`${clave}:`, (valor as File).name, (valor as File).type, (valor as File).size);
-    } else {
-      console.log(`${clave}: ${valor}`);
+  saveTopic(topic: Partial<Topic>, topicForm: NgForm): void {
+    if (topicForm.invalid) {
+      Object.values(topicForm.controls).forEach((c: any) => c.markAsTouched());
+      return;
     }
-  });
-
-  // decidir create / update según editingObject
-  const request$ = this.contentService.createLearningObjectWithFile(
-    formData,
-    this.file
-  );
-
-  this.isLoading = true;
-  request$.subscribe({
-    next: () => {
-      this.isLoading = false;
-      this.showObjectModal = false;
-      this.successMessage = 'Recurso creado exitosamente';
-      this.showSuccessModal = true;
-      this.contentService.notifyUnitsChanged();
-      this.router.navigate(['../../'], { relativeTo: this.route });
-    },
-    error: (err) => {
-      this.isLoading = false;
-      this.showObjectModal = false;
-      console.error('Error completo:', err);
-      console.error('Error status:', err.status);
-      console.error('Error body:', err.error);
-      alert(`Error al guardar: ${err.error?.message || err.message}`);
-    },
-  });
-}
-
-  saveTopic(topic: Partial<Topic>): void {
     // convertir subtemas (string) a array de strings si viene como texto
     if (topic.subtemas && typeof topic.subtemas === 'string') {
       const raw = topic.subtemas as unknown as string;
@@ -236,14 +269,14 @@ export class TopicFormComponent {
 
         this.topic$ = this.servicioContenido.getTopicById(
           this.unitId,
-          this.topicId
+          this.topicId,
         );
         this.objetos$ = this.servicioContenido.getObjetosAprendizaje(
-          this.topicId
+          this.topicId,
         );
 
         this.objetos$.subscribe((data) => {
-          console.log('Datos de recomendación completos:', data);
+          console.log('Datos objetos de aprendizaje:', data);
           this.oas = data.map((item: any) => ({ objeto: item }));
         });
       }
