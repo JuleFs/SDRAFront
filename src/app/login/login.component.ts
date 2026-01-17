@@ -20,7 +20,7 @@ export class LoginComponent implements OnInit {
     private fb: FormBuilder,
     private servicio: AlumnoService,
     private route: Router,
-    private servicioProfesor: ContentService
+    private servicioProfesor: ContentService,
   ) {
     this.activeClass = true;
   }
@@ -55,10 +55,6 @@ export class LoginComponent implements OnInit {
         // ====== LOGIN ESTUDIANTE ======
         const nroCuenta = Number(this.login_form.controls['nro_cuenta'].value);
         const contra = this.login_form.controls['password'].value;
-        console.log('📤 Enviando login estudiante:', {
-          nro_cuenta: nroCuenta,
-          contra: contra,
-        }); // ← Debug
 
         this.servicio
           .loginAlumno({
@@ -67,11 +63,25 @@ export class LoginComponent implements OnInit {
           })
           .subscribe(
             (data) => {
+              if (
+                !data ||
+                data.error ||
+                data.message === 'Credenciales inválidas'
+              ) {
+                Swal.fire({
+                  title: 'Error de inicio de sesión',
+                  html: 'Error: Datos no válidos o cuenta inexistente, intentelo de nuevo...',
+                  icon: 'error',
+                  customClass: {
+                    container: 'my-swal',
+                  },
+                });
+                return;
+              }
               localStorage.setItem('info_alumno', JSON.stringify(data));
-              this.route.navigate(['/cursos']);
+              this.route.navigate(['/cursos']).then(() => window.location.reload());
             },
             (error) => {
-              console.error('❌ Error login estudiante:', error); // ← Debug
               Swal.fire({
                 title: 'Error de inicio de sesión',
                 html: 'Error: Datos no válidos o cuenta inexistente, intentelo de nuevo...',
@@ -80,19 +90,14 @@ export class LoginComponent implements OnInit {
                   container: 'my-swal',
                 },
               });
-            }
+            },
           );
       } else if (this.userType === 'profesor') {
         // ====== LOGIN PROFESOR ======
         const nroEmpleado = Number(
-          this.login_form.controls['nro_cuenta'].value
+          this.login_form.controls['nro_cuenta'].value,
         ); // ← Convertir a número
         const contra = this.login_form.controls['password'].value;
-
-        console.log('📤 Enviando login profesor:', {
-          nro_empleado: nroEmpleado,
-          contra,
-        }); // ← Debug
 
         this.servicioProfesor
           .loginProfesor({
@@ -101,12 +106,25 @@ export class LoginComponent implements OnInit {
           })
           .subscribe(
             (data) => {
-              console.log('✅ Login profesor exitoso:', data); // ← Debug
+              if (
+                !data ||
+                data.error ||
+                data.message === 'Credenciales inválidas'
+              ) {
+                Swal.fire({
+                  title: 'Error de inicio de sesión',
+                  html: 'Error: Datos no válidos o cuenta inexistente, intentelo de nuevo...',
+                  icon: 'error',
+                  customClass: {
+                    container: 'my-swal',
+                  },
+                });
+                return;
+              }
               localStorage.setItem('info_profesor', JSON.stringify(data));
-              this.route.navigate(['/profesor']);
+              this.route.navigate(['/profesor']).then(() => window.location.reload());
             },
             (error) => {
-              console.error('❌ Error login profesor:', error); // ← Debug
               Swal.fire({
                 title: 'Error de inicio de sesión',
                 html: 'Error: Datos no válidos o cuenta inexistente, intentelo de nuevo...',
@@ -115,7 +133,7 @@ export class LoginComponent implements OnInit {
                   container: 'my-swal',
                 },
               });
-            }
+            },
           );
       }
     } else {

@@ -16,13 +16,19 @@ import { ResourceFormComponent } from './profesores/recurso-form/recurso-form.co
 import { TemaComponent } from './estudiantes/tema/tema.component';
 import { EncuestaGuard } from './guards/encuesta.guard';
 import { TeacherDashboardComponent } from './profesores/teacher-dashboard/teacher-dashboard.component';
+import { AuthGuard } from './guards/auth.guard';
 
 const appRoutes: Routes = [
   { path: '', component: LoginComponent },
   { path: 'Inicio', component: InicioComponent },
   { path: 'Cuestionario/:id_cuestionario', component: CuestionarioComponent },
   { path: 'Resultado', component: ResultadosComponent },
-  { path: 'cursos', component: CourseListComponent },
+  {
+    path: 'cursos',
+    component: CourseListComponent,
+    canActivate: [AuthGuard],
+    data: { role: 'alumno' },
+  },
   {
     path: 'curso/:cursoId',
     component: CourseLayoutComponent,
@@ -35,7 +41,12 @@ const appRoutes: Routes = [
       { path: 'unidad/:id/tema/:temaId', component: TemaComponent },
     ],
   },
-  { path: 'profesor', component: TeacherCourseListComponent },
+  {
+    path: 'profesor',
+    component: TeacherCourseListComponent,
+    canActivate: [AuthGuard],
+    data: { role: 'profesor' },
+  },
   {
     path: 'profesor/curso/:cursoId',
     component: TeacherLayoutComponent,
