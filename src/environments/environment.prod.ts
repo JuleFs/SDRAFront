@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  apiUrl: 'https://sdraback-production.up.railway.app/'
+  apiUrl: 'https://royalblue-wren-753915.hostingersite.com/'
 };

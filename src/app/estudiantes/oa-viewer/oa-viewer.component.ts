@@ -115,30 +115,30 @@ import { CommonModule } from '@angular/common';
       </div>
 
       <!-- Actions -->
-      <div class="flex justify-end gap-3 mt-4 pt-4 border-t border-base-300">
-        <a
-          [href]="data.objeto.contenido"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="btn btn-outline btn-secondary btn-sm gap-2">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-          </svg>
-          Abrir en nueva pestaña
-        </a>
-        <button
-          *ngIf="canDownload"
-          class="btn btn-outline btn-primary btn-sm gap-2"
-          (click)="downloadFile()">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-          </svg>
-          Descargar
-        </button>
-        <button class="btn btn-error btn-sm" (click)="close()">
-          Cerrar
-        </button>
-      </div>
+<div class="flex justify-end gap-3 mt-4 pt-4 border-t border-base-300">
+  <button
+    (click)="openInNewTab()"
+    class="btn btn-outline btn-secondary btn-sm gap-2">
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+    </svg>
+    Abrir en nueva pestaña
+  </button>
+
+  <button
+    *ngIf="canDownload"
+    class="btn btn-outline btn-primary btn-sm gap-2"
+    (click)="downloadFile()">
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+    </svg>
+    Descargar
+  </button>
+
+  <button class="btn btn-error btn-sm" (click)="close()">
+    Cerrar
+  </button>
+</div>
     </div>
   `,
   styles: [`
@@ -378,34 +378,320 @@ export class OaViewerComponent implements OnInit {
     `);
   }
 
+
+
   async downloadFile(): Promise<void> {
-    const url = this.data.objeto.contenido;
-    const filename = this.data.objeto.nombre || this.extractFileName(url);
-
     try {
-      const response = await fetch(url, { mode: 'cors' });
-      if (!response.ok) throw new Error('Error al descargar');
+      const url = this.data.objeto.contenido;
 
+      if (!url) {
+        console.error('No hay URL de contenido');
+        alert('No se puede descargar: archivo no encontrado');
+        return;
+      }
+
+      const filename = this.data.objeto.nombre || this.extractFileName(url);
+
+      console.log('Descargando:', filename);
+      console.log('URL original:', url);
+
+      //Descargar usando fetch + blob
+      if (url.includes('cloudinary.com')) {
+        this.downloadFromCloudinary(url, filename);
+      } else {
+        // Para URLs externas, usar el método tradicional
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        a.target = '_blank';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+      }
+
+    } catch (error) {
+      console.error('Error al descargar archivo:', error);
+      alert('Error al intentar descargar el archivo.');
+    }
+  }
+
+  /**
+   * Descargar archivos de Cloudinary correctamente
+   */
+  private async downloadFromCloudinary(url: string, filename: string): Promise<void> {
+    try {
+      // Asegurar que el filename tenga extensión
+      const extension = this.getFileExtension(url);
+      const finalFilename = filename.includes('.') ? filename : `${filename}.${extension}`;
+
+      console.log('Descargando de Cloudinary:', finalFilename);
+
+      // Hacer fetch del archivo
+      const response = await fetch(url);
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      // Convertir a blob
       const blob = await response.blob();
-      const downloadUrl = window.URL.createObjectURL(blob);
 
+      // Crear URL temporal del blob
+      const blobUrl = window.URL.createObjectURL(blob);
+
+      // Crear link de descarga
       const a = document.createElement('a');
-      a.href = downloadUrl;
-      a.download = filename;
+      a.href = blobUrl;
+      a.download = finalFilename;
+      a.style.display = 'none';
+
       document.body.appendChild(a);
       a.click();
-      document.body.removeChild(a);
-      window.URL.revokeObjectURL(downloadUrl);
+
+      // Limpiar
+      setTimeout(() => {
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(blobUrl);
+      }, 100);
+
+      console.log('Descarga iniciada:', finalFilename);
+
     } catch (error) {
-      // Fallback: abrir en nueva pestaña
+      console.error('Error al descargar de Cloudinary:', error);
+
+      // Fallback: intentar abrir en nueva pestaña
+      alert('No se pudo descargar automáticamente. Se abrirá en una nueva pestaña.');
       window.open(url, '_blank');
     }
   }
 
+  /**
+   * Extraer extensión del archivo de la URL
+   */
+  private getFileExtension(url: string): string {
+    try {
+      // Intentar extraer de la URL
+      const match = url.match(/\.([a-zA-Z0-9]+)(?:\?|$)/);
+      if (match && match[1]) {
+        return match[1];
+      }
+
+      // Si la URL de Cloudinary contiene el resource_type
+      if (url.includes('/image/upload/')) {
+        // Buscar extensión en el nombre del archivo
+        const parts = url.split('/');
+        const lastPart = parts[parts.length - 1];
+        const extMatch = lastPart.match(/\.([a-zA-Z0-9]+)/);
+        if (extMatch) return extMatch[1];
+        return 'jpg';
+      }
+      if (url.includes('/video/upload/')) {
+        const parts = url.split('/');
+        const lastPart = parts[parts.length - 1];
+        const extMatch = lastPart.match(/\.([a-zA-Z0-9]+)/);
+        if (extMatch) return extMatch[1];
+        return 'mp4';
+      }
+      if (url.includes('/raw/upload/')) {
+        const parts = url.split('/');
+        const lastPart = parts[parts.length - 1];
+        const extMatch = lastPart.match(/\.([a-zA-Z0-9]+)/);
+        if (extMatch) return extMatch[1];
+        return 'pdf';
+      }
+
+      // Fallback basado en el tipo detectado
+      const extensionMap: Record<string, string> = {
+        'pdf': 'pdf',
+        'video': 'mp4',
+        'image': 'jpg',
+        'audio': 'mp3',
+        'document': 'pdf'
+      };
+
+      return extensionMap[this.displayType] || 'file';
+    } catch (error) {
+      console.error('Error al obtener extensión:', error);
+      return 'file';
+    }
+  }
+
   private extractFileName(url: string): string {
-    const parts = url.split('/');
-    const lastPart = parts[parts.length - 1];
-    return decodeURIComponent(lastPart.split('?')[0]) || 'recurso';
+    try {
+      const parts = url.split('/');
+      const lastPart = parts[parts.length - 1];
+      const decoded = decodeURIComponent(lastPart.split('?')[0]);
+      return decoded || 'recurso';
+    } catch (error) {
+      console.error('Error al extraer nombre:', error);
+      return 'recurso';
+    }
+  }
+
+  /**
+   * NUEVO: Abrir archivo en nueva pestaña (para visualización)
+   */
+  openInNewTab(): void {
+    const url = this.data.objeto.contenido;
+
+    if (!url) {
+      alert('No hay URL disponible');
+      return;
+    }
+
+    console.log('Abriendo en nueva pestaña:', url);
+    console.log('Tipo detectado:', this.displayType);
+
+    // Para archivos de Cloudinary, usar visualizadores según el tipo
+    if (url.includes('cloudinary.com')) {
+      this.openCloudinaryFile(url);
+    } else {
+      // Para URLs externas, abrir directamente
+      window.open(url, '_blank', 'noopener,noreferrer');
+    }
+  }
+
+  /**
+   * Abrir archivos de Cloudinary con visualizadores apropiados
+   */
+  private openCloudinaryFile(url: string): void {
+    // Limpiar URL de transformaciones de descarga
+    const cleanUrl = url.replace(/\/fl_attachment[^\/]*\//g, '/');
+
+    // Según el tipo de archivo, usar el visualizador apropiado
+    switch (this.displayType) {
+      case 'pdf':
+        // Usar Google Docs Viewer para PDFs
+        const pdfViewerUrl = `https://docs.google.com/viewer?url=${encodeURIComponent(cleanUrl)}&embedded=false`;
+        window.open(pdfViewerUrl, '_blank', 'noopener,noreferrer');
+        break;
+
+      case 'document':
+        // Usar Office Online Viewer para documentos de Office
+        const officeViewerUrl = `https://view.officeapps.live.com/op/view.aspx?src=${encodeURIComponent(cleanUrl)}`;
+        window.open(officeViewerUrl, '_blank', 'noopener,noreferrer');
+        break;
+
+      //case 'image':
+      case 'audio':
+        // Para multimedia, intentar abrir directamente
+        // Si no funciona, mostrar en un visor básico
+        this.openInMediaViewer(cleanUrl);
+        break;
+
+      default:
+        // Para otros tipos, intentar abrir directamente
+        window.open(cleanUrl, '_blank', 'noopener,noreferrer');
+    }
+  }
+
+    /**
+   * Abrir archivos multimedia en un visor simple
+   */
+  private openInMediaViewer(url: string): void {
+    const extension = this.getFileExtension(url);
+    const filename = this.data.objeto.nombre || 'archivo';
+
+    // Crear HTML para el visor
+    let viewerHtml = '';
+
+    if (this.displayType === 'image') {
+      viewerHtml = `
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <title>${filename}</title>
+          <style>
+            body {
+              margin: 0;
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              min-height: 100vh;
+              background: #000;
+            }
+            img {
+              max-width: 100%;
+              max-height: 100vh;
+              object-fit: contain;
+            }
+          </style>
+        </head>
+        <body>
+          <img src="${url}" alt="${filename}">
+        </body>
+        </html>
+      `;
+    } else if (this.displayType === 'video') {
+      viewerHtml = `
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <title>${filename}</title>
+          <style>
+            body {
+              margin: 0;
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              min-height: 100vh;
+              background: #000;
+            }
+            video {
+              max-width: 100%;
+              max-height: 100vh;
+            }
+          </style>
+        </head>
+        <body>
+          <video src="${url}" controls autoplay></video>
+        </body>
+        </html>
+      `;
+    } else if (this.displayType === 'audio') {
+      viewerHtml = `
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <title>${filename}</title>
+          <style>
+            body {
+              margin: 0;
+              display: flex;
+              flex-direction: column;
+              justify-content: center;
+              align-items: center;
+              min-height: 100vh;
+              background: #1a1a1a;
+              color: white;
+              font-family: Arial, sans-serif;
+            }
+            h2 { margin-bottom: 2rem; }
+            audio {
+              width: 80%;
+              max-width: 500px;
+            }
+          </style>
+        </head>
+        <body>
+          <h2>🎵 ${filename}</h2>
+          <audio src="${url}" controls autoplay></audio>
+        </body>
+        </html>
+      `;
+    }
+
+    if (viewerHtml) {
+      // Abrir en nueva ventana con el HTML del visor
+      const newWindow = window.open('', '_blank', 'noopener,noreferrer');
+      if (newWindow) {
+        newWindow.document.write(viewerHtml);
+        newWindow.document.close();
+      }
+    } else {
+      // Fallback: intentar abrir directamente
+      window.open(url, '_blank', 'noopener,noreferrer');
+    }
   }
 
   close(): void {
