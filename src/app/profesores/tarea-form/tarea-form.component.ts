@@ -129,23 +129,25 @@ export class TopicFormComponent {
     return;
   }
 
-  this.isLoading = true;
-  this.request$.subscribe({
+    this.isLoading = true;
+    this.request$.subscribe({
     next: () => {
-      this.isLoading = false;
-      this.showObjectModal = false;
-      this.successMessage = 'Recurso creado exitosamente';
-      this.showSuccessModal = true;
-      this.contentService.notifyUnitsChanged();
-      this.router.navigate(['../../'], { relativeTo: this.route });
-    },
-    error: (err) => {
-      this.isLoading = false;
-      this.showObjectModal = false;
-      console.error('Error completo:', err);
-      alert(`Error al guardar: ${err.error?.message || err.message}`);
-    },
-  });
+    this.isLoading = false;
+    this.showObjectModal = false;
+    this.file = null;
+    this.selectedInputType = 'file';
+    this.successMessage = 'Recurso creado exitosamente';
+    this.showSuccessModal = true;
+    this.contentService.notifyUnitsChanged();
+    this.recargarObjetos();
+  },
+  error: (err) => {
+    this.isLoading = false;
+    this.showObjectModal = false;
+    console.error('Error completo:', err);
+    alert(`Error al guardar: ${err.error?.message || err.message}`);
+  },
+});
 }
   saveTopic(topic: Partial<Topic>, topicForm: NgForm): void {
     if (topicForm.invalid) {
@@ -255,4 +257,13 @@ export class TopicFormComponent {
     console.log('Cerrando modal de éxito');
     this.showSuccessModal = false;
   }
+
+  recargarObjetos(): void {
+  if (this.topicId) {
+    this.objetos$ = this.servicioContenido.getObjetosAprendizaje(this.topicId);
+    this.objetos$.subscribe((data) => {
+      this.oas = data.map((item: any) => ({ objeto: item }));
+    });
+  }
+}
 }
