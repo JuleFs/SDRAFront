@@ -8,7 +8,7 @@ import {
 } from '../estudiantes/recomendacion/tipos.model';
 import { HttpClient } from '@angular/common/http';
 import { info } from 'console';
-import { environment } from 'src/environments/environment.prod';
+import { environment } from 'src/environments/environment';
 
 @Injectable({ providedIn: 'root' })
 export class CursoService {

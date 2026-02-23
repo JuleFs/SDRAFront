@@ -61,17 +61,17 @@ export class CuestionarioComponent implements OnInit {
 
     // Construir respuestas compactadas
     this.respuestas_compactadas = "";
-    for (let index = 1; index <= 44; index++) {
-      const aux = document.querySelector("[id='" + index + "-A']") as HTMLInputElement;
-      if (aux?.checked) {
-        this.respuestas_compactadas += "A";
-      } else {
-        this.respuestas_compactadas += "B";
-      }
+    const preguntasOrdenadas = [...this.Cuestionario].sort(
+      (a, b) => a.num_pregunta - b.num_pregunta
+    )
+
+    for (const pregunta of preguntasOrdenadas) {
+      this.respuestas_compactadas += pregunta.respuesta === 'A' ? 'A' : 'B';
     }
 
     const infoAlumno = JSON.parse(localStorage.getItem('info_alumno') || "{}");
 
+    console.log('Respuestas compactadas:', this.respuestas_compactadas);
     this.servicio.resultadoEncuesta({
       nro_cuenta: infoAlumno.nro_cuenta,
       respuestas_compactadas: this.respuestas_compactadas,

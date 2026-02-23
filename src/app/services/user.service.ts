@@ -3,6 +3,8 @@ import { BehaviorSubject, Observable } from 'rxjs';
 
 export interface AppUser {
   nombre?: string;
+  apellido_1?: string;
+  apellido_2?: string;
   grupo?: string;
 }
 
@@ -29,7 +31,12 @@ export class UserService {
     if (info_alumno) {
       try {
         const parsed = JSON.parse(info_alumno);
-        this.userSubject.next({ nombre: parsed.nombre, grupo: parsed.grupo });
+        this.userSubject.next({
+          nombre: parsed.nombre,
+          apellido_1: parsed.apellido_1,
+          apellido_2: parsed.apellido_2,
+          grupo: parsed.grupo,
+         });
         return;
       } catch { /* ignore parse errors */ }
     }
@@ -37,7 +44,7 @@ export class UserService {
     if (info_profesor) {
       try {
         const parsed = JSON.parse(info_profesor);
-        this.userSubject.next({ nombre: parsed.nombre_profesor, grupo: 'Profesor' });
+        this.userSubject.next({ nombre: parsed.nombre_profesor, grupo: 'Profesor',});
         return;
       } catch { /* ignore parse errors */ }
     }

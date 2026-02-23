@@ -38,21 +38,19 @@ export class AppComponent {
   }
 
   loadUserData(user: AppUser | null = null) {
-    if (user?.grupo === 'Profesor') {
-      this.nombre_usuario$ = user?.nombre;
-      this.grupo$ = 'Profesor';
-      this.isProfesor = true;
-    } else if (user?.grupo) {
-      this.nombre_usuario$ = user?.nombre;
-      this.grupo$ = user?.grupo;
-      this.isProfesor = false;
-    } else {
-      this.nombre_usuario$ = '';
-      this.grupo$ = '';
-      this.isProfesor = false;
-    }
+  if (user?.grupo) {
+    const apellidos = [user.apellido_1, user.apellido_2]
+      .filter(Boolean)
+      .join(' ');
+    this.nombre_usuario$ = `${user.nombre || ''} ${apellidos}`.trim();
+    this.grupo$ = user.grupo;
+    this.isProfesor = user.grupo === 'Profesor';
+  } else {
+    this.nombre_usuario$ = '';
+    this.grupo$ = '';
+    this.isProfesor = false;
   }
-
+}
   changeLanguage(lang: string) {
     this.translate.use(lang);
     localStorage.setItem('lang', lang);

@@ -30,6 +30,20 @@ export class LoginComponent implements OnInit {
   }
 
   ngOnInit(): void {
+
+    const infoAlumno = localStorage.getItem('info_alumno');
+    const infoProfesor = localStorage.getItem('info_profesor');
+
+    if (infoAlumno) {
+      this.route.navigate(['/cursos']);
+      return;
+    }
+
+    if (infoProfesor) {
+      this.route.navigate(['/profesor']);
+      return;
+    }
+
     this.login_form = this.fb.group({
       nro_cuenta: ['', [Validators.required, Validators.pattern('^[0-9]*$')]],
       password: ['', [Validators.required]],
