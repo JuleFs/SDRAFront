@@ -2,15 +2,17 @@
   *ngIf="nombre_usuario$"
   class="navbar bg-base-100 shadow-md border-b border-base-300 px-4 lg:px-8 "
 >
-  <div class="flex-1">
+    <div class="flex-1">
     <a
       [routerLink]="isProfesor ? ['/profesor'] : ['/cursos']"
-      class="btn btn-ghost gap-2 text-xl font-bold text-black"
+      class="btn btn-ghost gap-2 text-xs text-black"
     >
-    <img src="assets/logosroa.png" alt="SROA Logo" class="h-8 w-auto" />
+    <img src="assets/favicon 2.png" alt="SROA Logo" class="h-8 w-auto" />
       SROA
     </a>
   </div>
+
+
 
   <div class="flex-none gap-4">
     <!-- User Info -->
@@ -40,8 +42,8 @@
         tabindex="0"
         class="dropdown-content menu bg-base-100 rounded-box z-50 w-32 p-2 shadow-lg border border-base-300"
       >
-        <li><a (click)="changeLanguage('es')">🇪🇸 Español</a></li>
-        <li><a (click)="changeLanguage('en')">🇬🇧 English</a></li>
+        <li><a (click)="changeLanguage('es')">es Español</a></li>
+        <li><a (click)="changeLanguage('en')">en English</a></li>
       </ul>
     </div>
 
