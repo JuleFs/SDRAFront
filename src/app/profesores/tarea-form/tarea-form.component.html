@@ -25,12 +25,13 @@
       <button class="btn bg-gray-400 btn-primary" (click)="openCreateOa()">
         + Nuevo objeto de aprendizaje
       </button>
-      <button class="btn btn-error" (click)="openDeleteTopic()">
+      <button class="btn btn-error" (click)="deleteTopic()">
         - Eliminar Tema
       </button>
     </div>
   </header>
 
+  <!-- Modal Editar Tema -->
   <div
     *ngIf="showTopicModal && (topic$ | async) as editingTopic"
     class="modal modal-open"
@@ -93,6 +94,7 @@
     </div>
   </div>
 
+  <!-- Modal Nuevo Objeto -->
   <div *ngIf="showObjectModal" class="modal modal-open">
     <div class="modal-box max-w-2xl">
       <h3 class="font-bold text-lg mb-4">Nuevo Objeto</h3>
@@ -131,28 +133,11 @@
             #typeSelect
             ngModel
           >
-            <option value="1">Simulación de laboratorio</option>
-            <option value="2">Mapa conceptual interactivo</option>
-            <option value="3">Video animado de proceso</option>
-            <option value="4">Lectura guiada</option>
-            <option value="5">Podcast de entrevista</option>
-            <option value="6">Ejercicios auto-corregibles</option>
-            <option value="7">Simulación abierta exploratoria</option>
-            <option value="8">Tutorial paso a paso</option>
-            <option value="9">Caso de estudio</option>
-            <option value="10">Infografía</option>
-            <option value="11">Foro de debate</option>
-            <option value="12">Ejemplo resuelto</option>
-            <option value="13">Proyecto integrador</option>
-            <option value="14">Diario de aprendizaje</option>
-            <option value="15">Animación de concepto abstracto</option>
-            <option value="16">Quiz diagnóstico</option>
-            <option value="17">Lectura teórica avanzada</option>
-            <option value="18">Video demostrativo</option>
-            <option value="19">Actividad de arrastrar y soltar</option>
-            <option value="20">Resumen ejecutivo</option>
-            <option value="21">Video comparativo</option>
-          </select>
+            <option value="">Selecciona un tipo</option>
+            <option *ngFor="let tipo of tiposOA" [value]="tipo.id">
+              {{ tipo.nombre }}
+            </option>
+        </select>
         </div>
 
         <!-- Selección entre Archivo o Enlace -->
@@ -178,7 +163,6 @@
           </div>
         </div>
 
-        <!-- input de archivo con referencia template -->
         <div class="form-control mt-3" *ngIf="selectedInputType === 'file'">
           <label class="label"><span class="label-text">Archivo</span></label>
           <input
@@ -190,7 +174,6 @@
           />
         </div>
 
-        <!-- Campo URL mostrado sólo si el usuario elige enlace -->
         <div class="form-control mt-3" *ngIf="selectedInputType === 'url'">
           <label class="label"><span class="label-text">URL</span></label>
           <input
@@ -206,59 +189,11 @@
           <button type="button" class="btn" (click)="showObjectModal = false">
             Cancelar
           </button>
-          <button type="submit" class="btn btn-primary" [disabled]="objForm.invalid || isLoading" >Guardar</button>
+          <button type="submit" class="btn btn-primary" [disabled]="objForm.invalid || isLoading">
+            {{ isLoading ? 'Guardando...' : 'Guardar' }}
+          </button>
         </div>
       </form>
-    </div>
-  </div>
-
-  <div
-    *ngIf="showDeleteTopicModal && (topic$ | async) as editingTopic"
-    class="modal modal-open"
-  >
-    <div class="modal-box">
-      <h3 class="font-bold text-lg mb-4">Eliminar Tema</h3>
-      <p class="mb-4">
-        ¿Estás seguro de que deseas eliminar el tema "{{
-          editingTopic.nombre
-        }}"? Esta acción no se puede deshacer.
-      </p>
-      <div class="modal-action">
-        <button
-          type="button"
-          class="btn"
-          (click)="showDeleteTopicModal = false"
-        >
-          Cancelar
-        </button>
-        <button type="submit" class="btn btn-error" (click)="deleteTopic()">
-          Eliminar
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <div
-    *ngIf="showDeleteResourceModal"
-    class="modal modal-open"
-  >
-    <div class="modal-box">
-      <h3 class="font-bold text-lg mb-4">Eliminar Recurso</h3>
-      <p class="mb-4">
-        ¿Estás seguro de que deseas eliminar este recurso? Esta acción no se puede deshacer.
-      </p>
-      <div class="modal-action">
-        <button
-          type="button"
-          class="btn"
-          (click)="showDeleteResourceModal = false"
-        >
-          Cancelar
-        </button>
-        <button type="submit" class="btn btn-error" (click)="deleteResource(oaToDeleteId)">
-          Eliminar
-        </button>
-      </div>
     </div>
   </div>
 
@@ -298,7 +233,7 @@
     </div>
   </div>
 
-  <!-- Subtemas Card (NUEVO) -->
+  <!-- Subtemas Card -->
   <div
     class="px-8 mt-4 relative z-20"
     *ngIf="topic.subtemas && topic.subtemas.length > 0"
@@ -392,14 +327,13 @@
         class="card bg-base-100 shadow-md hover:shadow-xl transition-all duration-200 hover:-translate-y-1 border border-base-300"
       >
         <div class="card-body p-4">
-          <!-- Badge con el tipo de estilo -->
           <div class="flex items-center gap-2 mb-2">
             <div class="badge badge-primary badge-sm">
               {{ getEstiloTipo(oa) }}
             </div>
             <button
               class="btn btn-error btn-sm gap-2 absolute top-4 right-4 z-10"
-              (click)="openDeleteResource(oa.objeto.id)"
+              (click)="deleteResource(oa.objeto.id)"
               title="Eliminar recurso"
             >
               <svg
@@ -408,57 +342,17 @@
                 xmlns="http://www.w3.org/2000/svg"
                 class="w-6 h-6"
               >
-                <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                <g
-                  id="SVGRepo_tracerCarrier"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                ></g>
-                <g id="SVGRepo_iconCarrier">
-                  <path
-                    d="M10 12V17"
-                    stroke="#000000"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  ></path>
-                  <path
-                    d="M14 12V17"
-                    stroke="#000000"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  ></path>
-                  <path
-                    d="M4 7H20"
-                    stroke="#000000"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  ></path>
-                  <path
-                    d="M6 10V18C6 19.6569 7.34315 21 9 21H15C16.6569 21 18 19.6569 18 18V10"
-                    stroke="#000000"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  ></path>
-                  <path
-                    d="M9 5C9 3.89543 9.89543 3 11 3H13C14.1046 3 15 3.89543 15 5V7H9V5Z"
-                    stroke="#000000"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  ></path>
-                </g>
+                <path d="M10 12V17" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                <path d="M14 12V17" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                <path d="M4 7H20" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                <path d="M6 10V18C6 19.6569 7.34315 21 9 21H15C16.6569 21 18 19.6569 18 18V10" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                <path d="M9 5C9 3.89543 9.89543 3 11 3H13C14.1046 3 15 3.89543 15 5V7H9V5Z" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
               </svg>
             </button>
           </div>
 
-          <!-- Título -->
           <h4 class="card-title text-base mb-2">{{ oa.objeto.nombre }}</h4>
 
-          <!-- Botón -->
           <div
             class="card-actions justify-end mt-auto pt-3 border-t border-base-200"
           >
@@ -466,25 +360,9 @@
               class="btn btn-primary btn-sm gap-2 w-full"
               (click)="openResource(oa)"
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                class="h-4 w-4"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                />
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
-                />
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
               </svg>
               Ver recurso
             </button>
@@ -493,21 +371,4 @@
       </div>
     </div>
   </section>
-</div>
-
-<!-- Modal de éxito - FUERA del *ngIf para que siempre esté disponible -->
-<div *ngIf="showSuccessModal" class="modal modal-open">
-  <div class="modal-box max-w-md">
-    <div class="flex flex-col items-center gap-4 py-6">
-      <div class="text-6xl">✅</div>
-      <h3 class="font-bold text-2xl text-center">{{ successMessage }}</h3>
-      <p class="text-base-content/70 text-center">
-        Los cambios se han guardado correctamente
-      </p>
-      <button class="btn btn-primary mt-4 w-full" (click)="closeSuccessModal()">
-        Aceptar
-      </button>
-    </div>
-  </div>
-  <div class="modal-backdrop bg-black/50"></div>
 </div>

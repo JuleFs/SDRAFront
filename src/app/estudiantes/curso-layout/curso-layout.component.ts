@@ -9,8 +9,10 @@ import { RecommendationService } from 'src/app/services/recomendacion.service';
   standalone: true,
   imports: [CommonModule, RouterModule, SidebarComponent],
   template: `
-    <div class="flex h-screen w-full bg-base-200">
-      <aside class="w-72 min-w-72 border-r border-base-300 bg-base-100 shadow-sm">
+    <div class="flex h-screen w-full bg-base-200 relative">
+      <aside class="border-r border-base-300 bg-base-100 shadow-sm transition-all duration-300 ease-in-out"
+             [class.w-72]="true"
+             [class.min-w-0]="true">
         <app-sidebar [units]="units$ | async"></app-sidebar>
       </aside>
       <main class="flex-1 overflow-y-auto">
