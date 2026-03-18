@@ -1,8 +1,8 @@
-import { AfterViewInit, Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnInit, Input } from '@angular/core';
 import { Chart } from 'chart.js';
 import { AlumnoService } from 'src/app/services/alumno.service';
 import { chartValues } from '../inicio/lista.model';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 @Component({
@@ -14,6 +14,8 @@ export class ResultadosComponent implements OnInit, AfterViewInit {
 
   public chart: any
 
+  @Input() nroCuenta?: number;
+
   activo: number = 0;
   reflexivo: number = 0;
   sensorial: number = 0;
@@ -23,14 +25,30 @@ export class ResultadosComponent implements OnInit, AfterViewInit {
   secuencial: number = 0;
   global: number = 0;
 
+  esVistaMaestro: boolean = false;
+  cursoId: string = '';
+
+
   constructor(
     private servicio: AlumnoService,
     private router: Router,
-    public translate: TranslateService
+    public translate: TranslateService,
+    private route: ActivatedRoute
   ) { }
 
   ngOnInit(): void {
+    const paramNroCuenta = this.route.snapshot.paramMap.get('nroCuenta');
+    if (paramNroCuenta) {
+      this.nroCuenta = Number(paramNroCuenta);
+    }
 
+      // Detectar si viene del profesor
+    this.route.queryParams.subscribe(params => {
+      if (params['from'] === 'profesor') {
+        this.esVistaMaestro = true;
+        this.cursoId = params['cursoId'] || '';
+      }
+    });
   }
 
   ngAfterViewInit() {
@@ -92,7 +110,7 @@ export class ResultadosComponent implements OnInit, AfterViewInit {
   obtenerPerfilAlumno() {
     const chartVal = new chartValues();
     this.servicio.obtenerPerfil(
-      JSON.parse(localStorage.getItem('info_alumno') || "{}").nro_cuenta,
+      this.nroCuenta ?? JSON.parse(localStorage.getItem('info_alumno') || "{}").nro_cuenta
     ).subscribe ( (data) => {
 
       if (!data || data.length === 0) {

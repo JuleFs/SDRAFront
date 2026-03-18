@@ -1,0 +1,106 @@
+<div class="min-h-screen bg-base-200 py-8 px-4 sm:px-6 lg:px-8">
+  <div class="max-w-7xl mx-auto">
+
+    <!-- Header -->
+    <div class="flex items-center gap-4 mb-8">
+      <a
+        [routerLink]="['/profesor/curso', cursoId, 'seguimiento']"
+        class="btn btn-outline btn-sm gap-2">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+        </svg>
+        Regresar
+      </a>
+      <div>
+        <h1 class="text-3xl font-bold text-base-content">OA Recomendados</h1>
+        <p class="text-base-content/60 mt-1">
+          {{ nombreAlumno || 'Cargando...' }}
+          <span class="font-mono ml-2">#{{ nroCuenta }}</span>
+        </p>
+      </div>
+    </div>
+
+    <!-- Loading principal -->
+    <div *ngIf="isLoading" class="flex justify-center items-center py-20">
+      <span class="loading loading-spinner loading-lg text-primary"></span>
+    </div>
+
+    <!-- Unidades -->
+    <div *ngIf="!isLoading" class="space-y-8">
+      <div *ngFor="let unidad of unidades">
+
+        <!-- Título unidad -->
+        <div class="flex items-center gap-3 mb-4">
+          <div class="w-10 h-10 flex items-center justify-center bg-gradient-to-br from-primary to-secondary text-white font-bold rounded-xl">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+            </svg>
+          </div>
+          <h2 class="text-xl font-bold text-base-content">{{ unidad.nombre }}</h2>
+        </div>
+
+        <!-- Temas -->
+        <div class="space-y-4 pl-4">
+          <div *ngFor="let tema of unidad.temas" class="card bg-base-100 shadow-md">
+            <div class="card-body">
+
+              <!-- Título tema -->
+              <div class="flex items-center gap-3 mb-4">
+                <div class="badge badge-primary badge-lg">Tema</div>
+                <h3 class="text-lg font-semibold text-base-content">{{ tema.nombre }}</h3>
+              </div>
+
+              <!-- Loading tema -->
+              <div *ngIf="tema.isLoading" class="flex items-center gap-2 py-4">
+                <span class="loading loading-spinner loading-sm text-primary"></span>
+                <span class="text-sm text-base-content/60">Cargando recomendaciones...</span>
+              </div>
+
+              <!-- Sin OAs -->
+              <div *ngIf="!tema.isLoading && tema.recomendacion?.objetos?.length === 0"
+                class="flex flex-col items-center justify-center py-8 text-base-content/40">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 mb-2 opacity-30" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                    d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <p class="text-sm">No hay objetos de aprendizaje compatibles para este tema</p>
+              </div>
+
+              <!-- Grid OAs -->
+              <div *ngIf="!tema.isLoading && tema.recomendacion?.objetos?.length > 0"
+                class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div
+                  *ngFor="let oa of tema.recomendacion.objetos"
+                  class="card bg-base-200 border border-base-300 hover:shadow-md transition-all duration-200 hover:-translate-y-1">
+                  <div class="card-body p-4">
+                    <div class="flex items-center gap-2 mb-2">
+                      <div class="badge badge-primary badge-sm">{{ getEstiloTipo(oa) }}</div>
+                    </div>
+                    <h4 class="font-semibold text-base-content text-sm mb-3">{{ oa.objeto.nombre }}</h4>
+                    <div class="card-actions justify-end mt-auto">
+                      <button
+                        class="btn btn-primary btn-xs gap-1 w-full"
+                        (click)="openResource(oa)">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                        </svg>
+                        Ver recurso
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</div>

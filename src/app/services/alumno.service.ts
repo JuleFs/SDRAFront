@@ -52,4 +52,15 @@ export class AlumnoService {
   resultadoEncuesta( data:any ) : Observable <any> {
     return this.http.post( this.urlAPI + "inventario-de-felder/resultado-encuesta", data, {responseType: 'text'} );
   }
+
+  buscarAlumnos(search?: string, grupo?: number, page: number = 1, limit: number = 10): Observable<any> {
+    let params = `page=${page}&limit=${limit}`;
+    if (search) params += `&search=${search}`;
+    if (grupo) params += `&grupo=${grupo}`;
+    return this.http.get(`${this.urlAPI}alumnos/buscar?${params}`);
+  }
+
+  obtenerGrupos(): Observable<number[]> {
+    return this.http.get<number[]>(`${this.urlAPI}grupos/numeros`);
+  }
 }

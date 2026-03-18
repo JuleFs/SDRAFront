@@ -9,12 +9,33 @@ import { RecommendationService } from 'src/app/services/recomendacion.service';
   standalone: true,
   imports: [CommonModule, RouterModule, SidebarComponent],
   template: `
-    <div class="flex h-screen w-full bg-base-200 relative">
-      <aside class="border-r border-base-300 bg-base-100 shadow-sm transition-all duration-300 ease-in-out"
-             [class.w-72]="true"
-             [class.min-w-0]="true">
-        <app-sidebar [units]="units$ | async"></app-sidebar>
+    <div class="flex h-screen w-full bg-base-200 overflow-hidden">
+
+      <!-- Sidebar colapsable -->
+      <aside
+        class="transition-all duration-300 ease-in-out border-r border-base-300 bg-base-100 shadow-sm overflow-hidden"
+        [class.w-72]="sidebarOpen"
+        [class.w-0]="!sidebarOpen"
+      >
+        <div class="min-w-72 h-full">
+          <app-sidebar
+            [units]="units$ | async"
+            [onClose]="closeSidebar.bind(this)">
+          </app-sidebar>
+        </div>
       </aside>
+
+      <!-- Botón hamburguesa cuando el sidebar está cerrado -->
+      <button
+        *ngIf="!sidebarOpen"
+        (click)="sidebarOpen = true"
+        class="fixed left-0 top-1/2 -translate-y-1/2 z-50 bg-primary text-primary-content w-8 h-12 flex items-center justify-center rounded-r-lg shadow-lg hover:bg-primary-focus transition-colors"
+        title="Abrir menú"
+      >
+        ☰
+      </button>
+
+      <!-- Contenido principal -->
       <main class="flex-1 overflow-y-auto">
         <router-outlet></router-outlet>
       </main>
@@ -23,6 +44,7 @@ import { RecommendationService } from 'src/app/services/recomendacion.service';
 })
 export class CourseLayoutComponent implements OnInit {
   units$!: any;
+  sidebarOpen = true;
 
   constructor(
     private route: ActivatedRoute,
@@ -39,5 +61,9 @@ export class CourseLayoutComponent implements OnInit {
         });
       }
     });
+  }
+
+  closeSidebar(): void {
+    this.sidebarOpen = false;
   }
 }
