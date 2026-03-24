@@ -29,6 +29,8 @@ export class TopicFormComponent {
     private contentService: ContentService,
   ) {}
 
+  estilosObjeto: any[] = [];
+
   topic$!: Observable<Topic | undefined>;
   objetos$!: Observable<any>;
   request$!: Observable<any>;
@@ -378,6 +380,23 @@ export class TopicFormComponent {
         });
       }
     });
+
+    this.contentService.getEstilosObjeto().subscribe({
+      next: (data) => this.estilosObjeto = data,
+      error: (err) => console.error('Error al cargar estilos:', err)
+    });
+  }
+
+  formatearNombre(nombre: string): string {
+    const minusculas = ['de', 'del', 'la', 'el', 'y', 'en'];
+    return nombre
+      .split('_')
+      .map((p: string, i: number) =>
+        i === 0 || !minusculas.includes(p)
+          ? p.charAt(0).toUpperCase() + p.slice(1).toLowerCase()
+          : p.toLowerCase()
+      )
+      .join(' ');
   }
 
   recargarObjetos(): void {

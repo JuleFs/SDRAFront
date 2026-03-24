@@ -131,14 +131,13 @@
             class="select select-bordered"
             required
             #typeSelect
-            ngModel
-          >
-            <option value="">Selecciona un tipo</option>
-            <option *ngFor="let tipo of tiposOA" [value]="tipo.id">
-              {{ tipo.nombre }}
+            ngModel>
+            <option value="" disabled selected>Selecciona un tipo</option>
+            <option *ngFor="let estilo of estilosObjeto" [value]="estilo.id">
+              {{ formatearNombre(estilo.objeto) }}
             </option>
         </select>
-        </div>
+      </div>
 
         <!-- Selección entre Archivo o Enlace -->
         <div class="form-control mt-3">
