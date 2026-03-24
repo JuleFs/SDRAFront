@@ -34,15 +34,15 @@ export class EncuestaGuard implements CanActivate {
     return this.alumnoService.verificarCuestionarioCompletado(nroCuenta, 1).pipe(
       map(response => {
         if (response.completado) {
-          // Ya completó la encuesta, permitir acceso
+          // Ya completó el cuestionario, permitir acceso
           return true;
         } else {
-          // No ha completado la encuesta, mostrar alerta y redirigir
+          // No ha completado el cuestionario, mostrar alerta y redirigir
           Swal.fire({
-            title: 'Encuesta pendiente',
+            title: 'Cuestionario pendiente',
             text: 'Debes completar el cuestionario de estilo de aprendizaje antes de acceder a los cursos.',
             icon: 'warning',
-            confirmButtonText: 'Ir a encuesta',
+            confirmButtonText: 'Ir a cuestionario',
             confirmButtonColor: '#6366f1',
             allowOutsideClick: false,
             customClass: {
@@ -55,7 +55,7 @@ export class EncuestaGuard implements CanActivate {
         }
       }),
       catchError(error => {
-        console.error('Error al verificar encuesta:', error);
+        console.error('Error al verificar cuestionario:', error);
         // En caso de error, redirigir a inicio
         this.router.navigate(['/Inicio']);
         return of(false);

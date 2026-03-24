@@ -80,7 +80,7 @@ export class CuestionarioComponent implements OnInit {
       (data) => {
         Swal.fire({
           title: '¡Completado!',
-          text: 'Tus respuestas han sido registradas exitosamente',
+          text: 'Tus respuestas han sido registradas exitósamente',
           icon: 'success',
           confirmButtonText: 'Ver resultados',
           confirmButtonColor: '#6366f1',
@@ -118,7 +118,7 @@ export class CuestionarioComponent implements OnInit {
       confirmButtonColor: '#ef4444',
       cancelButtonColor: '#6366f1',
       confirmButtonText: 'Sí, cancelar',
-      cancelButtonText: 'Continuar encuesta',
+      cancelButtonText: 'Continuar cuestionario',
       customClass: {
         container: 'my-swal',
       },

@@ -1,7 +1,7 @@
 {
   "header": {
     "courses": "Mis cursos",
-    "surveys": "Encuestas",
+    "surveys": "Cuestionarios",
     "logout": "Cerrar sesión"
   },
   "login": {
@@ -13,23 +13,23 @@
     "teacher": "Profesor"
   },
   "survey": {
-    "title": "Inventario de Felder-Silverman",
+    "title": "Cuestionario de detección de estilos de aprendizaje",
     "subtitle": "Descubre tu estilo de aprendizaje",
     "progress": "Progreso",
     "cancel": "Cancelar",
     "save": "Guardar respuestas",
-    "completedSuccessfully": "Encuesta completada exitosamente",
+    "completedSuccessfully": "Cuestionario completado exitosamente",
     "viewResults": "Ver resultados",
-    "pending": "Encuesta pendiente",
+    "pending": "Cuestionario pendiente",
     "mustComplete": "Debes completar el cuestionario de estilo de aprendizaje antes de acceder a los cursos.",
-    "goToSurvey": "Ir a la encuesta",
-    "completed": "Completada",
+    "goToSurvey": "Ir al cuestionario",
+    "completed": "Completado",
     "retake": "Realizar de nuevo",
-    "start": "Iniciar encuesta",
+    "start": "Iniciar cuestionario",
     "viewMyResults": "Ver mis resultados"
   },
   "results": {
-    "pageTitle": "Resultados de tu Encuesta",
+    "pageTitle": "Resultados de tu Cuestionario",
     "pageSubtitle": "Conoce tu perfil de aprendizaje según el modelo de Felder-Silverman",
     "yourProfile": "Tu Perfil de Aprendizaje",
     "graph": "Gráfica",
@@ -75,9 +75,9 @@
   },
   "inicio": {
     "yourLearningProfile": "Tu Perfil de Aprendizaje",
-    "surveyDescription": "Descripción de la Encuesta",
-    "selectSurvey": "Selecciona una encuesta para ver su descripción",
-    "assignedSurveys": "Encuestas Asignadas",
+    "surveyDescription": "Descripción del Cuestionario",
+    "selectSurvey": "Selecciona un cuestionario para ver su descripción",
+    "assignedSurveys": "Cuestionarios Asignados",
     "professor": "Profesor",
     "status": "Estado"
   }

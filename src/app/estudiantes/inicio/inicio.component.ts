@@ -27,7 +27,7 @@ export class InicioComponent implements OnInit, AfterViewInit {
   global: number = 0;
 
   constructor(private servicio: AlumnoService, private route: Router) {
-    this.Description = 'Selecciona una encuesta para ver su descripción';
+    this.Description = 'Selecciona un cuestionario para ver su descripción';
   }
 
   OnClick(Des: any) {
