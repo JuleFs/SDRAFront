@@ -1,0 +1,186 @@
+<div class="min-h-screen bg-base-200 py-8 px-4 sm:px-6 lg:px-8">
+  <div class="max-w-7xl mx-auto">
+
+    <!-- Header -->
+    <div class="mb-6">
+      <h1 class="text-3xl font-bold text-base-content">Seguimiento de Alumnos</h1>
+      <p class="text-base-content/60 mt-1">Consulta el perfil y recursos recomendados de tus alumnos</p>
+    </div>
+
+    <!-- Filtros -->
+    <div class="card bg-base-100 shadow-md mb-6">
+      <div class="card-body">
+        <div class="flex flex-col sm:flex-row gap-4">
+
+          <!-- Search bar -->
+          <div class="flex-1">
+            <label class="label">
+              <span class="label-text font-medium">Buscar alumno</span>
+            </label>
+            <label class="input input-bordered flex items-center gap-2 w-full">
+              <svg xmlns="http://www.w3.org/2000/svg"
+                class="h-4 w-4 opacity-50"
+                fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+              <input
+                type="text"
+                class="grow"
+                placeholder="Nombre o número de cuenta..."
+                [(ngModel)]="searchText"
+                (ngModelChange)="onSearchChange()"
+              />
+            </label>
+          </div>
+
+          <!-- Select de grupo -->
+          <div class="sm:w-48">
+            <label class="label">
+              <span class="label-text font-medium">Filtrar por grupo</span>
+            </label>
+            <select
+              class="select select-bordered w-full"
+              [(ngModel)]="grupoSeleccionado"
+              (ngModelChange)="onGrupoChange()">
+              <option [ngValue]="undefined">Todos los grupos</option>
+              <option *ngFor="let grupo of grupos" [ngValue]="grupo">
+                Grupo {{ grupo }}
+              </option>
+            </select>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- Título dinámico -->
+    <div class="mb-4">
+      <h2 class="text-xl font-semibold text-base-content">
+        {{ grupoSeleccionado ? 'Grupo ' + grupoSeleccionado : 'Todos los grupos' }}
+        <span class="text-base font-normal text-base-content/60 ml-2">
+          ({{ total }} alumno{{ total !== 1 ? 's' : '' }})
+        </span>
+      </h2>
+    </div>
+
+    <!-- Loading -->
+    <div *ngIf="isLoading" class="flex justify-center items-center py-20">
+      <span class="loading loading-spinner loading-lg text-primary"></span>
+    </div>
+
+    <!-- Tabla -->
+    <div *ngIf="!isLoading" class="card bg-base-100 shadow-md">
+      <div class="card-body p-0">
+        <div class="overflow-x-auto rounded-2xl">
+          <table class="table table-zebra table-md">
+
+            <thead class="bg-base-200 text-base-content">
+              <tr>
+                <th>#</th>
+                <th>Número de cuenta</th>
+                <th>Nombre del alumno</th>
+                <th class="text-center">Grupo</th>
+                <th class="text-center">Acciones</th>
+              </tr>
+            </thead>
+
+            <tbody>
+
+              <!-- Empty state -->
+              <tr *ngIf="alumnos.length === 0">
+                <td colspan="5">
+                  <div class="flex flex-col items-center justify-center gap-3 py-12 text-base-content/40">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                        d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
+                    <p class="text-sm">No se encontraron alumnos</p>
+                  </div>
+                </td>
+              </tr>
+
+              <!-- Filas -->
+              <tr *ngFor="let alumno of alumnos; let i = index" class="hover">
+                <th>{{ (page - 1) * limit + i + 1 }}</th>
+                <td class="font-mono">{{ alumno.nro_cuenta }}</td>
+                <td class="font-medium">{{ getNombreCompleto(alumno) }}</td>
+                <td class="text-center">
+                  <div class="badge badge-neutral badge-outline">{{ alumno.grupo }}</div>
+                </td>
+                <td>
+                  <div class="flex gap-2 justify-center">
+                    <a
+                      [routerLink]="['/profesor/curso', cursoId, 'seguimiento', 'perfil', alumno.nro_cuenta]"
+                      class="btn btn-primary btn-xs gap-1">
+                      Ver perfil
+                    </a>
+                    <a
+                      [routerLink]="['/profesor/curso', cursoId, 'seguimiento', 'oa', alumno.nro_cuenta]"
+                      class="btn btn-secondary btn-xs gap-1">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                      </svg>
+                      OA Recomendados
+                    </a>
+                  </div>
+                </td>
+              </tr>
+
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Paginación -->
+        <div *ngIf="totalPages > 1" class="flex justify-between items-center px-4 py-3 border-t border-base-300">
+
+          <!-- Info -->
+          <span class="text-sm text-base-content/60">
+            Mostrando {{ (page - 1) * limit + 1 }} - {{ Math.min(page * limit, total) }} de {{ total }} alumnos
+          </span>
+
+          <!-- Botones -->
+          <div class="join">
+            <button
+              class="join-item btn btn-sm"
+              [disabled]="page === 1"
+              (click)="cambiarPagina(1)">
+              «
+            </button>
+            <button
+              class="join-item btn btn-sm"
+              [disabled]="page === 1"
+              (click)="cambiarPagina(page - 1)">
+              ‹
+            </button>
+
+            <button
+              *ngFor="let p of getPaginasVisibles()"
+              class="join-item btn btn-sm"
+              [class.btn-active]="p === page"
+              (click)="cambiarPagina(p)">
+              {{ p }}
+            </button>
+
+            <button
+              class="join-item btn btn-sm"
+              [disabled]="page === totalPages"
+              (click)="cambiarPagina(page + 1)">
+              ›
+            </button>
+            <button
+              class="join-item btn btn-sm"
+              [disabled]="page === totalPages"
+              (click)="cambiarPagina(totalPages)">
+              »
+            </button>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</div>

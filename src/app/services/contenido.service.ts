@@ -103,6 +103,10 @@ export class ContentService {
   }
 
   deleteLearningObject(id: string): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}objetos-aprendizaje/${id}`);
+    return this.http.delete<void>(`${this.apiUrl}objetos-aprendizaje/${id}/full`);
+  }
+
+  getEstilosObjeto(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}estilo-objeto`);
   }
 }

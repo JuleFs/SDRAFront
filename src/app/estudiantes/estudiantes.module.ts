@@ -6,6 +6,7 @@ import { CuestionarioComponent } from './cuestionario/cuestionario.component';
 import { ResultadosComponent } from './resultados/resultados.component';
 import { FormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
+import { RouterModule } from '@angular/router';
 
 @NgModule({
   declarations: [
@@ -17,7 +18,8 @@ import { TranslateModule } from '@ngx-translate/core';
     CommonModule,
     NgChartsModule,
     FormsModule,
-    TranslateModule
+    TranslateModule,
+    RouterModule,
   ]
 })
 export class EstudiantesModule { }

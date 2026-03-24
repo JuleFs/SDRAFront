@@ -30,7 +30,7 @@
         <!-- Card header con imagen -->
         <figure class="h-32 overflow-hidden">
           <img
-            src="../../../assets/materia-logo.jpeg"
+            src="../../../assets/programación.png"
             alt="Course logo"
             class="w-full h-full object-cover"
           />
@@ -42,6 +42,12 @@
           </h2>
 
           <div class="card-actions justify-end mt-4">
+            <a
+              [routerLink]="['curso', course.id, 'seguimiento']"
+              class="btn btn-outline btn-secondary btn-sm"
+            >
+              Seguimiento
+            </a>
             <a
               [routerLink]="['curso', course.id]"
               class="btn btn-primary btn-sm"

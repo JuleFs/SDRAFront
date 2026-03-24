@@ -17,6 +17,10 @@ import { TemaComponent } from './estudiantes/tema/tema.component';
 import { EncuestaGuard } from './guards/encuesta.guard';
 import { TeacherDashboardComponent } from './profesores/teacher-dashboard/teacher-dashboard.component';
 import { AuthGuard } from './guards/auth.guard';
+import { SeguimientoComponent } from './profesores/seguimiento/seguimiento.component';
+import { PerfilAlumnoComponent } from './profesores/seguimiento/perfil-alumno/perfil-alumno.component';
+import { OaRecomendadosComponent } from './profesores/seguimiento/oa-recomendados/oa-recomendados.component';
+
 
 const appRoutes: Routes = [
   { path: '', component: LoginComponent },
@@ -58,7 +62,18 @@ const appRoutes: Routes = [
         path: 'unidad/:id/tema/:temaId/objeto-aprendizaje/:id',
         component: ResourceFormComponent,
       },
+      { path: 'seguimiento', component: SeguimientoComponent },
+
     ],
+  },
+
+  {
+    path: 'profesor/curso/:cursoId/seguimiento/perfil/:nroCuenta',
+    component: PerfilAlumnoComponent,
+  },
+  {
+    path: 'profesor/curso/:cursoId/seguimiento/oa/:nroCuenta',
+    component: OaRecomendadosComponent,
   },
 ];
 

@@ -1,6 +1,16 @@
 <div class="min-h-screen bg-base-200 py-8 px-4 sm:px-6 lg:px-8">
   <div class="max-w-7xl mx-auto">
 
+    <div *ngIf="esVistaMaestro" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
+      <a
+        [routerLink]="['../']"
+        class="inline-flex items-center gap-2 btn btn-outline btn-sm">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+        </svg>
+        Regresar a seguimiento
+      </a>
+    </div>
     <!-- Header -->
     <div class="mb-8">
       <h1 class="text-3xl font-bold text-base-content mb-2">
@@ -199,6 +209,7 @@
 
         <!-- Botón para ir a cursos -->
         <button
+          *ngIf="!esVistaMaestro"
           class="btn btn-primary w-full gap-2"
           (click)="navigateCursos()">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">

@@ -11,6 +11,7 @@ import {
 import { ContentService } from 'src/app/services/contenido.service';
 import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs/internal/Observable';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-teacher-dashboard',
@@ -32,10 +33,6 @@ export class TeacherDashboardComponent {
   showUnitModal = false;
   showTopicModal = false;
   showObjectModal = false;
-  showSuccessModal = false;
-  showErrorModal = false;
-  successMessage = '';
-  errorMessage = '';
 
   // Datos para edición
   editingUnit: Unit | null = null;
@@ -63,7 +60,6 @@ export class TeacherDashboardComponent {
     this.route.paramMap.subscribe((params) => {
       const materiaId = params.get('cursoId');
       this.materiaId = materiaId ?? '';
-      console.log('Materia ID:', this.materiaId);
       if (this.materiaId) {
         this.units$ = this.contentService.getUnits(this.materiaId);
       }
@@ -84,6 +80,13 @@ export class TeacherDashboardComponent {
     this.showUnitModal = true;
   }
 
+  cancelarNuevaUnidad(form: any): void {
+    this.nombreNuevaUnidad = '';
+    this.descripcionNuevaUnidad = '';
+    this.numeroNuevaUnidad = null;
+    form.resetForm();
+  }
+
   saveUnit(unit: Partial<Unit>): void {
     const isEditing = !!this.editingUnit?.id;
     unit.id_materia = this.materiaId;
@@ -91,49 +94,90 @@ export class TeacherDashboardComponent {
       ? this.contentService.updateUnit(this.editingUnit!.id, unit)
       : this.contentService.createUnit(unit);
 
-    console.log('Guardando unidad:', unit);
+    Swal.fire({
+      title: isEditing ? 'Actualizando unidad...' : 'Creando unidad...',
+      allowOutsideClick: false,
+      didOpen: () => Swal.showLoading(),
+    });
 
     request.subscribe({
       next: () => {
-        console.log('Unidad guardada exitosamente');
         this.showUnitModal = false;
-        this.successMessage = isEditing
-          ? 'Unidad actualizada exitosamente'
-          : 'Unidad creada exitosamente';
-        this.showSuccessModal = true;
-        console.log('showSuccessModal:', this.showSuccessModal);
-        console.log('successMessage:', this.successMessage);
-
         this.loadUnits();
         this.contentService.notifyUnitsChanged();
+
+        Swal.fire({
+          title: isEditing ? '¡Unidad actualizada!' : '¡Unidad creada!',
+          text: isEditing
+            ? 'La unidad se ha actualizado correctamente.'
+            : 'La nueva unidad se ha creado correctamente.',
+          icon: 'success',
+          confirmButtonText: 'Aceptar',
+          confirmButtonColor: '#6366f1',
+          customClass: { container: 'my-swal' },
+        });
       },
       error: (err) => {
         console.error('Error al guardar unidad:', err);
         this.showUnitModal = false;
-        this.errorMessage = isEditing
-          ? 'Error al actualizar la unidad. Por favor, intenta de nuevo.'
-          : 'Error al crear la unidad. Por favor, intenta de nuevo.';
-        this.showErrorModal = true;
+        Swal.fire({
+          title: 'Error',
+          text: isEditing
+            ? 'Error al actualizar la unidad. Por favor, intenta de nuevo.'
+            : 'Error al crear la unidad. Por favor, intenta de nuevo.',
+          icon: 'error',
+          confirmButtonColor: '#ef4444',
+          customClass: { container: 'my-swal' },
+        });
       },
     });
   }
 
   deleteUnit(id: string): void {
-    if (confirm('¿Eliminar esta unidad y todo su contenido?')) {
-      this.contentService.deleteUnit(id).subscribe({
-        next: () => {
-          this.successMessage = 'Unidad eliminada exitosamente';
-          this.showSuccessModal = true;
-          this.loadUnits();
-          this.contentService.notifyUnitsChanged();
-        },
-        error: (err) => {
-          console.error('Error al eliminar:', err);
-          this.errorMessage = 'Error al eliminar la unidad. Por favor, intenta de nuevo.';
-          this.showErrorModal = true;
-        },
-      });
-    }
+    Swal.fire({
+      title: '¿Eliminar esta unidad?',
+      text: 'Se eliminará la unidad y todo su contenido. Esta acción no se puede deshacer.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#ef4444',
+      cancelButtonColor: '#6366f1',
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar',
+      customClass: { container: 'my-swal' },
+    }).then((result) => {
+      if (result.isConfirmed) {
+        Swal.fire({
+          title: 'Eliminando...',
+          allowOutsideClick: false,
+          didOpen: () => Swal.showLoading(),
+        });
+
+        this.contentService.deleteUnit(id).subscribe({
+          next: () => {
+            this.loadUnits();
+            this.contentService.notifyUnitsChanged();
+            Swal.fire({
+              title: '¡Unidad eliminada!',
+              text: 'La unidad se ha eliminado correctamente.',
+              icon: 'success',
+              confirmButtonText: 'Aceptar',
+              confirmButtonColor: '#6366f1',
+              customClass: { container: 'my-swal' },
+            });
+          },
+          error: (err) => {
+            console.error('Error al eliminar:', err);
+            Swal.fire({
+              title: 'Error',
+              text: 'Error al eliminar la unidad. Por favor, intenta de nuevo.',
+              icon: 'error',
+              confirmButtonColor: '#ef4444',
+              customClass: { container: 'my-swal' },
+            });
+          },
+        });
+      }
+    });
   }
 
   // TEMAS
@@ -154,44 +198,90 @@ export class TeacherDashboardComponent {
       ? this.contentService.updateTopic(String(this.editingTopic!.id), topic)
       : this.contentService.createTopic({ ...topic });
 
+    Swal.fire({
+      title: isEditing ? 'Actualizando tema...' : 'Creando tema...',
+      allowOutsideClick: false,
+      didOpen: () => Swal.showLoading(),
+    });
+
     request.subscribe({
       next: () => {
         this.showTopicModal = false;
-        this.successMessage = isEditing
-          ? 'Tema actualizado exitosamente'
-          : 'Tema creado exitosamente';
-        this.showSuccessModal = true;
-
         this.loadUnits();
         this.contentService.notifyUnitsChanged();
+
+        Swal.fire({
+          title: isEditing ? '¡Tema actualizado!' : '¡Tema creado!',
+          text: isEditing
+            ? 'El tema se ha actualizado correctamente.'
+            : 'El nuevo tema se ha creado correctamente.',
+          icon: 'success',
+          confirmButtonText: 'Aceptar',
+          confirmButtonColor: '#6366f1',
+          customClass: { container: 'my-swal' },
+        });
       },
       error: (err) => {
         console.error('Error al guardar tema:', err);
         this.showTopicModal = false;
-        this.errorMessage = isEditing
-          ? 'Error al actualizar el tema. Por favor, intenta de nuevo.'
-          : 'Error al crear el tema. Por favor, intenta de nuevo.';
-        this.showErrorModal = true;
+        Swal.fire({
+          title: 'Error',
+          text: isEditing
+            ? 'Error al actualizar el tema. Por favor, intenta de nuevo.'
+            : 'Error al crear el tema. Por favor, intenta de nuevo.',
+          icon: 'error',
+          confirmButtonColor: '#ef4444',
+          customClass: { container: 'my-swal' },
+        });
       },
     });
   }
 
   deleteTopic(id: string): void {
-    if (confirm('¿Eliminar este tema?')) {
-      this.contentService.deleteTopic(id).subscribe({
-        next: () => {
-          this.successMessage = 'Tema eliminado exitosamente';
-          this.showSuccessModal = true;
-          this.loadUnits();
-          this.contentService.notifyUnitsChanged();
-        },
-        error: (err) => {
-          console.error('Error:', err);
-          this.errorMessage = 'Error al eliminar el tema. Por favor, intenta de nuevo.';
-          this.showErrorModal = true;
-        },
-      });
-    }
+    Swal.fire({
+      title: '¿Eliminar este tema?',
+      text: 'Esta acción no se puede deshacer.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#ef4444',
+      cancelButtonColor: '#6366f1',
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar',
+      customClass: { container: 'my-swal' },
+    }).then((result) => {
+      if (result.isConfirmed) {
+        Swal.fire({
+          title: 'Eliminando...',
+          allowOutsideClick: false,
+          didOpen: () => Swal.showLoading(),
+        });
+
+        this.contentService.deleteTopic(id).subscribe({
+          next: () => {
+            this.loadUnits();
+            this.contentService.notifyUnitsChanged();
+            Swal.fire({
+              title: '¡Tema eliminado!',
+              text: 'El tema se ha eliminado correctamente.',
+              icon: 'success',
+              confirmButtonText: 'Aceptar',
+              confirmButtonColor: '#6366f1',
+              customClass: { container: 'my-swal' },
+            });
+          },
+          error: (err) => {
+            console.error('Error:', err);
+            Swal.fire({
+              title: 'Error',
+              text: 'Error al eliminar el tema. Por favor, intenta de nuevo.',
+              icon: 'error',
+              confirmButtonColor: '#ef4444',
+              customClass: { container: 'my-swal' },
+            });
+          },
+        });
+      }
+    });
   }
 
   // OBJETOS DE APRENDIZAJE
@@ -214,102 +304,116 @@ export class TeacherDashboardComponent {
   }
 
   saveObject(form: NgForm, fileInput: HTMLInputElement | null): void {
-  const values = form.value || {};
+    const values = form.value || {};
 
-  //Validar que tenemos todos los datos necesarios
-  if (!values.id_tema || !values.id_type || !values.nombre || !this.file) {
-    console.error('Faltan datos requeridos:', {
-      id_tema: values.id_tema,
-      id_type: values.id_type,
-      nombre: values.nombre,
-      file: this.file
-    });
-    this.errorMessage = 'Por favor completa todos los campos requeridos';
-    this.showErrorModal = true;
-    return;
-  }
-
-  const formData = new FormData();
-
-  //Convertir a números/strings explícitamente
-  formData.append('id_tema', String(values.id_tema));
-  formData.append('id_type', String(values.id_type));
-  formData.append('nombre', values.nombre);
-  formData.append('descripcion', values.descripcion || '');
-
-  //Agregar el archivo UNA SOLA VEZ
-  formData.append('file', this.file, this.file.name);
-
-  // Debug: Ver qué se está enviando
-  console.log('Datos a enviar:');
-  formData.forEach((valor, clave) => {
-    if (clave === 'file') {
-      console.log(`${clave}:`, (valor as File).name, (valor as File).type, (valor as File).size);
-    } else {
-      console.log(`${clave}: ${valor}`);
+    if (!values.id_tema || !values.id_type || !values.nombre || !this.file) {
+      Swal.fire({
+        title: 'Campos incompletos',
+        text: 'Por favor completa todos los campos requeridos.',
+        icon: 'warning',
+        confirmButtonColor: '#6366f1',
+        customClass: { container: 'my-swal' },
+      });
+      return;
     }
-  });
 
-  const isEditing = !!this.editingObject?.id;
-  const request$ = isEditing
-    ? this.contentService.updateLearningObject(
-        String(this.editingObject!.id),
-        formData
-      )
-    : this.contentService.createLearningObjectWithFile(formData, this.file);
+    const formData = new FormData();
+    formData.append('id_tema', String(values.id_tema));
+    formData.append('id_type', String(values.id_type));
+    formData.append('nombre', values.nombre);
+    formData.append('descripcion', values.descripcion || '');
+    formData.append('file', this.file, this.file.name);
 
-  this.isLoading = true;
-  request$.subscribe({
-    next: (res) => {
-      this.isLoading = false;
-      this.showObjectModal = false;
-      this.successMessage = isEditing
-        ? 'Objeto actualizado exitosamente'
-        : 'Objeto creado exitosamente';
-      this.showSuccessModal = true;
+    const isEditing = !!this.editingObject?.id;
+    const request$ = isEditing
+      ? this.contentService.updateLearningObject(String(this.editingObject!.id), formData)
+      : this.contentService.createLearningObjectWithFile(formData, this.file);
 
-      this.loadUnits();
-    },
-    error: (err) => {
-      this.isLoading = false;
-      this.showObjectModal = false;
-      console.error('Error completo:', err);
-      console.error('Error status:', err.status);
-      console.error('Error body:', err.error);
+    this.isLoading = true;
 
-      //Mostrar error específico
-      this.errorMessage = isEditing
-        ? `Error al actualizar el objeto: ${err.error?.message || err.message}`
-        : `Error al crear el objeto: ${err.error?.message || err.message}`;
-      this.showErrorModal = true;
-    },
-  });
-}
+    Swal.fire({
+      title: isEditing ? 'Actualizando objeto...' : 'Creando objeto...',
+      allowOutsideClick: false,
+      didOpen: () => Swal.showLoading(),
+    });
+
+    request$.subscribe({
+      next: () => {
+        this.isLoading = false;
+        this.showObjectModal = false;
+        this.loadUnits();
+
+        Swal.fire({
+          title: isEditing ? '¡Objeto actualizado!' : '¡Objeto creado!',
+          text: isEditing
+            ? 'El objeto de aprendizaje se ha actualizado correctamente.'
+            : 'El nuevo objeto de aprendizaje se ha creado correctamente.',
+          icon: 'success',
+          confirmButtonText: 'Aceptar',
+          confirmButtonColor: '#6366f1',
+          customClass: { container: 'my-swal' },
+        });
+      },
+      error: (err) => {
+        this.isLoading = false;
+        this.showObjectModal = false;
+        console.error('Error completo:', err);
+        Swal.fire({
+          title: 'Error',
+          text: isEditing
+            ? `Error al actualizar el objeto: ${err.error?.message || err.message}`
+            : `Error al crear el objeto: ${err.error?.message || err.message}`,
+          icon: 'error',
+          confirmButtonColor: '#ef4444',
+          customClass: { container: 'my-swal' },
+        });
+      },
+    });
+  }
 
   deleteObject(id: string): void {
-    if (confirm('¿Eliminar este objeto?')) {
-      this.contentService.deleteLearningObject(id).subscribe({
-        next: () => {
-          this.successMessage = 'Objeto eliminado exitosamente';
-          this.showSuccessModal = true;
-          this.loadUnits();
-        },
-        error: (err) => {
-          console.error('Error:', err);
-          this.errorMessage = 'Error al eliminar el objeto. Por favor, intenta de nuevo.';
-          this.showErrorModal = true;
-        },
-      });
-    }
-  }
+    Swal.fire({
+      title: '¿Eliminar este objeto?',
+      text: 'Esta acción no se puede deshacer.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#ef4444',
+      cancelButtonColor: '#6366f1',
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar',
+      customClass: { container: 'my-swal' },
+    }).then((result) => {
+      if (result.isConfirmed) {
+        Swal.fire({
+          title: 'Eliminando...',
+          allowOutsideClick: false,
+          didOpen: () => Swal.showLoading(),
+        });
 
-  closeSuccessModal(): void {
-    console.log('Cerrando modal de éxito');
-    this.showSuccessModal = false;
-  }
-
-  closeErrorModal(): void {
-    console.log('Cerrando modal de error');
-    this.showErrorModal = false;
+        this.contentService.deleteLearningObject(id).subscribe({
+          next: () => {
+            this.loadUnits();
+            Swal.fire({
+              title: '¡Objeto eliminado!',
+              text: 'El objeto de aprendizaje se ha eliminado correctamente.',
+              icon: 'success',
+              confirmButtonText: 'Aceptar',
+              confirmButtonColor: '#6366f1',
+              customClass: { container: 'my-swal' },
+            });
+          },
+          error: (err) => {
+            console.error('Error:', err);
+            Swal.fire({
+              title: 'Error',
+              text: 'Error al eliminar el objeto. Por favor, intenta de nuevo.',
+              icon: 'error',
+              confirmButtonColor: '#ef4444',
+              customClass: { container: 'my-swal' },
+            });
+          },
+        });
+      }
+    });
   }
 }
