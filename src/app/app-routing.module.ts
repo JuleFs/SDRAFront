@@ -20,6 +20,7 @@ import { AuthGuard } from './guards/auth.guard';
 import { SeguimientoComponent } from './profesores/seguimiento/seguimiento.component';
 import { PerfilAlumnoComponent } from './profesores/seguimiento/perfil-alumno/perfil-alumno.component';
 import { OaRecomendadosComponent } from './profesores/seguimiento/oa-recomendados/oa-recomendados.component';
+import { CambiarContraComponent } from './estudiantes/cambiar-contra/cambiar-contra.component';
 
 
 const appRoutes: Routes = [
@@ -45,6 +46,7 @@ const appRoutes: Routes = [
       { path: 'unidad/:id/tema/:temaId', component: TemaComponent },
     ],
   },
+  {path: 'cambiar-contrasena', component: CambiarContraComponent},
   {
     path: 'profesor',
     component: TeacherCourseListComponent,

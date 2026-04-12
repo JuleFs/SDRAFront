@@ -40,7 +40,7 @@ export class EncuestaGuard implements CanActivate {
           // No ha completado el cuestionario, mostrar alerta y redirigir
           Swal.fire({
             title: 'Cuestionario pendiente',
-            text: 'Debes completar el cuestionario de estilo de aprendizaje antes de acceder a los cursos.',
+            text: 'Debes completar el cuestionario de estilos de aprendizaje antes de acceder a los cursos.',
             icon: 'warning',
             confirmButtonText: 'Ir a cuestionario',
             confirmButtonColor: '#6366f1',

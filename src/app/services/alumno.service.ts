@@ -5,10 +5,9 @@ import { Observable, Subject } from 'rxjs';
 import { environment } from 'src/environments/environment';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AlumnoService {
-
   ///////////////////////////////////////////////////
   /////// RUTA PARA CONECTAR LA API CON EL FRONT ////
   //private urlAPI: string = 'https://apiv2.powerhashing.io/';
@@ -21,39 +20,64 @@ export class AlumnoService {
     return this._refresh$;
   }
 
-  constructor( private http: HttpClient ) { }
+  constructor(private http: HttpClient) {}
 
-  loginAlumno( data: any ):Observable <any> {
-    return this.http.post(this.urlAPI + "alumnos/login", data);
+  loginAlumno(data: any): Observable<any> {
+    return this.http.post(this.urlAPI + 'alumnos/login', data);
+  }
+
+  cambiarContrasena(data: { nro_cuenta: number; currentPassword: string; newPassword: string }): Observable<any> {
+    return this.http.post(
+      `${this.urlAPI}alumnos/cambiar-contrasena`,
+      data,
+    );
   }
 
   obtenerCuestionariosAlumno(nroCuenta: number): Observable<any[]> {
-    return this.http.get<any[]>(`${this.urlAPI}alumnos-cuestionarios/alumno/${nroCuenta}`);
+    return this.http.get<any[]>(
+      `${this.urlAPI}alumnos-cuestionarios/alumno/${nroCuenta}`,
+    );
   }
 
-  verificarCuestionarioCompletado(nroCuenta: number, idCuestionario: number): Observable<{ completado: boolean }> {
+  verificarCuestionarioCompletado(
+    nroCuenta: number,
+    idCuestionario: number,
+  ): Observable<{ completado: boolean }> {
     return this.http.get<{ completado: boolean }>(
-      `${this.urlAPI}alumnos-cuestionarios/verificar/${nroCuenta}/${idCuestionario}`
+      `${this.urlAPI}alumnos-cuestionarios/verificar/${nroCuenta}/${idCuestionario}`,
     );
   }
 
   obtenerEstadoEncuesta(nroCuenta: number): Observable<any> {
-    return this.http.get(`${this.urlAPI}inventario-de-felder/alumno/${nroCuenta}`);
+    return this.http.get(
+      `${this.urlAPI}inventario-de-felder/alumno/${nroCuenta}`,
+    );
   }
 
-  obtenerPerfil( data:string ) : Observable <any> {
-    return this.http.get( this.urlAPI + "perfil-final-inventario-de-felder/alumno/" + data );
+  obtenerPerfil(data: string): Observable<any> {
+    return this.http.get(
+      this.urlAPI + 'perfil-final-inventario-de-felder/alumno/' + data,
+    );
   }
 
-  obtenerPreguntas( data:number ) : Observable <any> {
-    return this.http.get( this.urlAPI + "preguntas/" + data );
+  obtenerPreguntas(data: number): Observable<any> {
+    return this.http.get(this.urlAPI + 'preguntas/' + data);
   }
 
-  resultadoEncuesta( data:any ) : Observable <any> {
-    return this.http.post( this.urlAPI + "inventario-de-felder/resultado-encuesta", data, {responseType: 'text'} );
+  resultadoEncuesta(data: any): Observable<any> {
+    return this.http.post(
+      this.urlAPI + 'inventario-de-felder/resultado-encuesta',
+      data,
+      { responseType: 'text' },
+    );
   }
 
-  buscarAlumnos(search?: string, grupo?: number, page: number = 1, limit: number = 10): Observable<any> {
+  buscarAlumnos(
+    search?: string,
+    grupo?: number,
+    page: number = 1,
+    limit: number = 10,
+  ): Observable<any> {
     let params = `page=${page}&limit=${limit}`;
     if (search) params += `&search=${search}`;
     if (grupo) params += `&grupo=${grupo}`;

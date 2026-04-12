@@ -1,6 +1,11 @@
 <div
   class="flex min-h-screen items-center justify-center bg-center bg-no-repeat overflow-x-hidden"
-  style="background-image: url('assets/logosroa.png'); background-size: 65%; background-repeat: no-repeat; background-position: center;"
+  style="
+    background-image: url(&quot;assets/logosroa.png&quot;);
+    background-size: 65%;
+    background-repeat: no-repeat;
+    background-position: center;
+  "
 >
   <div class="relative flex items-center justify-center">
     <!-- Tarjeta de login -->
@@ -8,8 +13,19 @@
       class="relative z-10 max-w-md space-y-6 rounded-xl bg-white/60 p-4 shadow-xl backdrop-blur"
     >
       <!-- Título -->
-      <div>
-        <h3 class="mb-1.5 text-2xl font-semibold text-gray-800">Iniciar sesión</h3>
+      <div class="text-center">
+        <h3 class="mb-1.5 text-2xl font-semibold text-gray-800">
+          Iniciar sesión
+        </h3>
+      </div>
+
+      <!-- Logo -->
+      <div class="flex justify-center mb-4">
+        <img
+          src="assets/logosroa.png"
+          alt="Logo SROA"
+          class="h-36 w-auto object-contain"
+        />
       </div>
 
       <form [formGroup]="login_form" (keydown)="onKeydown($event)">
@@ -24,7 +40,7 @@
               (click)="userType = 'estudiante'"
             >
               <i class="fa-solid fa-user fa-lg"></i>
-              <p>{{'Estudiante' | translate}}</p>
+              <p>{{ "Estudiante" | translate }}</p>
             </button>
             <button
               class="btn btn-outline btn-primary grow transition-colors duration-200"
@@ -35,7 +51,7 @@
               (click)="userType = 'profesor'"
             >
               <i class="fa-solid fa-chalkboard-user fa-lg"></i>
-              <p>{{'Profesor' | translate}}</p>
+              <p>{{ "Profesor" | translate }}</p>
             </button>
           </div>
 
@@ -43,7 +59,7 @@
             <label
               for="user"
               class="mb-1 block text-sm font-medium text-gray-700"
-              >{{'Número de cuenta' | translate}}</label
+              >{{ "Número de cuenta" | translate }}</label
             >
             <input
               placeholder="12345678"
@@ -55,11 +71,11 @@
             />
           </div>
 
-          <div class="inputs pass">
+          <div class="inputs">
             <label
               for="pass"
               class="mb-1 block text-sm font-medium text-gray-700"
-              >{{'Contraseña' | translate}}</label
+              >{{ "Contraseña" | translate }}</label
             >
             <input
               placeholder="••••••••••"
@@ -80,7 +96,7 @@
             class="w-full rounded-lg bg-blue-600 px-4 py-2 text-white font-medium hover:bg-blue-700 transition"
             (click)="sendLogin()"
           >
-            {{'Ingresar' | translate}}
+            {{ "Ingresar" | translate }}
           </button>
         </div>
       </form>
