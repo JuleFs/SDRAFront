@@ -46,13 +46,7 @@
                 id="Tabla"
                 class="tab"
                 (click)="cambiasTabla($event)">
-                {{ 'results.table' | translate }}
-              </button>
-              <button
-                id="Dimensiones"
-                class="tab"
-                (click)="cambiasDimensiones($event)">
-                Porcentajes
+                {{ 'results.porcentages' | translate }}
               </button>
             </div>
 
@@ -118,83 +112,6 @@
                     </div>
                   </div>
                   <div class="text-left font-bold text-sm text-base-content/70">{{ 'results.global' | translate }}</div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Nueva Tab: Porcentajes de Predominancia por Dimensión -->
-            <div class="info_dimensiones hidden mt-4">
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <!-- Card Dimensión 1 -->
-                <div class="card bg-base-200 shadow-sm border border-base-300">
-                  <div class="card-body p-4">
-                    <h3 class="font-bold text-sm opacity-70 mb-2 uppercase">{{'results.dimension1' | translate}}</h3>
-                    <div class="flex justify-between items-center">
-                      <span class="font-semibold">{{'results.active' | translate}}</span>
-                      <span class="badge badge-primary font-bold">{{porcentajes[0]?.p1}}%</span>
-                    </div>
-                    <progress class="progress progress-primary w-full mt-1" [value]="porcentajes[0]?.p1" max="100"></progress>
-                    
-                    <div class="flex justify-between items-center mt-3">
-                      <span class="font-semibold">{{'results.reflective' | translate}}</span>
-                      <span class="badge badge-secondary font-bold">{{porcentajes[0]?.p2}}%</span>
-                    </div>
-                    <progress class="progress progress-secondary w-full mt-1" [value]="porcentajes[0]?.p2" max="100"></progress>
-                  </div>
-                </div>
-
-                <!-- Card Dimensión 2 -->
-                <div class="card bg-base-200 shadow-sm border border-base-300">
-                  <div class="card-body p-4">
-                    <h3 class="font-bold text-sm opacity-70 mb-2 uppercase">{{'results.dimension2' | translate}}</h3>
-                    <div class="flex justify-between items-center">
-                      <span class="font-semibold">{{'results.sensory' | translate}}</span>
-                      <span class="badge badge-primary font-bold">{{porcentajes[1]?.p1}}%</span>
-                    </div>
-                    <progress class="progress progress-primary w-full mt-1" [value]="porcentajes[1]?.p1" max="100"></progress>
-                    
-                    <div class="flex justify-between items-center mt-3">
-                      <span class="font-semibold">{{'results.intuitive' | translate}}</span>
-                      <span class="badge badge-secondary font-bold">{{porcentajes[1]?.p2}}%</span>
-                    </div>
-                    <progress class="progress progress-secondary w-full mt-1" [value]="porcentajes[1]?.p2" max="100"></progress>
-                  </div>
-                </div>
-
-                <!-- Card Dimensión 3 -->
-                <div class="card bg-base-200 shadow-sm border border-base-300">
-                  <div class="card-body p-4">
-                    <h3 class="font-bold text-sm opacity-70 mb-2 uppercase">{{'results.dimension3' | translate}}</h3>
-                    <div class="flex justify-between items-center">
-                      <span class="font-semibold">{{'results.visual' | translate}}</span>
-                      <span class="badge badge-primary font-bold">{{porcentajes[2]?.p1}}%</span>
-                    </div>
-                    <progress class="progress progress-primary w-full mt-1" [value]="porcentajes[2]?.p1" max="100"></progress>
-                    
-                    <div class="flex justify-between items-center mt-3">
-                      <span class="font-semibold">{{'results.verbal' | translate}}</span>
-                      <span class="badge badge-secondary font-bold">{{porcentajes[2]?.p2}}%</span>
-                    </div>
-                    <progress class="progress progress-secondary w-full mt-1" [value]="porcentajes[2]?.p2" max="100"></progress>
-                  </div>
-                </div>
-
-                <!-- Card Dimensión 4 -->
-                <div class="card bg-base-200 shadow-sm border border-base-300">
-                  <div class="card-body p-4">
-                    <h3 class="font-bold text-sm opacity-70 mb-2 uppercase">{{'results.dimension4' | translate}}</h3>
-                    <div class="flex justify-between items-center">
-                      <span class="font-semibold">{{'results.sequential' | translate}}</span>
-                      <span class="badge badge-primary font-bold">{{porcentajes[3]?.p1}}%</span>
-                    </div>
-                    <progress class="progress progress-primary w-full mt-1" [value]="porcentajes[3]?.p1" max="100"></progress>
-                    
-                    <div class="flex justify-between items-center mt-3">
-                      <span class="font-semibold">{{'results.global' | translate}}</span>
-                      <span class="badge badge-secondary font-bold">{{porcentajes[3]?.p2}}%</span>
-                    </div>
-                    <progress class="progress progress-secondary w-full mt-1" [value]="porcentajes[3]?.p2" max="100"></progress>
-                  </div>
                 </div>
               </div>
             </div>
