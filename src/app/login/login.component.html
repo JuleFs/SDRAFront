@@ -1,41 +1,38 @@
-<div
-  class="flex min-h-screen items-center justify-center bg-center bg-no-repeat overflow-x-hidden"
-  style="
-    background-image: url(&quot;assets/logosroa.png&quot;);
-    background-size: 65%;
-    background-repeat: no-repeat;
-    background-position: center;
-  "
->
-  <div class="relative flex items-center justify-center">
-    <!-- Tarjeta de login -->
-    <div
-      class="relative z-10 max-w-md space-y-6 rounded-xl bg-white/60 p-4 shadow-xl backdrop-blur"
-    >
-      <!-- Título -->
-      <div class="text-center">
-        <h3 class="mb-1.5 text-2xl font-semibold text-gray-800">
-          Iniciar sesión
-        </h3>
+<div class="min-h-screen flex bg-white">
+
+  <!-- Columna izquierda: Logo -->
+  <div class="hidden md:flex w-1/2 items-center justify-end pr-8 bg-white border-r border-gray-100">
+    <img
+      src="assets/logosroa.png"
+      alt="Logo SROA"
+      class="w-4/5 max-w-md object-contain"
+    />
+  </div>
+
+  <!-- Columna derecha: Formulario centrado -->
+  <div class="flex flex-1 items-center justify-start pl-8 bg-white">
+    <div class="w-full max-w-sm space-y-6 rounded-xl bg-white p-6 shadow-xl border border-gray-200">
+
+      <!-- Logo pequeño visible solo en móvil -->
+      <div class="flex justify-center md:hidden">
+        <img src="assets/logosroa.png" alt="Logo SROA" class="h-20 w-auto object-contain" />
       </div>
 
-      <!-- Logo -->
-      <div class="flex justify-center mb-4">
-        <img
-          src="assets/logosroa.png"
-          alt="Logo SROA"
-          class="h-36 w-auto object-contain"
-        />
+      <!-- Título -->
+      <div class="text-center">
+        <h3 class="text-2xl font-semibold text-gray-800">Iniciar sesión</h3>
       </div>
 
       <form [formGroup]="login_form" (keydown)="onKeydown($event)">
-        <div class="login">
-          <div class="gap-2">
+        <div class="space-y-4">
+
+          <!-- Tipo de usuario -->
+          <div class="flex gap-2">
             <button
-              class="btn btn-outline btn-primary grow transition-colors duration-200"
+              type="button"
+              class="btn btn-outline btn-primary flex-1 transition-colors duration-200"
               [class.bg-blue-700]="userType === 'estudiante'"
               [class.text-white]="userType === 'estudiante'"
-              [attr.aria-pressed]="userType === 'estudiante'"
               [ngClass]="{ selected: activeClass }"
               (click)="userType = 'estudiante'"
             >
@@ -43,10 +40,10 @@
               <p>{{ "Estudiante" | translate }}</p>
             </button>
             <button
-              class="btn btn-outline btn-primary grow transition-colors duration-200"
+              type="button"
+              class="btn btn-outline btn-primary flex-1 transition-colors duration-200"
               [class.bg-blue-700]="userType === 'profesor'"
               [class.text-white]="userType === 'profesor'"
-              [attr.aria-pressed]="userType === 'profesor'"
               [ngClass]="{ selected: !activeClass }"
               (click)="userType = 'profesor'"
             >
@@ -55,42 +52,41 @@
             </button>
           </div>
 
-          <div class="inputs">
-            <label
-              for="user"
-              class="mb-1 block text-sm font-medium text-gray-700"
-              >{{ "Número de cuenta" | translate }}</label
-            >
+          <!-- Número de cuenta -->
+          <div>
+            <label for="user" class="mb-1 block text-sm font-medium text-gray-700">
+              {{ "Número de cuenta" | translate }}
+            </label>
             <input
               placeholder="12345678"
               type="text"
-              name=""
               id="user"
               class="w-full rounded-lg border border-gray-300 px-3 py-2 text-gray-800 focus:border-blue-500 focus:ring focus:ring-blue-200"
               formControlName="nro_cuenta"
             />
           </div>
 
-          <div class="inputs">
-            <label
-              for="pass"
-              class="mb-1 block text-sm font-medium text-gray-700"
-              >{{ "Contraseña" | translate }}</label
-            >
+          <!-- Contraseña -->
+          <div>
+            <label for="pass" class="mb-1 block text-sm font-medium text-gray-700">
+              {{ "Contraseña" | translate }}
+            </label>
             <input
               placeholder="••••••••••"
               type="password"
-              name=""
               id="pass"
               class="w-full rounded-lg border border-gray-300 px-3 py-2 text-gray-800 focus:border-blue-500 focus:ring focus:ring-blue-200"
               formControlName="password"
             />
           </div>
+
           <!-- Divider -->
-          <div class="flex m-4 items-center gap-3">
-            <hr class="flex-grow border-gray-500" />
-            <hr class="flex-grow border-gray-500" />
+          <div class="flex items-center gap-3">
+            <hr class="flex-grow border-gray-300" />
+            <hr class="flex-grow border-gray-300" />
           </div>
+
+          <!-- Botón ingresar -->
           <button
             type="button"
             class="w-full rounded-lg bg-blue-600 px-4 py-2 text-white font-medium hover:bg-blue-700 transition"
@@ -102,4 +98,5 @@
       </form>
     </div>
   </div>
+
 </div>

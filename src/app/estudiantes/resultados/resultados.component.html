@@ -11,6 +11,7 @@
         Regresar a seguimiento
       </a>
     </div>
+
     <!-- Header -->
     <div class="mb-8">
       <h1 class="text-3xl font-bold text-base-content mb-2">
@@ -26,90 +27,56 @@
 
       <!-- Columna principal: Gráfica (2/3) -->
       <div class="lg:col-span-2 space-y-6">
-
-        <!-- Card de gráfica/tabla -->
         <div class="card bg-base-100 shadow-md">
           <div class="card-body">
             <h2 class="card-title text-xl font-bold text-base-content">
               {{ 'results.yourProfile' | translate }}
             </h2>
 
-            <!-- Tabs -->
             <div class="tabs tabs-boxed bg-base-200 w-fit mt-2">
-              <button
-                id="Grafica"
-                class="tab tab-active"
-                (click)="cambiasGrafica($event)">
+              <button id="Grafica" class="tab tab-active" (click)="cambiasGrafica($event)">
                 {{ 'results.graph' | translate }}
               </button>
-              <button
-                id="Tabla"
-                class="tab"
-                (click)="cambiasTabla($event)">
+              <button id="Tabla" class="tab" (click)="cambiasTabla($event)">
                 {{ 'results.porcentages' | translate }}
               </button>
             </div>
 
-            <!-- Gráfica de radar -->
             <div class="info_grafic mt-4 relative" style="height: 400px; width: 100%;">
               <canvas id="MyChart">{{ chart }}</canvas>
             </div>
 
-            <!-- Tabla de resultados replaced by Percent Bar -->
             <div class="info_table hidden mt-4">
               <div class="flex flex-col gap-4">
-                <!-- Activo/Reflexivo -->
                 <div class="grid grid-cols-[100px_1fr_100px] items-center gap-2">
                   <div class="text-right font-bold text-sm text-base-content/70">{{ 'results.active' | translate }}</div>
                   <div class="flex h-10 w-full overflow-hidden rounded-sm shadow-sm">
-                    <div class="bg-[#94a3d8] flex items-center justify-center text-white text-xs font-bold transition-all duration-500" [style.width.%]="porcentajes[0]?.p1">
-                      {{porcentajes[0]?.p1}}%
-                    </div>
-                    <div class="bg-[#b4c3e8] flex items-center justify-center text-white text-xs font-bold transition-all duration-500" [style.width.%]="porcentajes[0]?.p2">
-                      {{porcentajes[0]?.p2}}%
-                    </div>
+                    <div class="bg-[#94a3d8] flex items-center justify-center text-white text-xs font-bold transition-all duration-500" [style.width.%]="porcentajes[0]?.p1">{{porcentajes[0]?.p1}}%</div>
+                    <div class="bg-[#b4c3e8] flex items-center justify-center text-white text-xs font-bold transition-all duration-500" [style.width.%]="porcentajes[0]?.p2">{{porcentajes[0]?.p2}}%</div>
                   </div>
                   <div class="text-left font-bold text-sm text-base-content/70">{{ 'results.reflective' | translate }}</div>
                 </div>
-
-                <!-- Sensorial/Intuitivo -->
                 <div class="grid grid-cols-[100px_1fr_100px] items-center gap-2">
                   <div class="text-right font-bold text-sm text-base-content/70">{{ 'results.sensory' | translate }}</div>
                   <div class="flex h-10 w-full overflow-hidden rounded-sm shadow-sm">
-                    <div class="bg-[#a65d50] flex items-center justify-center text-white text-xs font-bold transition-all duration-500" [style.width.%]="porcentajes[1]?.p1">
-                      {{porcentajes[1]?.p1}}%
-                    </div>
-                    <div class="bg-[#dcaea6] flex items-center justify-center text-white text-xs font-bold transition-all duration-500" [style.width.%]="porcentajes[1]?.p2">
-                      {{porcentajes[1]?.p2}}%
-                    </div>
+                    <div class="bg-[#a65d50] flex items-center justify-center text-white text-xs font-bold transition-all duration-500" [style.width.%]="porcentajes[1]?.p1">{{porcentajes[1]?.p1}}%</div>
+                    <div class="bg-[#dcaea6] flex items-center justify-center text-white text-xs font-bold transition-all duration-500" [style.width.%]="porcentajes[1]?.p2">{{porcentajes[1]?.p2}}%</div>
                   </div>
                   <div class="text-left font-bold text-sm text-base-content/70">{{ 'results.intuitive' | translate }}</div>
                 </div>
-
-                <!-- Visual/Verbal -->
                 <div class="grid grid-cols-[100px_1fr_100px] items-center gap-2">
                   <div class="text-right font-bold text-sm text-base-content/70">{{ 'results.visual' | translate }}</div>
                   <div class="flex h-10 w-full overflow-hidden rounded-sm shadow-sm">
-                    <div class="bg-[#8ec26f] flex items-center justify-center text-white text-xs font-bold transition-all duration-500" [style.width.%]="porcentajes[2]?.p1">
-                      {{porcentajes[2]?.p1}}%
-                    </div>
-                    <div class="bg-[#4a6b36] flex items-center justify-center text-white text-xs font-bold transition-all duration-500" [style.width.%]="porcentajes[2]?.p2">
-                      {{porcentajes[2]?.p2}}%
-                    </div>
+                    <div class="bg-[#8ec26f] flex items-center justify-center text-white text-xs font-bold transition-all duration-500" [style.width.%]="porcentajes[2]?.p1">{{porcentajes[2]?.p1}}%</div>
+                    <div class="bg-[#4a6b36] flex items-center justify-center text-white text-xs font-bold transition-all duration-500" [style.width.%]="porcentajes[2]?.p2">{{porcentajes[2]?.p2}}%</div>
                   </div>
                   <div class="text-left font-bold text-sm text-base-content/70">{{ 'results.verbal' | translate }}</div>
                 </div>
-
-                <!-- Secuencial/Global -->
                 <div class="grid grid-cols-[100px_1fr_100px] items-center gap-2">
                   <div class="text-right font-bold text-sm text-base-content/70">{{ 'results.sequential' | translate }}</div>
                   <div class="flex h-10 w-full overflow-hidden rounded-sm shadow-sm">
-                    <div class="bg-[#5a6a1a] flex items-center justify-center text-white text-xs font-bold transition-all duration-500" [style.width.%]="porcentajes[3]?.p1">
-                      {{porcentajes[3]?.p1}}%
-                    </div>
-                    <div class="bg-[#a6b16e] flex items-center justify-center text-white text-xs font-bold transition-all duration-500" [style.width.%]="porcentajes[3]?.p2">
-                      {{porcentajes[3]?.p2}}%
-                    </div>
+                    <div class="bg-[#5a6a1a] flex items-center justify-center text-white text-xs font-bold transition-all duration-500" [style.width.%]="porcentajes[3]?.p1">{{porcentajes[3]?.p1}}%</div>
+                    <div class="bg-[#a6b16e] flex items-center justify-center text-white text-xs font-bold transition-all duration-500" [style.width.%]="porcentajes[3]?.p2">{{porcentajes[3]?.p2}}%</div>
                   </div>
                   <div class="text-left font-bold text-sm text-base-content/70">{{ 'results.global' | translate }}</div>
                 </div>
@@ -122,75 +89,147 @@
       <!-- Columna lateral: Perfil (1/3) -->
       <div class="lg:col-span-1 space-y-4">
 
-        <!-- Card 1: Activo/Reflexivo -->
+        <!-- Card 1 -->
         <div class="card bg-base-100 shadow-md">
           <div class="card-body p-4">
-            <div class="flex items-center gap-2 mb-2">
+            <div class="flex items-center gap-2 mb-3">
               <div class="badge badge-primary badge-sm">1</div>
               <h3 class="font-semibold text-sm text-base-content/70">
                 {{ 'results.dimension1' | translate }}
               </h3>
             </div>
-            <h4 class="text-lg font-bold text-primary" id="Estilo1">-</h4>
-            <p class="text-sm text-base-content/70 mt-2" id="Info1">-</p>
-            <div *ngIf="preferencias[0]" class="mt-3 p-2 bg-primary/10 border-l-4 border-primary text-xs font-medium text-primary">
-              {{ preferencias[0] }}
-            </div>
+            <ng-container *ngIf="preferencias[0]?.tipo === 'equilibrio'; else card1Single">
+              <p class="text-sm text-base-content text-center mb-3">
+                Presentas un equilibrio apropiado entre el estilo de aprendizaje
+                <span class="text-primary font-semibold">{{ estilos[0] }}/{{ preferencias[0]?.estiloAlt }}</span>
+              </p>
+              <div class="space-y-2">
+                <div>
+                  <p class="text-xs font-bold text-base-content">{{ estilos[0] }}:</p>
+                  <p class="text-xs text-base-content/70">{{ infos[0] }}</p>
+                </div>
+                <div>
+                  <p class="text-xs font-bold text-base-content">{{ preferencias[0]?.estiloAlt }}:</p>
+                  <p class="text-xs text-base-content/70">{{ preferencias[0]?.infoAlt }}</p>
+                </div>
+              </div>
+            </ng-container>
+            <ng-template #card1Single>
+              <p class="text-sm text-base-content text-center mb-3">
+                Presentas una preferencia moderada hacia el estilo de aprendizaje
+                <span class="text-primary font-semibold">{{ estilos[0] }}</span>
+              </p>
+              <p class="text-sm text-base-content/70">{{ infos[0] }}</p>
+            </ng-template>
           </div>
         </div>
 
-        <!-- Card 2: Sensorial/Intuitivo -->
+        <!-- Card 2 -->
         <div class="card bg-base-100 shadow-md">
           <div class="card-body p-4">
-            <div class="flex items-center gap-2 mb-2">
+            <div class="flex items-center gap-2 mb-3">
               <div class="badge badge-secondary badge-sm">2</div>
               <h3 class="font-semibold text-sm text-base-content/70">
                 {{ 'results.dimension2' | translate }}
               </h3>
             </div>
-            <h4 class="text-lg font-bold text-secondary" id="Estilo2">-</h4>
-            <p class="text-sm text-base-content/70 mt-2" id="Info2">-</p>
-            <div *ngIf="preferencias[1]" class="mt-3 p-2 bg-secondary/10 border-l-4 border-secondary text-xs font-medium text-secondary">
-              {{ preferencias[1] }}
-            </div>
+            <ng-container *ngIf="preferencias[1]?.tipo === 'equilibrio'; else card2Single">
+              <p class="text-sm text-base-content text-center mb-3">
+                Presentas un equilibrio apropiado entre el estilo de aprendizaje
+                <span class="text-primary font-semibold">{{ estilos[1] }}/{{ preferencias[1]?.estiloAlt }}</span>
+              </p>
+              <div class="space-y-2">
+                <div>
+                  <p class="text-xs font-bold text-base-content">{{ estilos[1] }}:</p>
+                  <p class="text-xs text-base-content/70">{{ infos[1] }}</p>
+                </div>
+                <div>
+                  <p class="text-xs font-bold text-base-content">{{ preferencias[1]?.estiloAlt }}:</p>
+                  <p class="text-xs text-base-content/70">{{ preferencias[1]?.infoAlt }}</p>
+                </div>
+              </div>
+            </ng-container>
+            <ng-template #card2Single>
+              <p class="text-sm text-base-content text-center mb-3">
+                Presentas una preferencia moderada hacia el estilo de aprendizaje
+                <span class="text-primary font-semibold">{{ estilos[1] }}</span>
+              </p>
+              <p class="text-sm text-base-content/70">{{ infos[1] }}</p>
+            </ng-template>
           </div>
         </div>
 
-        <!-- Card 3: Visual/Verbal -->
+        <!-- Card 3 -->
         <div class="card bg-base-100 shadow-md">
           <div class="card-body p-4">
-            <div class="flex items-center gap-2 mb-2">
+            <div class="flex items-center gap-2 mb-3">
               <div class="badge badge-accent badge-sm">3</div>
               <h3 class="font-semibold text-sm text-base-content/70">
                 {{ 'results.dimension3' | translate }}
               </h3>
             </div>
-            <h4 class="text-lg font-bold text-accent" id="Estilo3">-</h4>
-            <p class="text-sm text-base-content/70 mt-2" id="Info3">-</p>
-            <div *ngIf="preferencias[2]" class="mt-3 p-2 bg-accent/10 border-l-4 border-accent text-xs font-medium text-accent">
-              {{ preferencias[2] }}
-            </div>
+            <ng-container *ngIf="preferencias[2]?.tipo === 'equilibrio'; else card3Single">
+              <p class="text-sm text-base-content text-center mb-3">
+                Presentas un equilibrio apropiado entre el estilo de aprendizaje
+                <span class="text-primary font-semibold">{{ estilos[2] }}/{{ preferencias[2]?.estiloAlt }}</span>
+              </p>
+              <div class="space-y-2">
+                <div>
+                  <p class="text-xs font-bold text-base-content">{{ estilos[2] }}:</p>
+                  <p class="text-xs text-base-content/70">{{ infos[2] }}</p>
+                </div>
+                <div>
+                  <p class="text-xs font-bold text-base-content">{{ preferencias[2]?.estiloAlt }}:</p>
+                  <p class="text-xs text-base-content/70">{{ preferencias[2]?.infoAlt }}</p>
+                </div>
+              </div>
+            </ng-container>
+            <ng-template #card3Single>
+              <p class="text-sm text-base-content text-center mb-3">
+                Presentas una preferencia moderada hacia el estilo de aprendizaje
+                <span class="text-primary font-semibold">{{ estilos[2] }}</span>
+              </p>
+              <p class="text-sm text-base-content/70">{{ infos[2] }}</p>
+            </ng-template>
           </div>
         </div>
 
-        <!-- Card 4: Secuencial/Global -->
+        <!-- Card 4 -->
         <div class="card bg-base-100 shadow-md">
           <div class="card-body p-4">
-            <div class="flex items-center gap-2 mb-2">
+            <div class="flex items-center gap-2 mb-3">
               <div class="badge badge-info badge-sm">4</div>
               <h3 class="font-semibold text-sm text-base-content/70">
                 {{ 'results.dimension4' | translate }}
               </h3>
             </div>
-            <h4 class="text-lg font-bold text-info" id="Estilo4">-</h4>
-            <p class="text-sm text-base-content/70 mt-2" id="Info4">-</p>
-            <div *ngIf="preferencias[3]" class="mt-3 p-2 bg-info/10 border-l-4 border-info text-xs font-medium text-info">
-              {{ preferencias[3] }}
-            </div>
+            <ng-container *ngIf="preferencias[3]?.tipo === 'equilibrio'; else card4Single">
+              <p class="text-sm text-base-content text-center mb-3">
+                Presentas un equilibrio apropiado entre el estilo de aprendizaje
+                <span class="text-primary font-semibold">{{ estilos[3] }}/{{ preferencias[3]?.estiloAlt }}</span>
+              </p>
+              <div class="space-y-2">
+                <div>
+                  <p class="text-xs font-bold text-base-content">{{ estilos[3] }}:</p>
+                  <p class="text-xs text-base-content/70">{{ infos[3] }}</p>
+                </div>
+                <div>
+                  <p class="text-xs font-bold text-base-content">{{ preferencias[3]?.estiloAlt }}:</p>
+                  <p class="text-xs text-base-content/70">{{ preferencias[3]?.infoAlt }}</p>
+                </div>
+              </div>
+            </ng-container>
+            <ng-template #card4Single>
+              <p class="text-sm text-base-content text-center mb-3">
+                Presentas una preferencia moderada hacia el estilo de aprendizaje
+                <span class="text-primary font-semibold">{{ estilos[3] }}</span>
+              </p>
+              <p class="text-sm text-base-content/70">{{ infos[3] }}</p>
+            </ng-template>
           </div>
         </div>
 
-        <!-- Botón para ir a cursos -->
+        <!-- Botón ir a cursos -->
         <button
           *ngIf="!esVistaMaestro"
           class="btn btn-primary w-full gap-2"
