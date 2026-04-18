@@ -9,27 +9,141 @@
               Tu Perfil de Aprendizaje
             </h2>
 
-            <div class="tabs tabs-boxed bg-base-200 w-fit mt-2">
-              <button
-                id="Grafica"
-                class="tab tab-active"
-                (click)="cambiasGrafica($event)"
-              >
-                Gráfica
-              </button>
-              <button id="Tabla" class="tab" (click)="cambiasTabla($event)">
-                Tabla
-              </button>
-            </div>
-
             <div class="info_grafic mt-4" style="height: 400px">
               <canvas id="MyChart">{{ chart }}</canvas>
             </div>
 
-            <div class="info_table hidden mt-4 overflow-x-auto">
+            <div class="divider"></div>
+
+            <div class="info_porcentajes mt-4">
+              <h3 class="font-bold text-lg mb-4 text-center">
+                Porcentajes de Preferencia
+              </h3>
+              <div class="flex flex-col gap-4">
+                <div
+                  class="grid grid-cols-[100px_1fr_100px] items-center gap-2"
+                >
+                  <div
+                    class="text-right font-bold text-sm text-base-content/70"
+                  >
+                    Activo
+                  </div>
+                  <div
+                    class="flex h-10 w-full overflow-hidden rounded-sm shadow-sm"
+                  >
+                    <div
+                      class="bg-[#94a3d8] flex items-center justify-center text-white text-xs font-bold transition-all duration-500"
+                      [style.width.%]="porcentajes[0]?.p1"
+                    >
+                      {{ porcentajes[0]?.p1 }}%
+                    </div>
+                    <div
+                      class="bg-[#b4c3e8] flex items-center justify-center text-white text-xs font-bold transition-all duration-500"
+                      [style.width.%]="porcentajes[0]?.p2"
+                    >
+                      {{ porcentajes[0]?.p2 }}%
+                    </div>
+                  </div>
+                  <div class="text-left font-bold text-sm text-base-content/70">
+                    Reflexivo
+                  </div>
+                </div>
+                <div
+                  class="grid grid-cols-[100px_1fr_100px] items-center gap-2"
+                >
+                  <div
+                    class="text-right font-bold text-sm text-base-content/70"
+                  >
+                    Sensorial
+                  </div>
+                  <div
+                    class="flex h-10 w-full overflow-hidden rounded-sm shadow-sm"
+                  >
+                    <div
+                      class="bg-[#a65d50] flex items-center justify-center text-white text-xs font-bold transition-all duration-500"
+                      [style.width.%]="porcentajes[1]?.p1"
+                    >
+                      {{ porcentajes[1]?.p1 }}%
+                    </div>
+                    <div
+                      class="bg-[#dcaea6] flex items-center justify-center text-white text-xs font-bold transition-all duration-500"
+                      [style.width.%]="porcentajes[1]?.p2"
+                    >
+                      {{ porcentajes[1]?.p2 }}%
+                    </div>
+                  </div>
+                  <div class="text-left font-bold text-sm text-base-content/70">
+                    Intuitivo
+                  </div>
+                </div>
+                <div
+                  class="grid grid-cols-[100px_1fr_100px] items-center gap-2"
+                >
+                  <div
+                    class="text-right font-bold text-sm text-base-content/70"
+                  >
+                    Visual
+                  </div>
+                  <div
+                    class="flex h-10 w-full overflow-hidden rounded-sm shadow-sm"
+                  >
+                    <div
+                      class="bg-[#8ec26f] flex items-center justify-center text-white text-xs font-bold transition-all duration-500"
+                      [style.width.%]="porcentajes[2]?.p1"
+                    >
+                      {{ porcentajes[2]?.p1 }}%
+                    </div>
+                    <div
+                      class="bg-[#4a6b36] flex items-center justify-center text-white text-xs font-bold transition-all duration-500"
+                      [style.width.%]="porcentajes[2]?.p2"
+                    >
+                      {{ porcentajes[2]?.p2 }}%
+                    </div>
+                  </div>
+                  <div class="text-left font-bold text-sm text-base-content/70">
+                    Verbal
+                  </div>
+                </div>
+                <div
+                  class="grid grid-cols-[100px_1fr_100px] items-center gap-2"
+                >
+                  <div
+                    class="text-right font-bold text-sm text-base-content/70"
+                  >
+                    Secuencial
+                  </div>
+                  <div
+                    class="flex h-10 w-full overflow-hidden rounded-sm shadow-sm"
+                  >
+                    <div
+                      class="bg-[#5a6a1a] flex items-center justify-center text-white text-xs font-bold transition-all duration-500"
+                      [style.width.%]="porcentajes[3]?.p1"
+                    >
+                      {{ porcentajes[3]?.p1 }}%
+                    </div>
+                    <div
+                      class="bg-[#a6b16e] flex items-center justify-center text-white text-xs font-bold transition-all duration-500"
+                      [style.width.%]="porcentajes[3]?.p2"
+                    >
+                      {{ porcentajes[3]?.p2 }}%
+                    </div>
+                  </div>
+                  <div class="text-left font-bold text-sm text-base-content/70">
+                    Global
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="divider"></div>
+
+            <div class="info_table mt-4 overflow-x-auto">
+              <h3 class="font-bold text-lg mb-4 text-center">
+                Tabla de Valores
+              </h3>
               <table class="table table-zebra w-full">
                 <thead>
-                  <tr class="bg-base-200">
+                  <tr class="bg-base-200 text-center">
                     <th></th>
                     <th>11</th>
                     <th>9</th>
@@ -47,7 +161,7 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr>
+                  <tr class="text-center">
                     <th class="text-primary">Activo</th>
                     <td id="a11"></td>
                     <td id="a9"></td>
@@ -63,7 +177,7 @@
                     <td id="r11"></td>
                     <th class="text-secondary">Reflexivo</th>
                   </tr>
-                  <tr>
+                  <tr class="text-center">
                     <th class="text-primary">Sensorial</th>
                     <td id="s11"></td>
                     <td id="s9"></td>
@@ -79,7 +193,7 @@
                     <td id="i11"></td>
                     <th class="text-secondary">Intuitivo</th>
                   </tr>
-                  <tr>
+                  <tr class="text-center">
                     <th class="text-primary">Visual</th>
                     <td id="v11"></td>
                     <td id="v9"></td>
@@ -95,7 +209,7 @@
                     <td id="ve11"></td>
                     <th class="text-secondary">Verbal</th>
                   </tr>
-                  <tr>
+                  <tr class="text-center">
                     <th class="text-primary">Secuencial</th>
                     <td id="se11"></td>
                     <td id="se9"></td>
@@ -138,17 +252,15 @@
         </button>
         <div class="card bg-base-100 shadow-md">
           <div class="card-body">
-            <h3 class="card-title text-lg font-semibold text-base-content">
-              Cuestionario de estilos de aprendizaje de Felder-Silverman
-            </h3>
-
-            <div class="space-y-3 mt-4">
+            <div class="space-y-3">
               <div
                 *ngFor="let Lista of Listas"
                 class="p-4 bg-base-200 rounded-lg cursor-pointer hover:bg-base-300 transition-colors"
                 (click)="OnClick(Lista.descripcion)"
               >
-                <h4 class="font-semibold text-base-content">Cuestionario</h4>
+                <h4 class="font-semibold text-base-content">
+                  Cuestionario de estilos de aprendizaje de Felder-Silverman
+                </h4>
 
                 <div class="mt-2 flex items-center gap-2">
                   <span class="text-sm text-base-content/60">Estado:</span>
@@ -185,27 +297,254 @@
                   >
                     Iniciar cuestionario
                   </button>
-                  <button
-                    *ngIf="checkStatus()"
-                    class="btn btn-secondary btn-sm w-full"
-                    (click)="verResultados(); $event.stopPropagation()"
+                </div>
+              </div>
+            </div>
+            <!-- Descripciones de predominancia (Cards estáticas) -->
+            <div
+              *ngIf="checkStatus() && preferencias.length > 0"
+              class="space-y-4 mt-2"
+            >
+              <h3
+                class="text-lg font-bold text-base-content mb-4 text-center border-b pb-2"
+              >
+                Detalles de tu estilo de aprendizaje
+              </h3>
+
+              <!-- Card 1: Activo/Reflexivo -->
+              <div class="card bg-base-100 shadow-md border border-base-300">
+                <div class="card-body p-4">
+                  <div class="flex items-center gap-2 mb-3">
+                    <div class="badge badge-primary badge-sm">1</div>
+                    <h4 class="font-semibold text-sm text-base-content/70">
+                      ¿Cómo adquieres la información?
+                    </h4>
+                  </div>
+                  <ng-container
+                    *ngIf="
+                      preferencias[0]?.tipo === 'equilibrio';
+                      else card1Single
+                    "
                   >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      class="h-4 w-4"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
+                    <p class="text-sm text-base-content text-center mb-3">
+                      Presentas un equilibrio apropiado entre
+                      <span class="text-primary font-semibold"
+                        >Activo / Reflexivo</span
+                      >
+                    </p>
+                    <div class="space-y-2 bg-base-200 p-3 rounded-lg">
+                      <div>
+                        <p class="text-xs font-bold text-base-content">
+                          Activo:
+                        </p>
+                        <p class="text-xs text-base-content/70">
+                          Los estudiantes activos tienden a retener y comprender
+                          mejor la información si hacen algo con ella
+                          (discutiéndola, aplicándola o explicándosela a otros).
+                        </p>
+                      </div>
+                      <div>
+                        <p class="text-xs font-bold text-base-content">
+                          Reflexivo:
+                        </p>
+                        <p class="text-xs text-base-content/70">
+                          Los estudiantes reflexivos prefieren pensar las cosas
+                          primero en silencio.
+                        </p>
+                      </div>
+                    </div>
+                  </ng-container>
+                  <ng-template #card1Single>
+                    <p class="text-sm text-base-content text-center mb-3">
+                      {{ preferencias[0]?.texto }}
+                      <span class="text-primary font-semibold">{{
+                        estilos[0]
+                      }}</span>
+                    </p>
+                    <p
+                      class="text-sm text-base-content/70 bg-base-200 p-3 rounded-lg"
                     >
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
-                      />
-                    </svg>
-                    Ver mis resultados
-                  </button>
+                      {{ infos[0] }}
+                    </p>
+                  </ng-template>
+                </div>
+              </div>
+
+              <!-- Card 2: Sensorial/Intuitivo -->
+              <div class="card bg-base-100 shadow-md border border-base-300">
+                <div class="card-body p-4">
+                  <div class="flex items-center gap-2 mb-3">
+                    <div class="badge badge-secondary badge-sm">2</div>
+                    <h4 class="font-semibold text-sm text-base-content/70">
+                      ¿Cómo percibes la información?
+                    </h4>
+                  </div>
+                  <ng-container
+                    *ngIf="
+                      preferencias[1]?.tipo === 'equilibrio';
+                      else card2Single
+                    "
+                  >
+                    <p class="text-sm text-base-content text-center mb-3">
+                      Presentas un equilibrio apropiado entre
+                      <span class="text-primary font-semibold"
+                        >Sensorial / Intuitivo</span
+                      >
+                    </p>
+                    <div class="space-y-2 bg-base-200 p-3 rounded-lg">
+                      <div>
+                        <p class="text-xs font-bold text-base-content">
+                          Sensorial:
+                        </p>
+                        <p class="text-xs text-base-content/70">
+                          A los estudiantes sensoriales les gusta aprender
+                          hechos; a los intuitivos les gusta descubrir
+                          posibilidades y relaciones.
+                        </p>
+                      </div>
+                      <div>
+                        <p class="text-xs font-bold text-base-content">
+                          Intuitivo:
+                        </p>
+                        <p class="text-xs text-base-content/70">
+                          A los estudiantes intuitivos les gusta descubrir
+                          posibilidades y relaciones.
+                        </p>
+                      </div>
+                    </div>
+                  </ng-container>
+                  <ng-template #card2Single>
+                    <p class="text-sm text-base-content text-center mb-3">
+                      {{ preferencias[1]?.texto }}
+                      <span class="text-primary font-semibold">{{
+                        estilos[1]
+                      }}</span>
+                    </p>
+                    <p
+                      class="text-sm text-base-content/70 bg-base-200 p-3 rounded-lg"
+                    >
+                      {{ infos[1] }}
+                    </p>
+                  </ng-template>
+                </div>
+              </div>
+
+              <!-- Card 3: Visual/Verbal -->
+              <div class="card bg-base-100 shadow-md border border-base-300">
+                <div class="card-body p-4">
+                  <div class="flex items-center gap-2 mb-3">
+                    <div class="badge badge-accent badge-sm">3</div>
+                    <h4 class="font-semibold text-sm text-base-content/70">
+                      ¿Por qué medio prefieres recibir información?
+                    </h4>
+                  </div>
+                  <ng-container
+                    *ngIf="
+                      preferencias[2]?.tipo === 'equilibrio';
+                      else card3Single
+                    "
+                  >
+                    <p class="text-sm text-base-content text-center mb-3">
+                      Presentas un equilibrio apropiado entre
+                      <span class="text-primary font-semibold"
+                        >Visual / Verbal</span
+                      >
+                    </p>
+                    <div class="space-y-2 bg-base-200 p-3 rounded-lg">
+                      <div>
+                        <p class="text-xs font-bold text-base-content">
+                          Visual:
+                        </p>
+                        <p class="text-xs text-base-content/70">
+                          Los estudiantes visuales recuerdan mejor lo que ven
+                          (imágenes, diagramas, diagramas de flujo, líneas de
+                          tiempo, películas y demostraciones).
+                        </p>
+                      </div>
+                      <div>
+                        <p class="text-xs font-bold text-base-content">
+                          Verbal:
+                        </p>
+                        <p class="text-xs text-base-content/70">
+                          Los estudiantes verbales obtienen más de las palabras
+                          (explicaciones escritas y habladas).
+                        </p>
+                      </div>
+                    </div>
+                  </ng-container>
+                  <ng-template #card3Single>
+                    <p class="text-sm text-base-content text-center mb-3">
+                      {{ preferencias[2]?.texto }}
+                      <span class="text-primary font-semibold">{{
+                        estilos[2]
+                      }}</span>
+                    </p>
+                    <p
+                      class="text-sm text-base-content/70 bg-base-200 p-3 rounded-lg"
+                    >
+                      {{ infos[2] }}
+                    </p>
+                  </ng-template>
+                </div>
+              </div>
+
+              <!-- Card 4: Secuencial/Global -->
+              <div class="card bg-base-100 shadow-md border border-base-300">
+                <div class="card-body p-4">
+                  <div class="flex items-center gap-2 mb-3">
+                    <div class="badge badge-info badge-sm">4</div>
+                    <h4 class="font-semibold text-sm text-base-content/70">
+                      ¿Cómo se te proporciona el contenido?
+                    </h4>
+                  </div>
+                  <ng-container
+                    *ngIf="
+                      preferencias[3]?.tipo === 'equilibrio';
+                      else card4Single
+                    "
+                  >
+                    <p class="text-sm text-base-content text-center mb-3">
+                      Presentas un equilibrio apropiado entre
+                      <span class="text-primary font-semibold"
+                        >Secuencial / Global</span
+                      >
+                    </p>
+                    <div class="space-y-2 bg-base-200 p-3 rounded-lg">
+                      <div>
+                        <p class="text-xs font-bold text-base-content">
+                          Secuencial:
+                        </p>
+                        <p class="text-xs text-base-content/70">
+                          Los estudiantes secuenciales tienden a ganar
+                          comprensión en pasos lineales, con cada paso siguiendo
+                          lógicamente al anterior.
+                        </p>
+                      </div>
+                      <div>
+                        <p class="text-xs font-bold text-base-content">
+                          Global:
+                        </p>
+                        <p class="text-xs text-base-content/70">
+                          Los estudiantes globales tienden a aprender en grandes
+                          saltos, absorbiendo material casi al azar sin ver
+                          conexiones, y luego de repente "captan" todo.
+                        </p>
+                      </div>
+                    </div>
+                  </ng-container>
+                  <ng-template #card4Single>
+                    <p class="text-sm text-base-content text-center mb-3">
+                      {{ preferencias[3]?.texto }}
+                      <span class="text-primary font-semibold">{{
+                        estilos[3]
+                      }}</span>
+                    </p>
+                    <p
+                      class="text-sm text-base-content/70 bg-base-200 p-3 rounded-lg"
+                    >
+                      {{ infos[3] }}
+                    </p>
+                  </ng-template>
                 </div>
               </div>
             </div>

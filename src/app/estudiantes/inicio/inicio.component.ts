@@ -26,6 +26,11 @@ export class InicioComponent implements OnInit, AfterViewInit {
   secuencial: number = 0;
   global: number = 0;
 
+  preferencias: any[] = [];
+  porcentajes: { p1: number; p2: number }[] = [];
+  estilos: string[] = ['', '', '', ''];
+  infos: string[] = ['', '', '', ''];
+
   constructor(private servicio: AlumnoService, private route: Router) {
     this.Description = 'Selecciona un cuestionario para ver su descripción';
   }
@@ -116,21 +121,34 @@ export class InicioComponent implements OnInit, AfterViewInit {
     this.servicio.obtenerPerfil(
       JSON.parse(localStorage.getItem('info_alumno') || "{}").nro_cuenta
     ).subscribe((data) => {
+      this.preferencias = [];
+      this.porcentajes = [];
+      this.estilos = [];
+      this.infos = [];
+
       // Bloque 1: Activo/Reflexivo
       const valorActivoReflexivo = data[0].activo_reflexivo.slice(0, -1);
       const letraActivoReflexivo = data[0].activo_reflexivo.slice(-1);
       if (letraActivoReflexivo === 'A') {
         this.activo = valorActivoReflexivo;
         const el = document.getElementById('a' + this.activo);
-        if (el) el.innerHTML = "✓";
+        if (el) el.innerHTML = "X";
         chartVal.activo = 5 + (this.activo / 22) * 10;
         chartVal.reflexivo = 5 - (this.activo / 22) * 10;
+        this.estilos.push('Activo');
+        this.infos.push('Los estudiantes activos tienden a retener y comprender mejor la información si hacen algo con ella (discutiéndola, aplicándola o explicándosela a otros).');
+        this.preferencias.push(this.calcularPreferencia(Number(this.activo), 'Activo', 'Reflexivo', 'Los estudiantes activos tienden a retener y comprender mejor la información si hacen algo con ella (discutiéndola, aplicándola o explicándosela a otros).', 'Los estudiantes reflexivos prefieren pensar las cosas primero en silencio.'));
+        this.porcentajes.push(this.calcularPorcentaje(Number(this.activo), 'A'));
       } else if (letraActivoReflexivo === 'B') {
         this.reflexivo = valorActivoReflexivo;
         const el = document.getElementById('r' + this.reflexivo);
-        if (el) el.innerHTML = "✓";
+        if (el) el.innerHTML = "X";
         chartVal.activo = 5 - (this.reflexivo / 22) * 10;
         chartVal.reflexivo = 5 + (this.reflexivo / 22) * 10;
+        this.estilos.push('Reflexivo');
+        this.infos.push('Los estudiantes reflexivos prefieren pensar las cosas primero en silencio.');
+        this.preferencias.push(this.calcularPreferencia(Number(this.reflexivo), 'Reflexivo', 'Activo', 'Los estudiantes reflexivos prefieren pensar las cosas primero en silencio.', 'Los estudiantes activos tienden a retener y comprender mejor la información si hacen algo con ella (discutiéndola, aplicándola o explicándosela a otros).'));
+        this.porcentajes.push(this.calcularPorcentaje(Number(this.reflexivo), 'B'));
       }
 
       // Bloque 2: Sensorial/Intuitivo
@@ -139,15 +157,23 @@ export class InicioComponent implements OnInit, AfterViewInit {
       if (letraSensorialIntuitivo === 'A') {
         this.sensorial = valorSensorialIntuitivo;
         const el = document.getElementById('s' + this.sensorial);
-        if (el) el.innerHTML = "✓";
+        if (el) el.innerHTML = "X";
         chartVal.sensorial = 5 + (this.sensorial / 22) * 10;
         chartVal.intuitivo = 5 - (this.sensorial / 22) * 10;
+        this.estilos.push('Sensorial');
+        this.infos.push('A los estudiantes sensoriales les gusta aprender hechos; a los intuitivos les gusta descubrir posibilidades y relaciones.');
+        this.preferencias.push(this.calcularPreferencia(Number(this.sensorial), 'Sensorial', 'Intuitivo', 'A los estudiantes sensoriales les gusta aprender hechos; a los intuitivos les gusta descubrir posibilidades y relaciones.', 'A los estudiantes intuitivos les gusta descubrir posibilidades y relaciones.'));
+        this.porcentajes.push(this.calcularPorcentaje(Number(this.sensorial), 'A'));
       } else if (letraSensorialIntuitivo === 'B') {
         this.intuitivo = valorSensorialIntuitivo;
         const el = document.getElementById('i' + this.intuitivo);
-        if (el) el.innerHTML = "✓";
+        if (el) el.innerHTML = "X";
         chartVal.sensorial = 5 - (this.intuitivo / 22) * 10;
         chartVal.intuitivo = 5 + (this.intuitivo / 22) * 10;
+        this.estilos.push('Intuitivo');
+        this.infos.push('A los estudiantes intuitivos les gusta descubrir posibilidades y relaciones.');
+        this.preferencias.push(this.calcularPreferencia(Number(this.intuitivo), 'Intuitivo', 'Sensorial', 'A los estudiantes intuitivos les gusta descubrir posibilidades y relaciones.', 'A los estudiantes sensoriales les gusta aprender hechos; a los intuitivos les gusta descubrir posibilidades y relaciones.'));
+        this.porcentajes.push(this.calcularPorcentaje(Number(this.intuitivo), 'B'));
       }
 
       // Bloque 3: Visual/Verbal
@@ -156,15 +182,23 @@ export class InicioComponent implements OnInit, AfterViewInit {
       if (letraVisualVerbal === 'A') {
         this.visual = valorVisualVerbal;
         const el = document.getElementById('v' + this.visual);
-        if (el) el.innerHTML = "✓";
+        if (el) el.innerHTML = "X";
         chartVal.visual = 5 + (this.visual / 22) * 10;
         chartVal.verbal = 5 - (this.visual / 22) * 10;
+        this.estilos.push('Visual');
+        this.infos.push('Los estudiantes visuales recuerdan mejor lo que ven (imágenes, diagramas, diagramas de flujo, líneas de tiempo, películas y demostraciones).');
+        this.preferencias.push(this.calcularPreferencia(Number(this.visual), 'Visual', 'Verbal', 'Los estudiantes visuales recuerdan mejor lo que ven (imágenes, diagramas, diagramas de flujo, líneas de tiempo, películas y demostraciones).', 'Los estudiantes verbales obtienen más de las palabras (explicaciones escritas y habladas).'));
+        this.porcentajes.push(this.calcularPorcentaje(Number(this.visual), 'A'));
       } else if (letraVisualVerbal === 'B') {
         this.verbal = valorVisualVerbal;
         const el = document.getElementById('ve' + this.verbal);
-        if (el) el.innerHTML = "✓";
+        if (el) el.innerHTML = "X";
         chartVal.visual = 5 - (this.verbal / 22) * 10;
         chartVal.verbal = 5 + (this.verbal / 22) * 10;
+        this.estilos.push('Verbal');
+        this.infos.push('Los estudiantes verbales obtienen más de las palabras (explicaciones escritas y habladas).');
+        this.preferencias.push(this.calcularPreferencia(Number(this.verbal), 'Verbal', 'Visual', 'Los estudiantes verbales obtienen más de las palabras (explicaciones escritas y habladas).', 'Los estudiantes visuales recuerdan mejor lo que ven (imágenes, diagramas, diagramas de flujo, líneas de tiempo, películas y demostraciones).'));
+        this.porcentajes.push(this.calcularPorcentaje(Number(this.verbal), 'B'));
       }
 
       // Bloque 4: Secuencial/Global
@@ -173,15 +207,23 @@ export class InicioComponent implements OnInit, AfterViewInit {
       if (letraSecuencialGlobal === 'A') {
         this.secuencial = valorSecuencialGlobal;
         const el = document.getElementById('se' + this.secuencial);
-        if (el) el.innerHTML = "✓";
+        if (el) el.innerHTML = "X";
         chartVal.secuencial = 5 + (this.secuencial / 22) * 10;
         chartVal.global = 5 - (this.secuencial / 22) * 10;
+        this.estilos.push('Secuencial');
+        this.infos.push('Los estudiantes secuenciales tienden a ganar comprensión en pasos lineales, con cada paso siguiendo lógicamente al anterior.');
+        this.preferencias.push(this.calcularPreferencia(Number(this.secuencial), 'Secuencial', 'Global', 'Los estudiantes secuenciales tienden a ganar comprensión en pasos lineales, con cada paso siguiendo lógicamente al anterior.', 'Los estudiantes globales tienden a aprender en grandes saltos, absorbiendo material casi al azar sin ver conexiones, y luego de repente "captan" todo.'));
+        this.porcentajes.push(this.calcularPorcentaje(Number(this.secuencial), 'A'));
       } else if (letraSecuencialGlobal === 'B') {
         this.global = valorSecuencialGlobal;
         const el = document.getElementById('g' + this.global);
-        if (el) el.innerHTML = "✓";
+        if (el) el.innerHTML = "X";
         chartVal.secuencial = 5 - (this.global / 22) * 10;
         chartVal.global = 5 + (this.global / 22) * 10;
+        this.estilos.push('Global');
+        this.infos.push('Los estudiantes globales tienden a aprender en grandes saltos, absorbiendo material casi al azar sin ver conexiones, y luego de repente "captan" todo.');
+        this.preferencias.push(this.calcularPreferencia(Number(this.global), 'Global', 'Secuencial', 'Los estudiantes globales tienden a aprender en grandes saltos, absorbiendo material casi al azar sin ver conexiones, y luego de repente "captan" todo.', 'Los estudiantes secuenciales tienden a ganar comprensión en pasos lineales, con cada paso siguiendo lógicamente al anterior.'));
+        this.porcentajes.push(this.calcularPorcentaje(Number(this.global), 'B'));
       }
 
       this.chart.data.datasets.forEach((dataset: any) => {
@@ -224,36 +266,56 @@ export class InicioComponent implements OnInit, AfterViewInit {
     this.route.navigate(['/Cuestionario/' + id_cuestionario]);
   }
 
-  cambiasGrafica(event: any) {
-    // Activar tab de gráfica
-    document.getElementById('Grafica')?.classList.add('tab-active');
-    document.getElementById('Tabla')?.classList.remove('tab-active');
-
-    // Mostrar gráfica, ocultar tabla
-    const grafic = document.querySelector('.info_grafic');
-    const table = document.querySelector('.info_table');
-    grafic?.classList.remove('hidden');
-    table?.classList.add('hidden');
-  }
-
-  cambiasTabla(event: any) {
-    // Activar tab de tabla
-    document.getElementById('Tabla')?.classList.add('tab-active');
-    document.getElementById('Grafica')?.classList.remove('tab-active');
-
-    // Mostrar tabla, ocultar gráfica
-    const grafic = document.querySelector('.info_grafic');
-    const table = document.querySelector('.info_table');
-    grafic?.classList.add('hidden');
-    table?.classList.remove('hidden');
-  }
-
   navigateCursos() {
     this.route.navigate(['/cursos']);
   }
 
   verResultados() {
-  this.route.navigate(['/Resultado']);
-}
+    this.route.navigate(['/Resultado']);
+  }
 
+  private calcularPreferencia(
+    valor: number,
+    dimPredominante: string,
+    dimAlternativa: string,
+    descPredominante: string,
+    descAlternativa: string,
+  ): any {
+    if (valor >= 1 && valor <= 3) {
+      return {
+        tipo: 'equilibrio',
+        texto: `Presentas un equilibrio apropiado entre ${dimPredominante}/${dimAlternativa}`,
+        estiloAlt: dimAlternativa,
+        infoAlt: descAlternativa,
+      };
+    } else if (valor >= 5 && valor <= 7) {
+      return {
+        tipo: 'moderada',
+        texto: `Presentas una preferencia moderada hacia el estilo de aprendizaje `,
+      };
+    } else {
+      return {
+        tipo: 'fuerte',
+        texto: `Presentas una preferencia muy fuerte hacia `,
+      };
+    }
+  }
+
+  private calcularPorcentaje(valor: number, letra: string): { p1: number; p2: number } {
+    const mapeoPorcentajes: { [key: number]: number } = {
+      1: 54.55,
+      3: 63.64,
+      5: 72.73,
+      7: 81.82,
+      9: 90.91,
+      11: 100,
+    };
+    const predominante = mapeoPorcentajes[Number(valor)] || 50;
+    const secundario = Number((100 - predominante).toFixed(2));
+    if (letra === 'A') {
+      return { p1: predominante, p2: secundario };
+    } else {
+      return { p1: secundario, p2: predominante };
+    }
+  }
 }
